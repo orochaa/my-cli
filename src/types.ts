@@ -1,4 +1,4 @@
-export type Command = 'remove'
+export type Command = 'remove' | 'store'
 
 export type PromptOption<Value> = {
   value: Value
