@@ -1,7 +1,7 @@
 #!/bin/env node
 import * as p from '@clack/prompts'
 import { exhaustive } from 'exhaustive'
-import { removeCommand, storeCommand } from './commands'
+import { recoverCommand, removeCommand, storeCommand } from './commands'
 import { Command, PromptOption } from './types'
 
 async function selectCommandPrompt(): Promise<void> {
@@ -13,13 +13,18 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Delete item',
         value: 'remove'
-      }, {
+      },
+      {
         label: 'Store value',
         value: 'store'
+      },
+      {
+        label: 'Recover value',
+        value: 'recover'
       }
-    ],
-    initialValue: 'remove'
+    ]
   })
+
   await switchCommand(option)
 }
 
@@ -29,6 +34,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
   await exhaustive(command, {
     remove: () => removeCommand(),
     store: () => storeCommand(),
+    recover: () => recoverCommand(),
     _: async () => console.error(`Error: Command ${command} not found 🙁`)
   })
 }

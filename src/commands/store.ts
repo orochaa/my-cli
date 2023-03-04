@@ -1,13 +1,9 @@
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
 import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import { LockData } from '@/types'
+import { lockfilePath, tempPath } from '@/utils/constants'
 import * as p from '@clack/prompts'
-
-type LockData = Record<string, string>
-
-const tempPath = join(__dirname, '../temp')
-const lockfilePath = join(tempPath, '../temp/store-lock.json')
 
 export async function storeCommand(): Promise<void> {
   const store: LockData = {}

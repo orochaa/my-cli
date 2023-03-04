@@ -1,7 +1,9 @@
-export type Command = 'remove' | 'store'
+export type Command = 'remove' | 'store' | 'recover'
 
-export type PromptOption<Value> = {
-  value: Value
+export type LockData = Record<string, string>
+
+export type PromptOption<TValue, TLabel extends string = string> = {
+  value: TValue
   label: string
   hint?: string
 }
