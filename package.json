@@ -1,0 +1,40 @@
+{
+  "version": "0.0.0",
+  "name": "@mist3rbru/my-cli",
+  "access": "public",
+  "private": false,
+  "description": "Mist3rBru's cli(Command Line Interface)",
+  "bin": {
+    "my-cli": "./dist/index.js",
+    "my": "./dist/index.js"
+  },
+  "author": "Mist3rBru",
+  "license": "MIT",
+  "homepage": "https://github.com/Mist3rBru/my-cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mist3rBru/create-ts-api.git"
+  },
+  "scripts": {
+    "start": "node dist/index.js",
+    "test": "run-s build \"start {@}\" --",
+    "lint": "tsc && prettier --write .",
+    "build": "tsup bin",
+    "ci": "run-s lint build",
+    "publish": "changeset publish",
+    "release": "run-s ci publish"
+  },
+  "dependencies": {
+    "@clack/core": "^0.3.0",
+    "@clack/prompts": "^0.6.1",
+    "exhaustive": "^1.1.1"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0",
+    "@types/node": "^18.14.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.4",
+    "tsup": "^6.6.3",
+    "typescript": "^4.9.5"
+  }
+}
