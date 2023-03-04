@@ -1,6 +1,4 @@
-export type MyPrompt = () => Promise<void>
-
-export type MyFunctionName = 'remove'
+export type Command = 'remove'
 
 export type PromptOption<Value> = {
   value: Value

@@ -1,0 +1,10 @@
+.git/
+.github/
+.changeset/
+src/
+
+.editorconfig
+.gitignore
+.prettierignore
+.prettierrc.json
+tsconfig.json

@@ -4,6 +4,7 @@
   "access": "public",
   "private": false,
   "description": "Mist3rBru's cli(Command Line Interface)",
+  "main": "src/index.ts",
   "bin": {
     "my-cli": "./dist/index.js",
     "my": "./dist/index.js"
@@ -13,13 +14,14 @@
   "homepage": "https://github.com/Mist3rBru/my-cli#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Mist3rBru/create-ts-api.git"
+    "url": "https://github.com/Mist3rBru/my-cli-api.git"
   },
   "scripts": {
     "start": "node dist/index.js",
-    "test": "run-s build \"start {@}\" --",
+    "dev": "tsx src/index.ts",
+    "test": "run-s \"dev {@}\" --",
     "lint": "tsc && prettier --write .",
-    "build": "tsup bin",
+    "build": "tsup src",
     "ci": "run-s lint build",
     "publish": "changeset publish",
     "release": "run-s ci publish"
@@ -35,6 +37,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.4",
     "tsup": "^6.6.3",
+    "tsx": "^3.12.3",
     "typescript": "^4.9.5"
   }
 }

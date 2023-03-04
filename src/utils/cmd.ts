@@ -35,6 +35,6 @@ export async function cloneRepository(
   await exec(`git clone --depth 1 ${repo} ${folder}`)
 }
 
-export async function install(folder: string) {
+export async function install(folder: string): Promise<void> {
   await exec(`${goTo(folder)} && pnpm install`)
 }
