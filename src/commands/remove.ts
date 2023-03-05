@@ -1,6 +1,7 @@
 import { errorHandler, remove } from '@/utils/cmd'
+import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { hasParams, getParams, verifyPromptResponse } from '@/utils/prompt'
+import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -17,8 +18,8 @@ export async function removeCommand(): Promise<void> {
   }
 
   for (const item of items) {
-    await remove(process.cwd(), item)
-    p.outro(`Removed: ${join(process.cwd(), item)}`)
+    await remove(cwd, item)
+    p.outro(`Removed: ${join(cwd, item)}`)
   }
 }
 
@@ -38,7 +39,7 @@ async function removePrompt(): Promise<string[]> {
 
 function verifyItems(items: string[]): Error | null {
   for (const item of items) {
-    if (!existsSync(join(process.cwd(), item))) {
+    if (!existsSync(join(cwd, item))) {
       return new NotFoundError(item)
     }
   }

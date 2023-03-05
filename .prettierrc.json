@@ -7,5 +7,17 @@
   "singleQuote": true,
   "trailingComma": "none",
   "tabWidth": 2,
-  "printWidth": 80
+  "printWidth": 80,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^@/commands",
+    "^@/utils",
+    "^@/(.*)",
+    "^node",
+    "<THIRD_PARTY_MODULES>",
+    "@clack",
+    "^[./]"
+  ],
+  "importOrderSeparation": false,
+  "importOrderSortSpecifiers": true
 }

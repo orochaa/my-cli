@@ -1,8 +1,8 @@
+import { lockfilePath, tempPath } from '@/utils/constants'
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
 import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { LockData } from '@/types'
-import { lockfilePath, tempPath } from '@/utils/constants'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import * as p from '@clack/prompts'
 
 export async function storeCommand(): Promise<void> {

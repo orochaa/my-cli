@@ -1,7 +1,7 @@
-import { LockData, PromptOption } from '@/types'
 import { lockfilePath } from '@/utils/constants'
 import { mergeObjects, objectEntries } from '@/utils/mappers'
 import { hasParams, verifyPromptResponse } from '@/utils/prompt'
+import { LockData } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import * as p from '@clack/prompts'
 

@@ -1,8 +1,8 @@
 #!/bin/env node
-import * as p from '@clack/prompts'
+import { recoverCommand, removeCommand, storeCommand } from '@/commands'
+import { Command, PromptOption } from '@/types'
 import { exhaustive } from 'exhaustive'
-import { recoverCommand, removeCommand, storeCommand } from './commands'
-import { Command, PromptOption } from './types'
+import * as p from '@clack/prompts'
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
