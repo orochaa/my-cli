@@ -27,7 +27,6 @@
     "release": "run-s ci publish"
   },
   "dependencies": {
-    "@clack/core": "^0.3.2",
     "@clack/prompts": "^0.6.3",
     "@mist3rbru/create-ts-api": "^0.1.0",
     "exhaustive": "^1.1.1"

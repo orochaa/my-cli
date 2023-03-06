@@ -6,8 +6,7 @@ export async function apiCommand(): Promise<void> {
   let name: string
 
   if (hasParams()) {
-    const params = getParams()
-    name = params[0]
+    name = getParams()[0]
   } else {
     name = await apiPrompt()
   }

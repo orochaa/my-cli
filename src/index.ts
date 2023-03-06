@@ -3,6 +3,7 @@ import {
   type Command,
   apiCommand,
   initCommand,
+  openCommand,
   passwordCommand,
   recoverCommand,
   removeCommand,
@@ -43,6 +44,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Create api project',
         value: 'api'
+      },
+      {
+        label: 'Open project',
+        value: 'open'
       }
     ]
   })
@@ -61,6 +66,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     password: () => passwordCommand(),
     init: () => initCommand(),
     api: () => apiCommand(),
+    open: () => openCommand(),
     _: () => errorHandler(new NotFoundError(command))
   })
 }
