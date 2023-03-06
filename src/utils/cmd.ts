@@ -1,3 +1,4 @@
+import { execSync } from 'node:child_process'
 import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -10,4 +11,8 @@ export function errorHandler(error: Error): never {
 
 export async function remove(folder: string, item: string): Promise<void> {
   await rm(join(folder, item), { recursive: true })
+}
+
+export function exec(cmd: string): void {
+  execSync(cmd, { stdio: 'inherit' })
 }

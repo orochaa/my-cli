@@ -1,5 +1,6 @@
-#!/bin/env node
+#!/usr/bin/env node
 import {
+  initCommand,
   passwordCommand,
   recoverCommand,
   removeCommand,
@@ -32,6 +33,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Generate password',
         value: 'password'
+      },
+      {
+        label: 'Init project',
+        value: 'init'
       }
     ]
   })
@@ -47,6 +52,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     store: () => storeCommand(),
     recover: () => recoverCommand(),
     password: () => passwordCommand(),
+    init: () => initCommand(),
     _: () => errorHandler(new NotFoundError(command))
   })
 }
@@ -59,4 +65,4 @@ export async function main(): Promise<void> {
   }
 }
 
-main().catch(console.error)
+void main()

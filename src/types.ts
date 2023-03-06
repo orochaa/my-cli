@@ -1,8 +1,4 @@
-export type Command =
-  | 'remove'
-  | 'store'
-  | 'recover'
-  | 'password'
+export type Command = 'remove' | 'store' | 'recover' | 'password' | 'init'
 
 export type LockData = Record<string, string>
 
