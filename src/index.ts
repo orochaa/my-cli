@@ -5,6 +5,8 @@ import {
   removeCommand,
   storeCommand
 } from '@/commands'
+import { errorHandler } from '@/utils/cmd'
+import { NotFoundError } from '@/utils/errors'
 import { Command, PromptOption } from '@/types'
 import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
@@ -45,7 +47,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     store: () => storeCommand(),
     recover: () => recoverCommand(),
     password: () => passwordCommand(),
-    _: async () => console.error(`Error: Command ${command} not found 🙁`)
+    _: async () => errorHandler(new NotFoundError(command))
   })
 }
 

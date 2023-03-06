@@ -1,4 +1,6 @@
+import { errorHandler } from '@/utils/cmd'
 import { lockfilePath } from '@/utils/constants'
+import { NotFoundError } from '@/utils/errors'
 import { mergeObjects, objectEntries } from '@/utils/mappers'
 import { hasParams, verifyPromptResponse } from '@/utils/prompt'
 import { LockData } from '@/types'
@@ -32,9 +34,13 @@ function readLockfile(): LockData {
 }
 
 async function recoverPrompt(lockfile: LockData): Promise<string> {
+  const lockEntries = objectEntries(lockfile)
+  if (!lockEntries.length) {
+    errorHandler(new NotFoundError('stored data'))
+  }
   const response = await p.select({
     message: 'Select the key you want',
-    options: objectEntries(lockfile).map(([label, value]) => ({
+    options: lockEntries.map(([label, value]) => ({
       label,
       value
     })),
