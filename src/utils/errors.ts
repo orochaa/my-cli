@@ -4,3 +4,10 @@ export class NotFoundError extends Error {
     this.name = 'NotFoundError'
   }
 }
+
+export class InvalidParamError extends Error {
+  constructor(param: string, reason?: string) {
+    super(`'${param}' in invalid. ${reason ?? ''}`)
+    this.name = 'InvalidParamError'
+  }
+}

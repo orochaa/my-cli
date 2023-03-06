@@ -1,5 +1,10 @@
 #!/bin/env node
-import { recoverCommand, removeCommand, storeCommand } from '@/commands'
+import {
+  passwordCommand,
+  recoverCommand,
+  removeCommand,
+  storeCommand
+} from '@/commands'
 import { Command, PromptOption } from '@/types'
 import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
@@ -21,6 +26,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Recover value',
         value: 'recover'
+      },
+      {
+        label: 'Generate password',
+        value: 'password'
       }
     ]
   })
@@ -35,6 +44,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     remove: () => removeCommand(),
     store: () => storeCommand(),
     recover: () => recoverCommand(),
+    password: () => passwordCommand(),
     _: async () => console.error(`Error: Command ${command} not found 🙁`)
   })
 }
