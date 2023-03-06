@@ -35,7 +35,7 @@ async function storePrompt(store: LockData, lockfile: LockData): Promise<void> {
   const response = await p.group({
     key: () =>
       p.text({
-        message: 'Type the key name',
+        message: 'Type the key name:',
         placeholder: `Stored keys: ${objectKeys(lockfile).join(' | ')}`
       }),
     value: () =>

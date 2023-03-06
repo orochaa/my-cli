@@ -37,8 +37,7 @@ export async function passwordCommand(): Promise<void> {
 
 async function passwordPrompt(): Promise<number> {
   const response = await p.text({
-    message: 'Type your desired password length',
-    initialValue: '30',
+    message: 'Type your desired password length:',
     validate: res => {
       const error = verifyPasswordLength(Number(res))
       if (error) return error.message
@@ -50,7 +49,9 @@ async function passwordPrompt(): Promise<number> {
 
 function verifyPasswordLength(length: number): Error | null {
   if (isNaN(length) || length < 8) {
-    return new InvalidParamError('passwordLength', 'min length accepted is 8')
+    return new InvalidParamError('passwordLength', 'min length is 8')
+  } else if (length > 100) {
+    return new InvalidParamError('passwordLength', 'max length is 100')
   }
   return null
 }

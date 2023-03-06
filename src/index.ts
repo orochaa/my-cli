@@ -13,9 +13,9 @@ import * as p from '@clack/prompts'
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
-  p.intro('⚡ Welcome to my-cli ⚡')
+  p.intro('⚡ Welcome to `(my|your)-cli` ⚡')
   const option = await p.select<PromptOption<Command>[], Command>({
-    message: 'Select a function: ',
+    message: 'Select a command: ',
     options: [
       {
         label: 'Delete item',
@@ -47,7 +47,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     store: () => storeCommand(),
     recover: () => recoverCommand(),
     password: () => passwordCommand(),
-    _: async () => errorHandler(new NotFoundError(command))
+    _: () => errorHandler(new NotFoundError(command))
   })
 }
 
