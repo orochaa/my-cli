@@ -3,3 +3,13 @@ export * from './store'
 export * from './recover'
 export * from './password'
 export * from './init'
+export * from './api'
+
+export type Command =
+  | 'remove'
+  | 'rm'
+  | 'store'
+  | 'recover'
+  | 'password'
+  | 'init'
+  | 'api'

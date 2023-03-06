@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 import {
+  type Command,
+  apiCommand,
   initCommand,
   passwordCommand,
   recoverCommand,
@@ -8,7 +10,7 @@ import {
 } from '@/commands'
 import { errorHandler } from '@/utils/cmd'
 import { NotFoundError } from '@/utils/errors'
-import { Command, PromptOption } from '@/types'
+import { PromptOption } from '@/types'
 import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
 
@@ -37,6 +39,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Init project',
         value: 'init'
+      },
+      {
+        label: 'Create api project',
+        value: 'api'
       }
     ]
   })
@@ -49,10 +55,12 @@ async function switchCommand(command: Command | symbol): Promise<void> {
 
   await exhaustive(command, {
     remove: () => removeCommand(),
+    rm: () => removeCommand(),
     store: () => storeCommand(),
     recover: () => recoverCommand(),
     password: () => passwordCommand(),
     init: () => initCommand(),
+    api: () => apiCommand(),
     _: () => errorHandler(new NotFoundError(command))
   })
 }
