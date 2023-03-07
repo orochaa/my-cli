@@ -1,18 +1,13 @@
 import { errorHandler, hasParams } from '@/utils/cmd'
-import { storeLockFilePath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { mergeObjects, objectEntries } from '@/utils/mappers'
+import { readLockfile } from '@/utils/file-system'
+import { objectEntries } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import { existsSync, readFileSync } from 'node:fs'
 import * as p from '@clack/prompts'
 
 export async function recoverCommand(): Promise<void> {
-  const lockfile: Record<string, string> = {}
+  const lockfile = readLockfile()
   let value: string
-
-  if (verifyLockfile()) {
-    mergeObjects(lockfile, readLockfile())
-  }
 
   if (hasParams()) {
     const key = process.argv[3]
@@ -22,14 +17,6 @@ export async function recoverCommand(): Promise<void> {
   }
 
   p.outro(String(value))
-}
-
-function verifyLockfile(): boolean {
-  return existsSync(storeLockFilePath)
-}
-
-function readLockfile(): Record<string, string> {
-  return JSON.parse(readFileSync(storeLockFilePath).toString())
 }
 
 async function recoverPrompt(

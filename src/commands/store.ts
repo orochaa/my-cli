@@ -1,18 +1,17 @@
 import { getParams, hasParams } from '@/utils/cmd'
-import { storeLockFilePath, tempFolderPath } from '@/utils/constants'
+import {
+  readLockfile,
+  verifyLockfile,
+  writeLockfile
+} from '@/utils/file-system'
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import * as p from '@clack/prompts'
 
 export async function storeCommand(): Promise<void> {
+  const lockfile = readLockfile()
   const store: Record<string, string> = {}
   const result: Record<string, string> = {}
-  const lockfile: Record<string, string> = {}
-
-  if (verifyLockfile()) {
-    mergeObjects(lockfile, readLockfile())
-  }
 
   if (hasParams()) {
     const params = getParams()
@@ -54,17 +53,4 @@ function pruneData(data: Record<string, string>): void {
   objectEntries(data).forEach(([key, value]) => {
     if (!value) delete data[key]
   })
-}
-
-function verifyLockfile(): boolean {
-  return existsSync(storeLockFilePath)
-}
-
-function writeLockfile(content: Record<string, string>): void {
-  if (!existsSync(tempFolderPath)) mkdirSync(tempFolderPath)
-  return writeFileSync(storeLockFilePath, JSON.stringify(content))
-}
-
-function readLockfile(): Record<string, string> {
-  return JSON.parse(readFileSync(storeLockFilePath).toString())
 }

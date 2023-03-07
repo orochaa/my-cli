@@ -8,28 +8,30 @@ export type PromptOption<TValue, TLabel extends string = string> = {
 
 type Primitive = string | number | boolean
 
-type PromptResponse<T> = T extends Primitive
+type PrimitiveArray<T = Primitive> = T extends Primitive ? T[] : never
+
+type PromptResponse = Primitive | PrimitiveArray | Record<string, unknown>
+
+type ResponseMapper<T> = T extends Primitive
   ? T
   : {
       [K in keyof T]: T[K] extends infer U | symbol ? U : T[K]
     }
 
-function verifySymbol<T>(
-  data: T | symbol
-): asserts data is T {
-  if (!data || typeof data === 'symbol') {
-    process.exit(0)
-  }
-}
-
-export function verifyPromptResponse<
-  T extends Primitive | Record<string, unknown>
->(response: T | symbol): asserts response is Prettify<T & PromptResponse<T>> {
+export function verifyPromptResponse<TResponse extends PromptResponse>(
+  response: TResponse | symbol
+): asserts response is TResponse & ResponseMapper<TResponse> {
+  verifySymbol(response)
   if (typeof response === 'object') {
     for (const key of objectKeys(response)) {
       verifySymbol(response[key])
     }
-  } else {
-    verifySymbol(response)
+  }
+}
+
+function verifySymbol<T>(data: T | symbol): asserts data is T {
+  const dataType = typeof data
+  if (dataType === 'undefined' || dataType === 'symbol') {
+    process.exit(0)
   }
 }

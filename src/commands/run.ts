@@ -1,15 +1,9 @@
 import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
-import { cwd, packageJsonPath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
+import { PackageJson, getPackageJson } from '@/utils/file-system'
 import { objectKeys } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
-import { existsSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
 import * as p from '@clack/prompts'
-
-type PackageJson = {
-  scripts: Record<string, string>
-}
 
 export async function runCommand(): Promise<void> {
   let scripts: string[]
@@ -30,13 +24,6 @@ export async function runCommand(): Promise<void> {
   for (const script of scripts) {
     exec(`npm run ${script}`)
   }
-}
-
-function getPackageJson(): PackageJson {
-  if (!existsSync(packageJsonPath)) {
-    return errorHandler(new NotFoundError('package.json'))
-  }
-  return JSON.parse(readFileSync(packageJsonPath).toString())
 }
 
 function verifyScripts(

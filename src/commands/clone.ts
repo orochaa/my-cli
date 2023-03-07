@@ -1,12 +1,14 @@
 import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
+import { readLockfile } from '@/utils/file-system'
 import { verifyPromptResponse } from '@/utils/prompt'
 import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
 
 export async function cloneCommand(): Promise<void> {
   const base = 'https://github.com'
-  const owner = 'Mist3rBru'
+  const owner = readLockfile().git
+
   let clone: [owner: string, repository: string, dir: string]
 
   if (hasParams()) {
