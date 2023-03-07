@@ -1,15 +1,14 @@
 import { getParams, hasParams } from '@/utils/cmd'
-import { lockfilePath, tempPath } from '@/utils/constants'
+import { storeLockFilePath, tempFolderPath } from '@/utils/constants'
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import { LockData } from '@/types'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import * as p from '@clack/prompts'
 
 export async function storeCommand(): Promise<void> {
-  const store: LockData = {}
-  const result: LockData = {}
-  const lockfile: LockData = {}
+  const store: Record<string, string> = {}
+  const result: Record<string, string> = {}
+  const lockfile: Record<string, string> = {}
 
   if (verifyLockfile()) {
     mergeObjects(lockfile, readLockfile())
@@ -26,13 +25,16 @@ export async function storeCommand(): Promise<void> {
   }
 
   mergeObjects(result, lockfile, store)
-  pruneLockData(result)
+  pruneData(result)
   writeLockfile(result)
 
   console.log({ stored: result })
 }
 
-async function storePrompt(store: LockData, lockfile: LockData): Promise<void> {
+async function storePrompt(
+  store: Record<string, string>,
+  lockfile: Record<string, string>
+): Promise<void> {
   const response = await p.group({
     key: () =>
       p.text({
@@ -48,21 +50,21 @@ async function storePrompt(store: LockData, lockfile: LockData): Promise<void> {
   store[response.key] = response.value
 }
 
-function pruneLockData(data: LockData): void {
+function pruneData(data: Record<string, string>): void {
   objectEntries(data).forEach(([key, value]) => {
     if (!value) delete data[key]
   })
 }
 
 function verifyLockfile(): boolean {
-  return existsSync(lockfilePath)
+  return existsSync(storeLockFilePath)
 }
 
-function writeLockfile(content: LockData): void {
-  if (!existsSync(tempPath)) mkdirSync(tempPath)
-  return writeFileSync(lockfilePath, JSON.stringify(content))
+function writeLockfile(content: Record<string, string>): void {
+  if (!existsSync(tempFolderPath)) mkdirSync(tempFolderPath)
+  return writeFileSync(storeLockFilePath, JSON.stringify(content))
 }
 
-function readLockfile(): LockData {
-  return JSON.parse(readFileSync(lockfilePath).toString())
+function readLockfile(): Record<string, string> {
+  return JSON.parse(readFileSync(storeLockFilePath).toString())
 }

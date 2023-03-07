@@ -12,7 +12,7 @@ import {
 } from '@/commands'
 import { errorHandler } from '@/utils/cmd'
 import { NotFoundError } from '@/utils/errors'
-import { PromptOption } from '@/types'
+import { PromptOption } from '@/utils/prompt'
 import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
 

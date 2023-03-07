@@ -1,14 +1,13 @@
 import { errorHandler, hasParams } from '@/utils/cmd'
-import { lockfilePath } from '@/utils/constants'
+import { storeLockFilePath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { mergeObjects, objectEntries } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import { LockData } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import * as p from '@clack/prompts'
 
 export async function recoverCommand(): Promise<void> {
-  const lockfile: LockData = {}
+  const lockfile: Record<string, string> = {}
   let value: string
 
   if (verifyLockfile()) {
@@ -26,14 +25,16 @@ export async function recoverCommand(): Promise<void> {
 }
 
 function verifyLockfile(): boolean {
-  return existsSync(lockfilePath)
+  return existsSync(storeLockFilePath)
 }
 
-function readLockfile(): LockData {
-  return JSON.parse(readFileSync(lockfilePath).toString())
+function readLockfile(): Record<string, string> {
+  return JSON.parse(readFileSync(storeLockFilePath).toString())
 }
 
-async function recoverPrompt(lockfile: LockData): Promise<string> {
+async function recoverPrompt(
+  lockfile: Record<string, string>
+): Promise<string> {
   const lockEntries = objectEntries(lockfile)
   if (!lockEntries.length) {
     errorHandler(new NotFoundError('stored data'))

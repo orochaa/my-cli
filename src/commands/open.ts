@@ -1,14 +1,13 @@
 import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
-import { projectsPath } from '@/utils/constants'
+import { projectsFolderPath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { verifyPromptResponse } from '@/utils/prompt'
-import { PromptOption } from '@/types'
+import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
 export async function openCommand(): Promise<void> {
-  const projects = readdirSync(projectsPath)
+  const projects = readdirSync(projectsFolderPath)
   let project: string
 
   if (hasParams()) {
@@ -20,7 +19,7 @@ export async function openCommand(): Promise<void> {
     project = await openPrompt(projects)
   }
 
-  exec(`code ${join(projectsPath, project)}`)
+  exec(`code ${join(projectsFolderPath, project)}`)
 }
 
 async function openPrompt(projects: string[]): Promise<string> {

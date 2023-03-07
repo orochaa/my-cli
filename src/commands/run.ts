@@ -1,9 +1,8 @@
 import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
-import { cwd } from '@/utils/constants'
+import { cwd, packageJsonPath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { objectEntries, objectKeys } from '@/utils/mappers'
-import { verifyPromptResponse } from '@/utils/prompt'
-import { PromptOption } from '@/types'
+import { objectKeys } from '@/utils/mappers'
+import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -34,7 +33,6 @@ export async function runCommand(): Promise<void> {
 }
 
 function getPackageJson(): PackageJson {
-  const packageJsonPath = join(cwd, 'package.json')
   if (!existsSync(packageJsonPath)) {
     return errorHandler(new NotFoundError('package.json'))
   }
