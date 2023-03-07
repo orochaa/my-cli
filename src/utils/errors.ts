@@ -11,7 +11,7 @@ export class NotFoundError extends Error {
 
 export class InvalidParamError extends Error {
   constructor(param: string, reason?: string) {
-    super(`${emphasize(param)} in invalid. ${reason ?? ''}`)
+    super(`${emphasize(param)} is invalid. ${reason ?? ''}`)
     this.name = 'InvalidParamError'
   }
 }

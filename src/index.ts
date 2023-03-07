@@ -2,6 +2,7 @@
 import {
   type Command,
   apiCommand,
+  cloneCommand,
   initCommand,
   openCommand,
   passwordCommand,
@@ -53,6 +54,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Run scripts',
         value: 'run'
+      },
+      {
+        label: 'Clone repository',
+        value: 'clone'
       }
     ]
   })
@@ -73,6 +78,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     api: () => apiCommand(),
     open: () => openCommand(),
     run: () => runCommand(),
+    clone: () => cloneCommand(),
     _: () => errorHandler(new NotFoundError(command))
   })
 }

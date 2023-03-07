@@ -6,6 +6,7 @@ export * from './init'
 export * from './api'
 export * from './open'
 export * from './run'
+export * from './clone'
 
 export type Command =
   | 'remove'
@@ -17,3 +18,4 @@ export type Command =
   | 'api'
   | 'open'
   | 'run'
+  | 'clone'
