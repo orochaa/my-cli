@@ -1,21 +1,18 @@
 #!/usr/bin/env node
-import {
-  type Command,
-  apiCommand,
-  cloneCommand,
-  initCommand,
-  openCommand,
-  passwordCommand,
-  recoverCommand,
-  removeCommand,
-  runCommand,
-  storeCommand
-} from '@/commands'
+import * as command from '@/commands'
 import { errorHandler } from '@/utils/cmd'
 import { NotFoundError } from '@/utils/errors'
+import { Lockfile, readLockfile, verifyLockfile } from '@/utils/file-system'
 import { PromptOption } from '@/utils/prompt'
 import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
+
+type UnWrapCommand<TCommand extends string> =
+  TCommand extends `${infer TName}Command` ? TName : never
+
+type CommandAlias = 'rm'
+
+type Command = UnWrapCommand<keyof typeof command> | CommandAlias
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
@@ -23,6 +20,10 @@ async function selectCommandPrompt(): Promise<void> {
   const option = await p.select<PromptOption<Command>[], Command>({
     message: 'Select a command: ',
     options: [
+      {
+        label: 'Setup config',
+        value: 'setup'
+      },
       {
         label: 'Delete item',
         value: 'remove'
@@ -65,25 +66,32 @@ async function selectCommandPrompt(): Promise<void> {
   await switchCommand(option)
 }
 
-async function switchCommand(command: Command | symbol): Promise<void> {
-  if (!command || typeof command !== 'string') return
+async function switchCommand(cmdCommand: Command | symbol): Promise<void> {
+  if (!cmdCommand || typeof cmdCommand !== 'string') return
 
-  await exhaustive(command, {
-    remove: () => removeCommand(),
-    rm: () => removeCommand(),
-    store: () => storeCommand(),
-    recover: () => recoverCommand(),
-    password: () => passwordCommand(),
-    init: () => initCommand(),
-    api: () => apiCommand(),
-    open: () => openCommand(),
-    run: () => runCommand(),
-    clone: () => cloneCommand(),
-    _: () => errorHandler(new NotFoundError(command))
+  await exhaustive(cmdCommand, {
+    setup: () => command.setupCommand(),
+    remove: () => command.removeCommand(),
+    rm: () => command.removeCommand(),
+    store: () => command.storeCommand(),
+    recover: () => command.recoverCommand(),
+    password: () => command.passwordCommand(),
+    init: () => command.initCommand(),
+    api: () => command.apiCommand(),
+    open: () => command.openCommand(),
+    run: () => command.runCommand(),
+    clone: () => command.cloneCommand(),
+    _: () => errorHandler(new NotFoundError(cmdCommand))
   })
 }
 
 export async function main(): Promise<void> {
+  const lockfile: Partial<Lockfile> = verifyLockfile() ? readLockfile() : {}
+
+  if (!(lockfile.git && lockfile.projects)) {
+    await command.setupCommand()
+  }
+
   if (process.argv.length > 2) {
     await switchCommand(process.argv[2] as Command)
   } else {
