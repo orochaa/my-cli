@@ -1,4 +1,3 @@
-import { setupCommand } from '@/commands'
 import { errorHandler } from '@/utils/cmd'
 import {
   packageJsonPath,
@@ -7,7 +6,6 @@ import {
 } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { mergeObjects } from './mappers'
 
 export type PackageJson = {
   scripts: Record<string, string>

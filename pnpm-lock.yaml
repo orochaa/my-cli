@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@changesets/cli': ^2.26.0
   '@clack/prompts': ^0.6.3
-  '@mist3rbru/create-ts-api': ^0.1.0
+  '@mist3rbru/create-ts-api': ^0.1.2
   '@trivago/prettier-plugin-sort-imports': ^4.1.1
   '@types/node': ^18.14.6
   exhaustive: ^1.1.1
@@ -15,7 +15,7 @@ specifiers:
 
 dependencies:
   '@clack/prompts': 0.6.3
-  '@mist3rbru/create-ts-api': 0.1.0
+  '@mist3rbru/create-ts-api': 0.1.2
   exhaustive: 1.1.1
 
 devDependencies:
@@ -591,8 +591,8 @@ packages:
       read-yaml-file: 1.1.0
     dev: true
 
-  /@mist3rbru/create-ts-api/0.1.0:
-    resolution: {integrity: sha512-u1ArniaMWzUD9CtS211AiifygwEkJhAs0KGilEji9r3nC5GR2abcCvA+DIjJZQLeD7C5gcNIEghDUKU1llsxFA==}
+  /@mist3rbru/create-ts-api/0.1.2:
+    resolution: {integrity: sha512-zvjDOFPvaFT4F7UFh8vavN3MorSW4pX3Gip799jEf+knab+anpu5wjtIjsZlAQrzOsFgqiNnrFZj9Bo/eVaCsA==}
     hasBin: true
     dev: false
 
@@ -2311,8 +2311,8 @@ packages:
       signal-exit: 3.0.7
     dev: true
 
-  /spdx-correct/3.1.1:
-    resolution: {integrity: sha512-cOYcUWwhCuHCXi49RhFRCyJEK3iPj1Ziz9DpViV3tbZOwXD49QzIN3MpOLJNxh2qwq2lJJZaKMVw9qNi4jTC0w==}
+  /spdx-correct/3.2.0:
+    resolution: {integrity: sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA==}
     dependencies:
       spdx-expression-parse: 3.0.1
       spdx-license-ids: 3.0.12
@@ -2597,7 +2597,7 @@ packages:
   /validate-npm-package-license/3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
     dependencies:
-      spdx-correct: 3.1.1
+      spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
     dev: true
 

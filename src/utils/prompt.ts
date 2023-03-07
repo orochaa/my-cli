@@ -1,4 +1,4 @@
-import { objectKeys } from './mappers'
+import { objectKeys } from '@/utils/mappers'
 
 export type PromptOption<TValue, TLabel extends string = string> = {
   value: TValue
