@@ -1,6 +1,7 @@
+import { getParams, hasParams } from '@/utils/cmd'
 import { lockfilePath, tempPath } from '@/utils/constants'
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
-import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
+import { verifyPromptResponse } from '@/utils/prompt'
 import { LockData } from '@/types'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import * as p from '@clack/prompts'

@@ -16,3 +16,11 @@ export async function remove(folder: string, item: string): Promise<void> {
 export function exec(cmd: string): void {
   execSync(cmd, { stdio: 'inherit' })
 }
+
+export function hasParams(): boolean {
+  return process.argv.length > 3
+}
+
+export function getParams(): string[] {
+  return process.argv.slice(3)
+}

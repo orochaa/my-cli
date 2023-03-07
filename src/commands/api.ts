@@ -1,4 +1,5 @@
-import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
+import { getParams, hasParams } from '@/utils/cmd'
+import { verifyPromptResponse } from '@/utils/prompt'
 import { createApi } from '@mist3rbru/create-ts-api'
 import * as p from '@clack/prompts'
 

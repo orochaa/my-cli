@@ -1,7 +1,7 @@
-import { errorHandler, remove } from '@/utils/cmd'
+import { errorHandler, getParams, hasParams, remove } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
+import { verifyPromptResponse } from '@/utils/prompt'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -12,7 +12,7 @@ export async function removeCommand(): Promise<void> {
   if (hasParams()) {
     items = getParams()
     const error = verifyItems(items)
-    if (error) errorHandler(error)
+    if (error) return errorHandler(error)
   } else {
     items = await removePrompt()
   }

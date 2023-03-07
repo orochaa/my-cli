@@ -7,6 +7,7 @@ import {
   passwordCommand,
   recoverCommand,
   removeCommand,
+  runCommand,
   storeCommand
 } from '@/commands'
 import { errorHandler } from '@/utils/cmd'
@@ -48,6 +49,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Open project',
         value: 'open'
+      },
+      {
+        label: 'Run scripts',
+        value: 'run'
       }
     ]
   })
@@ -67,6 +72,7 @@ async function switchCommand(command: Command | symbol): Promise<void> {
     init: () => initCommand(),
     api: () => apiCommand(),
     open: () => openCommand(),
+    run: () => runCommand(),
     _: () => errorHandler(new NotFoundError(command))
   })
 }

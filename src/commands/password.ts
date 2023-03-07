@@ -1,6 +1,6 @@
-import { errorHandler } from '@/utils/cmd'
+import { errorHandler, getParams, hasParams } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
-import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
+import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
 const specials = '!@#$%^&*()_+{}:"<>?|[];\',./`~'
@@ -17,7 +17,7 @@ export async function passwordCommand(): Promise<void> {
     const length = Number(params[0])
 
     const error = verifyPasswordLength(length)
-    if (error) errorHandler(error)
+    if (error) return errorHandler(error)
 
     passwordLength = length
   } else {

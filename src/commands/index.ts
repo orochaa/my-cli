@@ -5,6 +5,7 @@ export * from './password'
 export * from './init'
 export * from './api'
 export * from './open'
+export * from './run'
 
 export type Command =
   | 'remove'
@@ -15,3 +16,4 @@ export type Command =
   | 'init'
   | 'api'
   | 'open'
+  | 'run'

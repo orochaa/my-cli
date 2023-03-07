@@ -5,11 +5,3 @@ export function verifyPromptResponse<T>(
     process.exit(0)
   }
 }
-
-export function hasParams(): boolean {
-  return process.argv.length > 3
-}
-
-export function getParams(): string[] {
-  return process.argv.slice(3)
-}

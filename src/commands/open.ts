@@ -1,7 +1,7 @@
-import { errorHandler, exec } from '@/utils/cmd'
+import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
 import { projectsPath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { getParams, hasParams, verifyPromptResponse } from '@/utils/prompt'
+import { verifyPromptResponse } from '@/utils/prompt'
 import { PromptOption } from '@/types'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -14,7 +14,7 @@ export async function openCommand(): Promise<void> {
   if (hasParams()) {
     project = getParams()[0]
     if (!projects.includes(project)) {
-      errorHandler(new NotFoundError(project))
+      return errorHandler(new NotFoundError(project))
     }
   } else {
     project = await openPrompt(projects)
