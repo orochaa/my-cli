@@ -1,18 +1,17 @@
 #!/usr/bin/env node
 import * as command from '@/commands'
 import { errorHandler } from '@/utils/cmd'
-import { NotFoundError } from '@/utils/errors'
+import { InvalidParamError } from '@/utils/errors'
 import { Lockfile, readLockfile, verifyLockfile } from '@/utils/file-system'
 import { PromptOption } from '@/utils/prompt'
-import { exhaustive } from 'exhaustive'
 import * as p from '@clack/prompts'
 
-type UnWrapCommand<TCommand extends string> =
-  TCommand extends `${infer TName}Command` ? TName : never
+type CommandKey = keyof typeof command
 
 type CommandAlias = 'rm'
 
-type Command = UnWrapCommand<keyof typeof command> | CommandAlias
+type Command<TCommandKey extends CommandKey = CommandKey> =
+  TCommandKey extends `${infer TCommand}Command` ? TCommand : never
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
@@ -66,23 +65,23 @@ async function selectCommandPrompt(): Promise<void> {
   await switchCommand(option)
 }
 
-async function switchCommand(cmdCommand: Command | symbol): Promise<void> {
+async function switchCommand(
+  cmdCommand: Command | CommandAlias | symbol
+): Promise<void> {
   if (!cmdCommand || typeof cmdCommand !== 'string') return
 
-  await exhaustive(cmdCommand, {
-    setup: () => command.setupCommand(),
-    remove: () => command.removeCommand(),
-    rm: () => command.removeCommand(),
-    store: () => command.storeCommand(),
-    recover: () => command.recoverCommand(),
-    password: () => command.passwordCommand(),
-    init: () => command.initCommand(),
-    api: () => command.apiCommand(),
-    open: () => command.openCommand(),
-    run: () => command.runCommand(),
-    clone: () => command.cloneCommand(),
-    _: () => errorHandler(new NotFoundError(cmdCommand))
-  })
+  const commandKey = `${cmdCommand}Command` as CommandKey
+  const commandAliases: { [K in CommandAlias]: CommandKey } = {
+    rm: 'removeCommand'
+  }
+
+  if (commandKey in command) {
+    await command[commandKey]()
+  } else if (cmdCommand in commandAliases) {
+    await command[commandAliases[cmdCommand as CommandAlias]]()
+  } else {
+    errorHandler(new InvalidParamError(cmdCommand))
+  }
 }
 
 export async function main(): Promise<void> {
