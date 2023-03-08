@@ -15,7 +15,7 @@ type Command<TCommandKey extends CommandKey = CommandKey> =
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
-  p.intro('⚡ Welcome to `(my|your)-cli` ⚡')
+  p.intro('⚡ Welcome to `my-cli` ⚡')
   const option = await p.select<PromptOption<Command>[], Command>({
     message: 'Select a command: ',
     options: [
@@ -58,6 +58,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Clone repository',
         value: 'clone'
+      },
+      {
+        label: 'Play music',
+        value: 'play'
       }
     ]
   })

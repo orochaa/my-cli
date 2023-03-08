@@ -1,6 +1,7 @@
 .git/
 .changeset/
 .github/
+.vscode/
 src/
 
 .editorconfig
