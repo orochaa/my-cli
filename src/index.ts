@@ -10,8 +10,16 @@ type CommandKey = keyof typeof command
 
 type CommandAlias = 'rm'
 
-type Command<TCommandKey extends CommandKey = CommandKey> =
-  TCommandKey extends `${infer TCommand}Command` ? TCommand : never
+type Command = CommandKey extends `${infer TCommand}Command` ? TCommand : never
+
+type CommandOptions<TCommand = Command> = UnionToTuple<
+  TCommand extends Command
+    ? {
+        label: string
+        value: TCommand
+      }
+    : never
+>
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
@@ -63,7 +71,7 @@ async function selectCommandPrompt(): Promise<void> {
         label: 'Play music',
         value: 'play'
       }
-    ]
+    ] as CommandOptions
   })
 
   await switchCommand(option)
@@ -74,13 +82,13 @@ async function switchCommand(
 ): Promise<void> {
   if (!cmdCommand || typeof cmdCommand !== 'string') return
 
-  const commandKey = `${cmdCommand}Command` as CommandKey
+  const commandKey = `${cmdCommand}Command`
   const commandAliases: { [K in CommandAlias]: CommandKey } = {
     rm: 'removeCommand'
   }
 
   if (commandKey in command) {
-    await command[commandKey]()
+    await command[commandKey as CommandKey]()
   } else if (cmdCommand in commandAliases) {
     await command[commandAliases[cmdCommand as CommandAlias]]()
   } else {
