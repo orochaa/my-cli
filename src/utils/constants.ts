@@ -1,8 +1,11 @@
-import { join, resolve } from 'node:path'
+import { join } from 'node:path'
 
 export const cwd = process.cwd()
 
-export const tempFolderPath = resolve('..', 'temp')
+export const tempFolderPath =
+  process.env.NODE_ENV === 'development'
+    ? join(__dirname, '..', 'temp')
+    : join(__dirname, 'temp')
 
 export const storeLockFilePath = join(tempFolderPath, 'store-lock.json')
 

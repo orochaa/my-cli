@@ -87,13 +87,14 @@ async function switchCommand(cmdCommand: Command | symbol): Promise<void> {
 
 export async function main(): Promise<void> {
   const lockfile: Partial<Lockfile> = verifyLockfile() ? readLockfile() : {}
+  const cmdCommand = process.argv[2] as Command
 
-  if (!(lockfile.git && lockfile.projects)) {
+  if (cmdCommand !== 'setup' && !(lockfile.git && lockfile.projects)) {
     await command.setupCommand()
   }
 
   if (process.argv.length > 2) {
-    await switchCommand(process.argv[2] as Command)
+    await switchCommand(cmdCommand)
   } else {
     await selectCommandPrompt()
   }
