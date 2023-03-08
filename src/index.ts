@@ -12,15 +12,6 @@ type CommandAlias = 'rm'
 
 type Command = CommandKey extends `${infer TCommand}Command` ? TCommand : never
 
-type CommandOptions<TCommand = Command> = UnionToTuple<
-  TCommand extends Command
-    ? {
-        label: string
-        value: TCommand
-      }
-    : never
->
-
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
   p.intro('⚡ Welcome to `my-cli` ⚡')
@@ -71,7 +62,7 @@ async function selectCommandPrompt(): Promise<void> {
         label: 'Play music',
         value: 'play'
       }
-    ] as CommandOptions
+    ]
   })
 
   await switchCommand(option)

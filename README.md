@@ -35,5 +35,5 @@ A compilation of my CLI snippets.
 - `play`: open a music player on your default browser;
   - usage: `my play` | `my play spotify`
   - aliases:
-    - `youtube`:  y, yt, youtube.
+    - `youtube`: y, yt, youtube.
     - `spotify`: s, spot, spotify.
