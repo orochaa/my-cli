@@ -24,6 +24,7 @@ export async function cloneCommand(): Promise<void> {
   }
 
   exec(`git clone ${base}/${clone[0]}/${clone[1]}.git ${clone[2]}`)
+  exec(`cd ${clone[2]} && git remote rename origin o`)
 }
 
 async function clonePrompt(): Promise<[string, string, string]> {

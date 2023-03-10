@@ -16,7 +16,7 @@ async function selectCommandPrompt(): Promise<void> {
   console.clear()
   p.intro('⚡ Welcome to `my-cli` ⚡')
   const option = await p.select<PromptOption<Command>[], Command>({
-    message: 'Select a command: ',
+    message: 'Select a command:',
     options: [
       {
         label: 'Setup config',
@@ -61,6 +61,10 @@ async function selectCommandPrompt(): Promise<void> {
       {
         label: 'Play music',
         value: 'play'
+      },
+      {
+        label: 'Start Pomodoro',
+        value: 'pomodoro'
       }
     ]
   })

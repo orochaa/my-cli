@@ -37,3 +37,5 @@ A compilation of my CLI snippets.
   - aliases:
     - `youtube`: y, yt, youtube.
     - `spotify`: s, spot, spotify.
+- `pomodoro`: start a pomodoro timer.
+  - usage: `my pomodoro` | `my pomodoro 25 5`
