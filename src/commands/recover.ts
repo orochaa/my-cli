@@ -1,13 +1,13 @@
 import { errorHandler, hasParams } from '@/utils/cmd'
 import { NotFoundError } from '@/utils/errors'
-import { readLockfile } from '@/utils/file-system'
+import { Lockfile, readLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
 export async function recoverCommand(): Promise<void> {
   const lockfile = readLockfile()
-  let value: string
+  let value: string | string[]
 
   if (hasParams()) {
     const key = process.argv[3]
@@ -16,12 +16,16 @@ export async function recoverCommand(): Promise<void> {
     value = await recoverPrompt(lockfile)
   }
 
-  p.outro(String(value))
+  if (typeof value === 'string') {
+    p.outro(String(value))
+  } else {
+    value.forEach(v => {
+      p.outro(String(v))
+    })
+  }
 }
 
-async function recoverPrompt(
-  lockfile: Record<string, string>
-): Promise<string> {
+async function recoverPrompt(lockfile: Lockfile): Promise<string | string[]> {
   const lockEntries = objectEntries(lockfile)
   if (!lockEntries.length) {
     errorHandler(new NotFoundError('stored data'))
@@ -30,9 +34,9 @@ async function recoverPrompt(
     message: 'Select the key you want:',
     options: lockEntries.map(([label, value]) => ({
       label,
-      value
+      value: value as string
     })),
-    initialValue: lockfile[0]
+    initialValue: lockfile.git
   })
 
   verifyPromptResponse(response)

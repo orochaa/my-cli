@@ -23,13 +23,16 @@ export function verifyLockfile(): boolean {
 }
 
 export type LockfileKey = 'git' | 'projects'
-export type Lockfile = Record<LockfileKey, string> & Record<string, string>
+export type Lockfile = {
+  git: string
+  projects: string[]
+} & Record<string, string | string[]>
 
 export function readLockfile(): Lockfile {
   return JSON.parse(readFileSync(storeLockFilePath).toString())
 }
 
-export function writeLockfile(content: Record<string, string>): void {
+export function writeLockfile(content: Record<string, unknown>): void {
   if (!existsSync(tempFolderPath)) mkdirSync(tempFolderPath)
   return writeFileSync(storeLockFilePath, JSON.stringify(content))
 }

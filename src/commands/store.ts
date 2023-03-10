@@ -1,17 +1,13 @@
 import { getParams, hasParams } from '@/utils/cmd'
-import {
-  readLockfile,
-  verifyLockfile,
-  writeLockfile
-} from '@/utils/file-system'
+import { Lockfile, readLockfile, writeLockfile } from '@/utils/file-system'
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
 export async function storeCommand(): Promise<void> {
   const lockfile = readLockfile()
-  const store: Record<string, string> = {}
-  const result: Record<string, string> = {}
+  const store: Record<string, unknown> = {}
+  const result: Record<string, unknown> = {}
 
   if (hasParams()) {
     const params = getParams()
@@ -31,8 +27,8 @@ export async function storeCommand(): Promise<void> {
 }
 
 async function storePrompt(
-  store: Record<string, string>,
-  lockfile: Record<string, string>
+  store: Record<string, unknown>,
+  lockfile: Lockfile
 ): Promise<void> {
   const response = await p.group({
     key: () =>
@@ -49,7 +45,7 @@ async function storePrompt(
   store[response.key] = response.value
 }
 
-function pruneData(data: Record<string, string>): void {
+function pruneData(data: Record<string, unknown>): void {
   objectEntries(data).forEach(([key, value]) => {
     if (!value) delete data[key]
   })

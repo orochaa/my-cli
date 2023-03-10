@@ -27,7 +27,7 @@ A compilation of my CLI snippets.
 - `api`: create an api with typescript, prettier, eslint and jest with opined configuration.
   - usage: `my api` | `my api my-app`
 - `open`: open a project on vscode, the projects available are based on `setup`
-  - usage: `my open` | `my open my-app`
+  - usage: `my open` | `my open my-app other-app`
 - `run`: run scripts from project's package.json in sequence.
   - usage: `my run` | `my run lint build test`
 - `clone`: clone a Github's repository based on `setup`.

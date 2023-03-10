@@ -20,7 +20,7 @@ export function objectValues<TObj extends object>(
   return Object.values(obj) as Array<TObj[keyof TObj]>
 }
 
-export function mergeObjects<TObj extends Record<string, string>>(
+export function mergeObjects<TObj extends Record<string, unknown>>(
   ...data: TObj[]
 ): TObj {
   const result = data.shift() as TObj
