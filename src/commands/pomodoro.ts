@@ -68,12 +68,11 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
 async function togglePeriodPrompt(): Promise<boolean> {
   const response = await p.confirm({
     message: 'Go to next period?',
-    initialValue: true,
+    initialValue: true
   })
   verifyPromptResponse(response)
   return response
 }
-
 
 function verifyPeriod(period: number): Error | null {
   if (isNaN(period) || period < 5) {
@@ -88,9 +87,20 @@ async function timer(period: PomodoroPeriod, min: number): Promise<void> {
 
     console.clear()
     const intervalId = setInterval(() => {
+      const currentTime = new Date()
+        .toISOString()
+        .replace(/.+?T(.{5}).+/i, '$1')
+        .split(':')
+        .map(Number)
+        .map((n, i) => (i === 0 ? n - 3 : n))
+        .map(n => String(n).padStart(2, '0'))
+        .join(':')
+
+      const remainingTime = `${parseTime(min)}:${parseTime(seg)}`
+
       process.stdout.clearLine(0)
       process.stdout.cursorTo(0)
-      process.stdout.write(`${period} | ${parseTime(min)}:${parseTime(seg)}`)
+      process.stdout.write(`${period} | ${remainingTime} | ${currentTime}`)
 
       if (min === 0 && seg === 0) {
         clearInterval(intervalId)
