@@ -92,7 +92,14 @@ async function timer(period: PomodoroPeriod, min: number): Promise<void> {
         .replace(/.+?T(.{5}).+/i, '$1')
         .split(':')
         .map(Number)
-        .map((n, i) => (i === 0 ? n - 3 : n))
+        .map((n, i) => {
+          const isHour = i === 0
+          if (!isHour) return n
+
+          const isPastMidnight = n - 3 < 0
+          const localeHour = isPastMidnight ? n + 21 : n - 3
+          return localeHour
+        })
         .map(n => String(n).padStart(2, '0'))
         .join(':')
 
