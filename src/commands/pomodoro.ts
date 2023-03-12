@@ -35,8 +35,8 @@ export async function pomodoroCommand(): Promise<void> {
   let toggle: boolean
   do {
     await timer(controller.period, controller[controller.period])
-    toggle = await togglePeriodPrompt()
     controller.period = controller.period === 'rest' ? 'work' : 'rest'
+    toggle = await togglePeriodPrompt(controller.period)
   } while (toggle)
 }
 
@@ -65,9 +65,9 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
   return [response.work, response.rest].map(Number) as [number, number]
 }
 
-async function togglePeriodPrompt(): Promise<boolean> {
+async function togglePeriodPrompt(period: PomodoroPeriod): Promise<boolean> {
   const response = await p.confirm({
-    message: 'Go to next period?',
+    message: `Are you ready to start your ${period} period?`,
     initialValue: true
   })
   verifyPromptResponse(response)

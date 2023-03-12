@@ -31,7 +31,7 @@ A compilation of my CLI snippets.
 - `run`: run scripts from project's package.json in sequence.
   - usage: `my run` | `my run lint build test`
 - `clone`: clone a Github's repository based on `setup`.
-  - usage: `my clone` | `my clone repo` | `my-clone repo folder` | `my clone user repo folder`
+  - usage: `my clone` | `my clone repository`
 - `play`: open a music player on your default browser;
   - usage: `my play` | `my play spotify`
   - aliases:
