@@ -34,17 +34,26 @@ export async function cloneCommand(): Promise<void> {
   } else {
     repo = await clonePrompt(
       repositories
-        .sort((a, b) =>
-          new Date(a.updated_at).getTime() > new Date(b.updated_at).getTime()
-            ? -1
-            : 1
-        )
+        .sort((a, b) => {
+          const date = [
+            new Date(a.updated_at).getTime(),
+            new Date(b.updated_at).getTime()
+          ]
+          return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
+        })
         .slice(0, 10)
     )
   }
 
-  exec(`git clone ${repo.clone_url} ${repo.name}`)
-  exec(`cd ${repo.name} && git remote rename origin o`)
+  exec(
+    [
+      `git clone ${repo.clone_url} ${repo.name}`,
+      `cd ${repo.name}`,
+      'git remote rename origin o',
+      'pnpm install',
+      'code .'
+    ].join(' && ')
+  )
 }
 
 async function clonePrompt(repositories: Repository[]): Promise<Repository> {
