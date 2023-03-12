@@ -17,10 +17,10 @@ export async function apiCommand(): Promise<void> {
 
 async function apiPrompt(): Promise<string> {
   const response = await p.text({
-    message: 'Type your project name:',
+    message: 'What is your api name?',
     placeholder: 'my-app',
     validate: res => {
-      if (res.length === 0) return 'type a name'
+      if (res.length === 0) return 'type a name for your api'
     }
   })
   verifyPromptResponse(response)

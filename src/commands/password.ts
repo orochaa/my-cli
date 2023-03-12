@@ -37,7 +37,7 @@ export async function passwordCommand(): Promise<void> {
 
 async function passwordPrompt(): Promise<number> {
   const response = await p.text({
-    message: 'Type your desired password length:',
+    message: 'What is your desired password length?',
     validate: res => {
       const error = verifyPasswordLength(Number(res))
       if (error) return error.message

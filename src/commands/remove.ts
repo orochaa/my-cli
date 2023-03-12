@@ -25,7 +25,7 @@ export async function removeCommand(): Promise<void> {
 
 async function removePrompt(): Promise<string[]> {
   const response = await p.text({
-    message: "Type it's names:",
+    message: "What do you want to delete?",
     placeholder: 'folder-name file-name...',
     validate: res => {
       const error = verifyItems(res.split(' '))

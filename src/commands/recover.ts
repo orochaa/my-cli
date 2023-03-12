@@ -31,7 +31,7 @@ async function recoverPrompt(lockfile: Lockfile): Promise<string | string[]> {
     errorHandler(new NotFoundError('stored data'))
   }
   const response = await p.select({
-    message: 'Select the key you want:',
+    message: 'Select the key you want to recover:',
     options: lockEntries.map(([label, value]) => ({
       label,
       value: value as string

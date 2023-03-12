@@ -33,12 +33,13 @@ async function storePrompt(
   const response = await p.group({
     key: () =>
       p.text({
-        message: 'Type the key name:',
+        message: 'What is the key name?',
         placeholder: `Stored keys: ${objectKeys(lockfile).join(' | ')}`
       }),
     value: () =>
       p.text({
-        message: 'Type the key value, remain empty to delete'
+        message: 'What is the key value?',
+        placeholder: 'remain empty to delete'
       })
   })
   verifyPromptResponse(response)

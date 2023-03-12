@@ -44,7 +44,7 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
   const response = await p.group({
     work: () =>
       p.text({
-        message: 'Type your work period:',
+        message: 'What is your work period?',
         initialValue: '25',
         validate: res => {
           const error = verifyPeriod(Number(res))
@@ -53,7 +53,7 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
       }),
     rest: () =>
       p.text({
-        message: 'Type your rest period:',
+        message: 'What is your rest period?',
         initialValue: '5',
         validate: res => {
           const error = verifyPeriod(Number(res))
@@ -77,6 +77,8 @@ async function togglePeriodPrompt(period: PomodoroPeriod): Promise<boolean> {
 function verifyPeriod(period: number): Error | null {
   if (isNaN(period) || period < 5) {
     return new InvalidParamError('period', 'must be 5 or higher')
+  } else if (period > 90) {
+    return new InvalidParamError('period', 'must 90 or lower')
   }
   return null
 }

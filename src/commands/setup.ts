@@ -1,3 +1,4 @@
+import { cwd } from '@/utils/constants'
 import {
   Lockfile,
   readLockfile,
@@ -13,15 +14,16 @@ export async function setupCommand(): Promise<void> {
     ? readLockfile()
     : ({} as Lockfile)
 
-  const setup = await setupPrompt()
+  const setup = await setupPrompt(lockfile)
   const result = mergeObjects(lockfile, setup)
 
   writeLockfile(result)
 }
 
-async function setupPrompt(): Promise<Lockfile> {
+async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
   const git = await p.text({
-    message: 'Type your GitHub user name:'
+    message: 'What is your GitHub user name?',
+    initialValue: lockfile.git
   })
   verifyPromptResponse(git)
 
@@ -31,8 +33,8 @@ async function setupPrompt(): Promise<Lockfile> {
     const response = await p.group({
       projectRoot: () =>
         p.text({
-          message: 'Type your root projects path:',
-          initialValue: 'C:/git'
+          message: 'What is your root projects path:',
+          initialValue: cwd.replace(/(^.*?)[\\/].+/, '$1').concat('/git')
         }),
       more: () =>
         p.confirm({
