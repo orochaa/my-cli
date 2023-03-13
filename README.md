@@ -15,7 +15,7 @@ A compilation of my CLI snippets.
 - `remove`: remove recursively a folder or file on the relative given path.
   - usage: `my remove` | `my remove dist` | `my remove ./dist`
   - aliases:
-    - `remove`: rm.
+    - remove: `rm`.
 - `store`: save a key=value on a local json file.
   - usage: `my store` | `my store key=value`
 - `recover`: return the value of a saved key.
@@ -35,7 +35,9 @@ A compilation of my CLI snippets.
 - `play`: open a music player on your default browser;
   - usage: `my play` | `my play spotify`
   - aliases:
-    - `youtube`: y, yt, youtube.
-    - `spotify`: s, spot, spotify.
+    - youtube: `y` | `yt` | `youtube`.
+    - spotify: `s` | `spot` | `spotify`.
 - `pomodoro`: start a pomodoro timer.
-  - usage: `my pomodoro` | `my pomodoro 25 5`
+  - usage: `my pomodoro` | `my pomodoro d` | `my pomodoro 25 5`
+  - aliases:
+    - pomodoro: `pomo`

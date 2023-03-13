@@ -11,25 +11,27 @@ type PomodoroController = Record<PomodoroPeriod, number> & {
 
 export async function pomodoroCommand(): Promise<void> {
   const controller: PomodoroController = {
-    work: 0,
-    rest: 0,
+    work: 25,
+    rest: 5,
     period: 'work'
   }
 
-  if (hasParams()) {
-    const params = getParams().map(Number)
-    for (let i = 0; i < 2; i++) {
-      const error = verifyPeriod(params[i])
-      if (error) {
-        return errorHandler(error)
+  if (getParams()[0] !== 'd') {
+    if (hasParams()) {
+      const params = getParams().map(Number)
+      for (let i = 0; i < 2; i++) {
+        const error = verifyPeriod(params[i])
+        if (error) {
+          return errorHandler(error)
+        }
       }
+      controller.work = params[0]
+      controller.rest = params[1]
+    } else {
+      const params = await setupPomodoroPrompt()
+      controller.work = params[0]
+      controller.rest = params[1]
     }
-    controller.work = params[0]
-    controller.rest = params[1]
-  } else {
-    const params = await setupPomodoroPrompt()
-    controller.work = params[0]
-    controller.rest = params[1]
   }
 
   let toggle: boolean

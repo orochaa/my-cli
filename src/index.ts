@@ -8,7 +8,7 @@ import * as p from '@clack/prompts'
 
 type CommandKey = keyof typeof command
 
-type CommandAlias = 'rm'
+type CommandAlias = 'rm' | 'pomo'
 
 type Command = CommandKey extends `${infer TCommand}Command` ? TCommand : never
 
@@ -79,7 +79,8 @@ async function switchCommand(
 
   const commandKey = `${cmdCommand}Command`
   const commandAliases: { [K in CommandAlias]: CommandKey } = {
-    rm: 'removeCommand'
+    rm: 'removeCommand',
+    pomo: 'pomodoroCommand'
   }
 
   if (commandKey in command) {
