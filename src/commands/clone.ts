@@ -1,7 +1,10 @@
 import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
+import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { readLockfile } from '@/utils/file-system'
 import { verifyPromptResponse } from '@/utils/prompt'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -45,14 +48,17 @@ export async function cloneCommand(): Promise<void> {
     )
   }
 
+  const isNotCloned = !existsSync(join(cwd, repo.name))
   exec(
     [
-      `git clone ${repo.clone_url} ${repo.name}`,
+      isNotCloned && `git clone ${repo.clone_url} ${repo.name}`,
       `cd ${repo.name}`,
-      'git remote rename origin o',
+      isNotCloned && 'git remote rename origin o',
       'pnpm install',
       'code .'
-    ].join(' && ')
+    ]
+      .filter(Boolean)
+      .join(' && ')
   )
 }
 
