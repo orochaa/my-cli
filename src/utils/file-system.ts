@@ -1,7 +1,7 @@
 import { errorHandler } from '@/utils/cmd'
 import {
+  lockfilePath,
   packageJsonPath,
-  storeLockFilePath,
   tempFolderPath
 } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
@@ -19,7 +19,7 @@ export function getPackageJson(): PackageJson {
 }
 
 export function verifyLockfile(): boolean {
-  return existsSync(storeLockFilePath)
+  return existsSync(lockfilePath)
 }
 
 export type LockfileKey = 'git' | 'projects'
@@ -29,10 +29,10 @@ export type Lockfile = {
 } & Record<string, string | string[]>
 
 export function readLockfile(): Lockfile {
-  return JSON.parse(readFileSync(storeLockFilePath).toString())
+  return JSON.parse(readFileSync(lockfilePath).toString())
 }
 
 export function writeLockfile(content: Record<string, unknown>): void {
   if (!existsSync(tempFolderPath)) mkdirSync(tempFolderPath)
-  return writeFileSync(storeLockFilePath, JSON.stringify(content))
+  return writeFileSync(lockfilePath, JSON.stringify(content))
 }

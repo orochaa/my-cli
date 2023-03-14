@@ -7,6 +7,6 @@ export const tempFolderPath =
     ? join(__dirname, '..', 'temp')
     : join(__dirname, 'temp')
 
-export const storeLockFilePath = join(tempFolderPath, 'store-lock.json')
+export const lockfilePath = join(tempFolderPath, 'store-lock.json')
 
 export const packageJsonPath = join(cwd, 'package.json')
