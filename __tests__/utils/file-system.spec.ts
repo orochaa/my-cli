@@ -40,7 +40,7 @@ describe('file-system', () => {
   describe('verifyLockfile()', () => {
     it('should return true if there is a lockfile', () => {
       const lockfilePath = join(cwd, 'src/temp/store-lock.json')
-      if (!existsSync(lockfilePath)) writeFileSync(lockfilePath, '{}')
+      if (!existsSync(lockfilePath)) writeLockfile({})
 
       const result = verifyLockfile()
 
@@ -59,9 +59,8 @@ describe('file-system', () => {
 
   describe('readLockfile()', () => {
     it('should return parsed lockfile', () => {
-      const lockfilePath = join(cwd, 'src/temp/store-lock.json')
       const mock = { test: 'foo' }
-      writeFileSync(lockfilePath, JSON.stringify(mock))
+      writeLockfile(mock)
 
       const result = readLockfile()
 
