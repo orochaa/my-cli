@@ -1,9 +1,9 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { recoverCommand } from '@/commands'
+import { lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import { existsSync, rmSync } from 'node:fs'
 import * as p from '@clack/prompts'
-import { lockfilePath } from '@/utils/constants'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'any-git'),

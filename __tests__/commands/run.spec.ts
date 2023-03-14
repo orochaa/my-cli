@@ -34,20 +34,20 @@ describe('runCommand', () => {
     expect(cp.execSync).toHaveBeenCalledWith('npm run test', expect.anything())
   })
 
-  it("should verify package.json scripts", async () => {
-    jest.spyOn(JSON,'parse').mockReturnValueOnce({})
-    
+  it('should verify package.json scripts', async () => {
+    jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
+
     await runCommand()
 
     expect(process.exit).toHaveBeenCalledTimes(1)
   })
 
-  it("should verify if script exists in package.json", async () => {
-    jest.spyOn(JSON,'parse').mockReturnValueOnce({
+  it('should verify if script exists in package.json', async () => {
+    jest.spyOn(JSON, 'parse').mockReturnValueOnce({
       scripts: {}
     })
     mockParams('lint')
-    
+
     await runCommand()
 
     expect(process.exit).toHaveBeenCalledTimes(1)
