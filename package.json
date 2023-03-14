@@ -4,7 +4,7 @@
   "access": "public",
   "private": false,
   "description": "Mist3rBru's cli(Command Line Interface)",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "bin": {
     "my-cli": "./dist/index.js",
     "my": "./dist/index.js"
@@ -14,7 +14,7 @@
   "homepage": "https://github.com/Mist3rBru/my-cli#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Mist3rBru/my-cli-api.git"
+    "url": "https://github.com/Mist3rBru/my-cli-api"
   },
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx src/index.ts",
