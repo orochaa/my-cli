@@ -1,7 +1,9 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { recoverCommand } from '@/commands'
 import { writeLockfile } from '@/utils/file-system'
+import { existsSync, rmSync } from 'node:fs'
 import * as p from '@clack/prompts'
+import { lockfilePath } from '@/utils/constants'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'any-git'),
@@ -22,6 +24,12 @@ describe('recoverCommand', () => {
     clearParams()
   })
 
+  afterAll(() => {
+    if (existsSync(lockfilePath)) {
+      rmSync(lockfilePath)
+    }
+  })
+
   it('should recover value of prompt selected key', async () => {
     await recoverCommand()
 
@@ -29,7 +37,7 @@ describe('recoverCommand', () => {
   })
 
   it('should recover value of param key', async () => {
-    mockParams(['projects'])
+    mockParams('projects')
 
     await recoverCommand()
 
@@ -37,8 +45,8 @@ describe('recoverCommand', () => {
     expect(p.outro).toHaveBeenCalledWith('other-project')
   })
 
-  it('should print \'undefined\' on not found param key', async () => {
-    mockParams(['invalid-param'])
+  it("should print 'undefined' on not found param key", async () => {
+    mockParams('invalid-param')
 
     await recoverCommand()
 

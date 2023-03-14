@@ -22,8 +22,6 @@ jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 
 jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
-
-
 describe('playCommand', () => {
   beforeEach(() => {
     clearParams()
@@ -44,7 +42,7 @@ describe('playCommand', () => {
 
     for (const { aliases, url } of players) {
       for (const alias of aliases) {
-        mockParams([alias])
+        mockParams(alias)
         await playCommand()
         expect(cp.execSync).toHaveBeenCalledWith(
           `start ${url}`,
@@ -55,7 +53,7 @@ describe('playCommand', () => {
   })
 
   it('should not open invalid players', async () => {
-    mockParams(['invalid-player'])
+    mockParams('invalid-player')
 
     await playCommand()
 

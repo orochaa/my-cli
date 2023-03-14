@@ -35,7 +35,7 @@ describe('removeCommand', () => {
   })
 
   it('should delete params item', async () => {
-    mockParams([mock])
+    mockParams(mock)
 
     await removeCommand()
 
@@ -45,7 +45,7 @@ describe('removeCommand', () => {
 
   it('should verify param item', async () => {
     rmSync(mockPath)
-    mockParams([mock])
+    mockParams(mock)
     const exitSpy = jest.spyOn(global.process, 'exit')
     exitSpy.mockImplementation(() => ({} as never))
 

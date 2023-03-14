@@ -19,7 +19,7 @@ describe('passwordCommand', () => {
   })
 
   it('should generate a password with params length', async () => {
-    mockParams(['15'])
+    mockParams('15')
 
     await passwordCommand()
 
@@ -34,7 +34,7 @@ describe('passwordCommand', () => {
 
     for (const edge of edges) {
       exitSpy.mockClear()
-      mockParams([edge])
+      mockParams(edge)
       await passwordCommand()
       expect(exitSpy).toHaveBeenCalledTimes(1)
     }

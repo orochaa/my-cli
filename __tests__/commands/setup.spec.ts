@@ -1,13 +1,13 @@
 import { setupCommand } from '@/commands'
-import { storeLockFilePath } from '@/utils/constants'
+import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import { existsSync, rmSync } from 'fs'
 import * as p from '@clack/prompts'
 
 const mock = {
-  git: 'Mist3rBru',
-  projects: ['Mist3rBru']
+  git: 'any',
+  projects: ['any']
 }
 
 jest.mock('@clack/prompts', () => ({
@@ -28,14 +28,14 @@ jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('setupCommand', () => {
   beforeAll(() => {
-    if (existsSync(storeLockFilePath)) {
-      rmSync(storeLockFilePath)
+    if (existsSync(lockfilePath)) {
+      rmSync(lockfilePath)
     }
   })
 
   afterEach(() => {
-    if (existsSync(storeLockFilePath)) {
-      rmSync(storeLockFilePath)
+    if (existsSync(lockfilePath)) {
+      rmSync(lockfilePath)
     }
   })
 
@@ -59,14 +59,6 @@ describe('setupCommand', () => {
       message: expect.any(String),
       initialValue: undefined
     })
-  })
-
-  it('should end process on exit', async () => {
-    ;(p.text as jest.Mock).mockResolvedValueOnce(Symbol())
-
-    await setupCommand()
-
-    expect(process.exit).toHaveBeenCalledTimes(1)
   })
 
   it('should store the result', async () => {

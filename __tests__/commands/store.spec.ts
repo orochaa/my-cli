@@ -30,7 +30,7 @@ describe('storeCommand', () => {
       rmSync(lockfilePath)
     }
   })
-  
+
   it('should store key-value of prompt', async () => {
     await storeCommand()
 
@@ -40,7 +40,7 @@ describe('storeCommand', () => {
   })
 
   it('should store key-value of params', async () => {
-    mockParams(['git=any-git'])
+    mockParams('git=any-git')
 
     await storeCommand()
 
@@ -53,7 +53,7 @@ describe('storeCommand', () => {
     writeLockfile({
       git: 'any'
     })
-    mockParams(['git='])
+    mockParams('git=')
 
     await storeCommand()
 

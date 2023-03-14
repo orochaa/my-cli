@@ -1,9 +1,9 @@
-import { mockParams } from '@/tests/mocks/mock-params'
+import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { openCommand } from '@/commands'
-import { cwd } from '@/utils/constants'
+import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
-import { readdirSync } from 'node:fs'
+import { existsSync, readdirSync, rmSync } from 'node:fs'
 
 const projects = readdirSync(cwd).filter(folder => !/\.\w+$/.test(folder))
 
@@ -16,13 +16,19 @@ jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 describe('openCommand', () => {
   beforeAll(() => {
     writeLockfile({
-      git: 'Mist3rBru',
+      git: 'any-git',
       projects: [cwd]
     })
   })
 
   beforeEach(() => {
-    mockParams([])
+    clearParams()
+  })
+
+  afterAll(() => {
+    if (existsSync(lockfilePath)) {
+      rmSync(lockfilePath)
+    }
   })
 
   it('should open all prompt options', async () => {
@@ -32,7 +38,7 @@ describe('openCommand', () => {
   })
 
   it('should catch all parameters errors', async () => {
-    mockParams(['any-project', 'other-project'])
+    mockParams('any-project', 'other-project')
 
     await openCommand()
 
@@ -40,7 +46,7 @@ describe('openCommand', () => {
   })
 
   it('should open all parameters options', async () => {
-    mockParams(projects)
+    mockParams(...projects)
 
     await openCommand()
 

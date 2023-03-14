@@ -1,7 +1,7 @@
+import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { apiCommand } from '@/commands'
-import * as p from '@clack/prompts'
 import { createApi } from '@mist3rbru/create-ts-api'
-import { mockParams } from '../mocks/mock-params'
+import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => 'my-api')
@@ -14,9 +14,11 @@ jest.mock('@mist3rbru/create-ts-api', () => ({
 jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('apiCommand', () => {
-  it('should call prompts with proper placeholder', async () => {
-    mockParams([])
+  beforeEach(() => {
+    clearParams()
+  })
 
+  it('should call prompts with proper placeholder', async () => {
     await apiCommand()
 
     expect(p.text).toHaveBeenCalledTimes(1)
@@ -28,8 +30,6 @@ describe('apiCommand', () => {
   })
 
   it('should create api with prompt response', async () => {
-    mockParams([])
-
     await apiCommand()
 
     expect(createApi).toHaveBeenCalledTimes(1)
@@ -37,7 +37,7 @@ describe('apiCommand', () => {
   })
 
   it('should create api with cmd params', async () => {
-    mockParams(['param-api'])
+    mockParams('param-api')
 
     await apiCommand()
 

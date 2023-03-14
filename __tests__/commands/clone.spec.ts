@@ -1,9 +1,9 @@
+import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cloneCommand } from '@/commands'
-import { cwd } from '@/utils/constants'
+import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
-import { mockParams } from '@/tests/mocks/mock-params'
 import cp from 'node:child_process'
-import { existsSync, mkdirSync, rmdirSync } from 'node:fs'
+import { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
 import * as p from '@clack/prompts'
@@ -32,10 +32,20 @@ jest.mock('axios', () => ({
 describe('cloneCommand', () => {
   beforeAll(() => {
     writeLockfile({
-      git: 'Mist3rBru'
+      git: 'any-git'
     })
     jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
     jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as never))
+  })
+
+  beforeEach(() => {
+    clearParams()
+  })
+
+  afterAll(() => {
+    if (existsSync(lockfilePath)) {
+      rmSync(lockfilePath)
+    }
   })
 
   it('should get github repositories', async () => {
@@ -45,7 +55,7 @@ describe('cloneCommand', () => {
   })
 
   it('should return error on invalid repository name', async () => {
-    mockParams(['your-cli'])
+    mockParams('your-cli')
 
     await cloneCommand()
 
@@ -53,7 +63,7 @@ describe('cloneCommand', () => {
   })
 
   it('should clone on valid repository', async () => {
-    mockParams(['my-cli'])
+    mockParams('my-cli')
 
     await cloneCommand()
 
@@ -85,8 +95,6 @@ describe('cloneCommand', () => {
   })
 
   it('should render prompts', async () => {
-    mockParams([])
-
     await cloneCommand()
 
     expect(p.select).toHaveBeenCalledTimes(1)
