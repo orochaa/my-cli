@@ -33,6 +33,10 @@ export function readLockfile(): Lockfile {
 }
 
 export function writeLockfile(content: Record<string, unknown>): void {
+  createTempFolder()
+  writeFileSync(lockfilePath, JSON.stringify(content))
+}
+
+function createTempFolder(): void {
   if (!existsSync(tempFolderPath)) mkdirSync(tempFolderPath)
-  return writeFileSync(lockfilePath, JSON.stringify(content))
 }
