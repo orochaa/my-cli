@@ -6,7 +6,7 @@ export type PromptOption<TValue, TLabel extends string = string> = {
   hint?: string
 }
 
-type Primitive = string | number | boolean
+type Primitive = string | number | boolean | undefined
 
 type PrimitiveArray<T = Primitive> = T extends Primitive ? T[] : never
 
