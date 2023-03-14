@@ -1,6 +1,6 @@
 import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
-import { objectEntries, objectKeys, objectValues } from '@/utils/mappers'
+import { objectEntries, objectValues } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
@@ -23,6 +23,7 @@ export async function playCommand(): Promise<void> {
     for (const data of objectValues(players)) {
       if (data.aliases.includes(alias)) {
         player = data.url
+        break
       }
     }
     if (!player) {
