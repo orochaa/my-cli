@@ -9,7 +9,7 @@ export async function runCommand(): Promise<void> {
   let scripts: string[]
 
   const packageJson = getPackageJson()
-  if (!packageJson.scripts) {
+  if (!packageJson?.scripts) {
     return errorHandler(new NotFoundError('scripts'))
   }
 

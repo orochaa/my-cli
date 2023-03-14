@@ -18,7 +18,7 @@ export async function apiCommand(): Promise<void> {
 async function apiPrompt(): Promise<string> {
   const response = await p.text({
     message: 'What is your api name?',
-    placeholder: 'my-app',
+    placeholder: 'my-api',
     validate: res => {
       if (res.length === 0) return 'type a name for your api'
     }

@@ -16,7 +16,7 @@ export async function recoverCommand(): Promise<void> {
     value = await recoverPrompt(lockfile)
   }
 
-  if (typeof value === 'string') {
+  if (!value || typeof value === 'string') {
     p.outro(String(value))
   } else {
     value.forEach(v => {

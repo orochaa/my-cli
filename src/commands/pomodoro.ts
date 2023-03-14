@@ -111,7 +111,11 @@ async function timer(period: PomodoroPeriod, min: number): Promise<void> {
 
       process.stdout.clearLine(0)
       process.stdout.cursorTo(0)
-      process.stdout.write(`${period} | ${remainingTime} | ${currentTime}`)
+      process.stdout.write(period)
+      process.stdout.write(' | ')
+      process.stdout.write(remainingTime)
+      process.stdout.write(' | ')
+      process.stdout.write(currentTime)
 
       if (min === 0 && seg === 0) {
         clearInterval(intervalId)

@@ -1,6 +1,6 @@
 import { exec } from '@/utils/cmd'
 
-export function initCommand() {
+export async function initCommand() {
   exec('git init')
   exec('git checkout -b master')
   exec('echo node_modules/ > .gitignore')

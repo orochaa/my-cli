@@ -20,15 +20,19 @@ export function objectValues<TObj extends object>(
   return Object.values(obj) as Array<TObj[keyof TObj]>
 }
 
-export function mergeObjects<TObj extends Record<string, unknown>>(
-  ...data: TObj[]
-): TObj {
-  const result = data.shift() as TObj
+type MergeObjects<T, K = T> = T extends [infer F, ...infer R]
+  ? F & MergeObjects<R, F>
+  : K
+
+export function mergeObjects<T extends Record<string, unknown>[]>(
+  ...data: T
+): MergeObjects<T> {
+  const result = data.shift() as T[0]
   data
     .map(obj => objectEntries<Record<string, any>>(obj))
     .flat()
     .forEach(([key, value]) => {
-      result[key as keyof TObj] = value
+      result[key as keyof T[0]] = value
     })
-  return result
+  return result as MergeObjects<T>
 }
