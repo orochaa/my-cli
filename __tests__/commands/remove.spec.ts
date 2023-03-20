@@ -10,6 +10,8 @@ const mockPath = join(cwd, mock)
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => mock),
+  confirm: jest.fn(async () => true),
+  multiselect: jest.fn(async () => [mock]),
   outro: jest.fn()
 }))
 
@@ -27,7 +29,18 @@ describe('removeCommand', () => {
     }
   })
 
-  it('should delete prompt item', async () => {
+  it('should delete prompt select item', async () => {
+    ;(p.confirm as jest.Mock).mockResolvedValueOnce(true)
+    
+    await removeCommand()
+
+    expect(verifyMock()).toBeTruthy()
+    expect(p.outro).toHaveBeenCalledWith(`Removed: ${mockPath}`)
+  })
+
+  it('should delete prompt text item', async () => {
+    ;(p.confirm as jest.Mock).mockResolvedValueOnce(false)
+    
     await removeCommand()
 
     expect(verifyMock()).toBeTruthy()

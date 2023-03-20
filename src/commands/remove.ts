@@ -1,8 +1,8 @@
 import { errorHandler, getParams, hasParams, remove } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
-import { verifyPromptResponse } from '@/utils/prompt'
-import { existsSync } from 'node:fs'
+import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
+import { existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
@@ -24,17 +24,40 @@ export async function removeCommand(): Promise<void> {
 }
 
 async function removePrompt(): Promise<string[]> {
-  const response = await p.text({
-    message: 'What do you want to delete?',
-    placeholder: 'folder-name file-name...',
-    validate: res => {
-      const error = verifyItems(res.split(' '))
-      if (error) return error.message
-    }
-  })
+  let paths: string[]
 
-  verifyPromptResponse(response)
-  return response.split(' ')
+  const isSelectOption = await p.confirm({
+    message: 'How do you want to input the paths?',
+    active: 'Select',
+    inactive: 'Type',
+    initialValue: true
+  })
+  verifyPromptResponse(isSelectOption)
+
+  if (isSelectOption) {
+    const options = readdirSync(cwd)
+    const response = await p.multiselect<PromptOption<string>[], string>({
+      message: 'What do you want to delete?',
+      options: options.map(path => ({
+        label: path.replace(/.+[\\/](\w+)/i, '$1'),
+        value: path
+      }))
+    })
+    verifyPromptResponse(response)
+    paths = response
+  } else {
+    const response = await p.text({
+      message: 'What do you want to delete?',
+      placeholder: 'folder-name file-name...',
+      validate: res => {
+        const error = verifyItems(res.split(' '))
+        if (error) return error.message
+      }
+    })
+    verifyPromptResponse(response)
+    paths = response.split(' ')
+  }
+  return paths
 }
 
 function verifyItems(items: string[]): Error | null {
