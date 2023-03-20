@@ -1,4 +1,5 @@
 import { cwd } from '@/utils/constants'
+import { NotFoundError } from '@/utils/errors'
 import {
   Lockfile,
   readLockfile,
@@ -7,6 +8,7 @@ import {
 } from '@/utils/file-system'
 import { mergeObjects } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
+import { readdirSync } from 'node:fs'
 import * as p from '@clack/prompts'
 
 export async function setupCommand(): Promise<void> {
@@ -34,7 +36,14 @@ async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
       projectRoot: () =>
         p.text({
           message: 'What is your root projects path:',
-          initialValue: cwd.replace(/(^.*?)[\\/].+/, '$1').concat('/git')
+          initialValue: cwd.replace(/(^.*?)[\\/].+/, '$1').concat('/git'),
+          validate: res => {
+            try {
+              readdirSync(res)
+            } catch {
+              return new NotFoundError('path').message
+            }
+          }
         }),
       more: () =>
         p.confirm({
