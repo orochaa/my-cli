@@ -1,5 +1,12 @@
 # @mist3rbru/my-cli
 
+## 0.1.2
+
+### Patch Changes
+
+- 1eae37b: feat: add setup command validation for path values
+- 73497f6: chore: add select prompt to remove command
+
 ## 0.1.1
 
 ### Patch Changes
