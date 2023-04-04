@@ -31,7 +31,7 @@ describe('removeCommand', () => {
 
   it('should delete prompt select item', async () => {
     ;(p.confirm as jest.Mock).mockResolvedValueOnce(true)
-    
+
     await removeCommand()
 
     expect(verifyMock()).toBeTruthy()
@@ -40,7 +40,7 @@ describe('removeCommand', () => {
 
   it('should delete prompt text item', async () => {
     ;(p.confirm as jest.Mock).mockResolvedValueOnce(false)
-    
+
     await removeCommand()
 
     expect(verifyMock()).toBeTruthy()

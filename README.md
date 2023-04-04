@@ -43,3 +43,7 @@ A compilation of my CLI snippets.
   - usage: `my pomodoro` | `my pomodoro d` | `my pomodoro 25 5`
   - aliases:
     - pomodoro: `pomo`
+- `outdated`: check if package is on latest version.
+  - usage: `my outdated`
+- `upgrade`: update package to latest version.
+  - usage: `my upgrade`

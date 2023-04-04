@@ -1,7 +1,6 @@
+import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { playCommand } from '@/commands'
-import { objectValues } from '@/utils/mappers'
 import cp from 'node:child_process'
-import { clearParams, mockParams } from '../mocks/mock-params'
 
 const players = [
   {

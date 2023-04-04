@@ -4,17 +4,19 @@ type ObjectEntries<T extends Record<string, any>> = UnionToTuple<
   }[keyof T]
 >
 
-export function objectEntries<TObj extends object>(
+export function objectEntries<const TObj extends object>(
   obj: TObj
 ): ObjectEntries<TObj> {
   return Object.entries(obj) as ObjectEntries<TObj>
 }
 
-export function objectKeys<TObj extends object>(obj: TObj): Array<keyof TObj> {
+export function objectKeys<const TObj extends object>(
+  obj: TObj
+): Array<keyof TObj> {
   return Object.keys(obj) as Array<keyof TObj>
 }
 
-export function objectValues<TObj extends object>(
+export function objectValues<const TObj extends object>(
   obj: TObj
 ): Array<TObj[keyof TObj]> {
   return Object.values(obj) as Array<TObj[keyof TObj]>

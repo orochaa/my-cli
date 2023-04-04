@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process'
+import { exec as execCb, execSync } from 'node:child_process'
 import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
 
@@ -15,6 +15,14 @@ export async function remove(folder: string, item: string): Promise<void> {
 
 export function exec(cmd: string): void {
   execSync(cmd, { stdio: 'inherit' })
+}
+
+export async function execAsync(cmd: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    execCb(cmd, (error, stdout, stderr) => {
+      stderr ? reject(stderr) : resolve(stdout)
+    })
+  })
 }
 
 export function hasParams(): boolean {
