@@ -30,5 +30,5 @@ export function hasParams(): boolean {
 }
 
 export function getParams(): string[] {
-  return process.argv.slice(3)
+  return process.argv.slice(3).filter(Boolean)
 }
