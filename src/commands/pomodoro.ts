@@ -1,6 +1,7 @@
 import { errorHandler, getParams, hasParams } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
-import { verifyPromptResponse } from '@/utils/prompt'
+import { block, verifyPromptResponse } from '@/utils/prompt'
+import color from 'picocolors'
 import * as p from '@clack/prompts'
 
 type PomodoroPeriod = 'work' | 'rest'
@@ -88,38 +89,20 @@ function verifyPeriod(period: number): Error | null {
 async function timer(period: PomodoroPeriod, min: number): Promise<void> {
   return new Promise(resolve => {
     let seg = 0
+    const unblock = block()
 
-    console.clear()
     const intervalId = setInterval(() => {
-      const currentTime = new Date()
-        .toISOString()
-        .replace(/.+?T(.{5}).+/i, '$1')
-        .split(':')
-        .map(Number)
-        .map((n, i) => {
-          const isHour = i === 0
-          if (!isHour) return n
+      const date = new Date()
+      const currentTime = concatTime(date.getHours(), date.getMinutes())
+      const remainingTime = concatTime(min, seg)
 
-          const isPastMidnight = n - 3 < 0
-          const localeHour = isPastMidnight ? n + 21 : n - 3
-          return localeHour
-        })
-        .map(n => String(n).padStart(2, '0'))
-        .join(':')
-
-      const remainingTime = `${parseTime(min)}:${parseTime(seg)}`
-
-      process.stdout.clearLine(0)
-      process.stdout.cursorTo(0)
-      process.stdout.write(period)
-      process.stdout.write(' | ')
-      process.stdout.write(remainingTime)
-      process.stdout.write(' | ')
-      process.stdout.write(currentTime)
+      console.clear()
+      process.stdout.write(display(period, remainingTime, currentTime))
 
       if (min === 0 && seg === 0) {
         clearInterval(intervalId)
         process.stdout.write('\n')
+        unblock()
         return resolve()
       }
 
@@ -135,4 +118,12 @@ async function timer(period: PomodoroPeriod, min: number): Promise<void> {
 
 function parseTime(time: number): string {
   return String(time).padStart(2, '0')
+}
+
+function concatTime(...time: number[]): string {
+  return time.map(parseTime).join(':')
+}
+
+function display(...time: string[]): string {
+  return time.join(color.blue(' | '))
 }
