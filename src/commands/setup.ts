@@ -9,6 +9,7 @@ import {
 import { mergeObjects } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
+import axios from 'axios'
 import * as p from '@clack/prompts'
 
 export async function setupCommand(): Promise<void> {
@@ -22,15 +23,38 @@ export async function setupCommand(): Promise<void> {
   writeLockfile(result)
 }
 
+type GitUser = {
+  login: string
+  name: string
+}
+
 async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
-  const git = await p.text({
-    message: 'What is your GitHub user name?',
-    initialValue: lockfile.git
-  })
-  verifyPromptResponse(git)
+  const s = p.spinner()
+  let repeat: boolean = false
+
+  let git: string = lockfile.git
+  do {
+    const response = await p.text({
+      message: 'What is your GitHub user name?',
+      initialValue: git
+    })
+    verifyPromptResponse(response)
+    git = response
+
+    try {
+      s.start('Validating user')
+      const { data: user } = await axios.get<GitUser>(
+        `https://api.github.com/users/${git}`
+      )
+      s.stop(`User: ${user.login} | ${user.name}`)
+      repeat = false
+    } catch {
+      s.stop('Invalid user')
+      repeat = true
+    }
+  } while (repeat)
 
   const projects: string[] = []
-  let more: boolean = false
   do {
     const response = await p.group({
       projectRoot: () =>
@@ -53,8 +77,8 @@ async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
     })
     verifyPromptResponse(response)
     projects.push(response.projectRoot)
-    more = response.more
-  } while (more)
+    repeat = response.more
+  } while (repeat)
 
   return {
     git,

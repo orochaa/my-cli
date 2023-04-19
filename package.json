@@ -3,7 +3,6 @@
   "name": "@mist3rbru/my-cli",
   "access": "public",
   "private": false,
-  "description": "Mist3rBru's cli(Command Line Interface)",
   "main": "dist/index.js",
   "bin": {
     "my-cli": "./dist/index.js",
