@@ -21,8 +21,8 @@ export async function remove(folder: string, item: string): Promise<void> {
 export function exec(
   cmd: string,
   stdio: 'inherit' | 'ignore' = 'inherit'
-): void {
-  execSync(cmd, { stdio })
+): Buffer {
+  return execSync(cmd, { stdio })
 }
 
 export async function execAsync(cmd: string): Promise<string> {
