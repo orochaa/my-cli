@@ -16,7 +16,7 @@ export async function branchCommand(): Promise<void> {
   })
   verifyPromptResponse(response)
 
-  if (/^remote/.test(response)) {
+  if (/^\s*remote/.test(response)) {
     exec(`git checkout -b ${formatRemoteBranch(response)}`)
     exec(
       `git pull ${formatRemoteOrigin(response)} ${formatRemoteBranch(response)}`
@@ -31,9 +31,9 @@ function formatBranch(response: string): string {
 }
 
 function formatRemoteBranch(response: string): string {
-  return response.replace(/^\w+\/\w+\/(.+)/, '$1')
+  return response.replace(/^\s*\w+\/\w+\/(HEAD.+?\/)?(.+)/, '$2')
 }
 
 function formatRemoteOrigin(response: string): string {
-  return response.replace(/^\w+\/(\w+).+/, '$1')
+  return response.replace(/^\s*\w+\/(\w+).+/, '$1')
 }
