@@ -14,7 +14,7 @@ A compilation of my CLI snippets.
   - usage: `my setup`
 - `remove`: remove recursively a folder or file on the relative given path.
   - usage: `my remove` | `my remove dist` | `my remove ./dist`
-  - aliases:
+  - alias:
     - remove: `rm`
 - `store`: save a key=value on a local json file.
   - usage: `my store` | `my store key=value`
@@ -32,18 +32,25 @@ A compilation of my CLI snippets.
   - usage: `my open` | `my open my-app other-app`
 - `run`: run scripts from project's package.json in sequence.
   - usage: `my run` | `my run lint build test`
+- `branch`: list all local and remote branches, to select and checkout to it.
+  - usage: `my branch`
+  - alias:
+    - branch: `b`
 - `clone`: clone a Github's repository based on `setup`.
   - usage: `my clone` | `my clone repository`
 - `play`: open a music player on your default browser.
   - usage: `my play` | `my play spotify`
-  - aliases:
-    - youtube: `y` | `yt` | `youtube`.
-    - spotify: `s` | `spot` | `spotify`
+  - alias:
+    - youtube: `y` | `yt`
+    - spotify: `s` | `spot`
 - `pomodoro`: start a pomodoro timer.
-  - usage: `my pomodoro` | `my pomodoro d` | `my pomodoro 25 5`
-  - aliases:
+  - usage: `my pomodoro` | `my pomodoro 25 5`
+  - alias:
     - pomodoro: `pomo`
+    - 25 5: `d`
 - `outdated`: check if package is on latest version.
   - usage: `my outdated`
 - `upgrade`: update package to latest version.
   - usage: `my upgrade`
+  - alias:
+    - upgrade: `up`

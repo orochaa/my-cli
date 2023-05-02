@@ -8,9 +8,17 @@ import * as p from '@clack/prompts'
 
 type CommandKey = keyof typeof command
 
-type CommandAlias = 'rm' | 'pomo' | 'pass'
-
 type Command = CommandKey extends `${infer TCommand}Command` ? TCommand : never
+
+const commandAlias = {
+  rm: 'removeCommand',
+  pass: 'passwordCommand',
+  pomo: 'pomodoroCommand',
+  b: 'branchCommand',
+  up: 'upgradeCommand'
+} satisfies Record<string, CommandKey>
+
+type CommandAlias = keyof typeof commandAlias
 
 async function selectCommandPrompt(): Promise<void> {
   console.clear()
@@ -78,16 +86,11 @@ async function switchCommand(
   if (!cmdCommand || typeof cmdCommand !== 'string') return
 
   const commandKey = `${cmdCommand}Command`
-  const commandAliases: { [K in CommandAlias]: CommandKey } = {
-    rm: 'removeCommand',
-    pass: 'passwordCommand',
-    pomo: 'pomodoroCommand'
-  }
 
   if (commandKey in command) {
     await command[commandKey as CommandKey]()
-  } else if (cmdCommand in commandAliases) {
-    await command[commandAliases[cmdCommand as CommandAlias]]()
+  } else if (cmdCommand in commandAlias) {
+    await command[commandAlias[cmdCommand as CommandAlias]]()
   } else {
     errorHandler(new InvalidParamError(cmdCommand))
   }

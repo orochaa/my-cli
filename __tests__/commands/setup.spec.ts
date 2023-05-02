@@ -90,7 +90,9 @@ describe('setupCommand', () => {
     await setupCommand()
 
     expect(startSpy).toHaveBeenCalledWith('Validating user')
-    expect(axios.get).toHaveBeenCalledWith(`https://api.github.com/users/${mock.git}`)
+    expect(axios.get).toHaveBeenCalledWith(
+      `https://api.github.com/users/${mock.git}`
+    )
     expect(stopSpy).toHaveBeenCalledWith(`User: ${data.login} | ${data.name}`)
   })
 
