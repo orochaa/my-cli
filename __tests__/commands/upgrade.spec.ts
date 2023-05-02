@@ -2,12 +2,32 @@ import { outdatedCommand, upgradeCommand } from '@/commands'
 import cp from 'node:child_process'
 import * as p from '@clack/prompts'
 
+const startSpy = jest.fn()
+const stopSpy = jest.fn()
+
 jest.mock('@clack/prompts', () => ({
   note: jest.fn(async () => ({})),
-  outro: jest.fn(async () => ({}))
+  outro: jest.fn(async () => ({})),
+  spinner: jest.fn(() => ({
+    start: startSpy,
+    stop: stopSpy
+  }))
 }))
 
 describe('outdatedCommand', () => {
+  it('should start spinner', async () => {
+    const execSpy = jest.spyOn(cp, 'exec')
+    execSpy.mockImplementationOnce((cmd, cb) => {
+      ;(cb as any)(null, '{}', '')
+      return cp as any
+    })
+
+    await outdatedCommand()
+
+    expect(p.spinner).toHaveBeenCalledTimes(1)
+    expect(startSpy).toHaveBeenCalledTimes(1)
+  })
+
   it('should check package version', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
     execSpy.mockImplementationOnce((cmd, cb) => {
@@ -33,7 +53,8 @@ describe('outdatedCommand', () => {
 
     await outdatedCommand()
 
-    expect(p.outro).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
   })
 
   it('should print a message if it is on latest version', async () => {
@@ -49,7 +70,8 @@ describe('outdatedCommand', () => {
 
     await outdatedCommand()
 
-    expect(p.outro).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
   })
 
   it('should print a note if it is not on latest version', async () => {
@@ -65,6 +87,7 @@ describe('outdatedCommand', () => {
 
     await outdatedCommand()
 
+    expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(p.note).toHaveBeenCalledTimes(1)
   })
 
@@ -82,6 +105,19 @@ describe('outdatedCommand', () => {
 })
 
 describe('upgradeCommand', () => {
+  it('should start spinner', async () => {
+    const execSpy = jest.spyOn(cp, 'exec')
+    execSpy.mockImplementationOnce((cmd, cb) => {
+      ;(cb as any)(null, '{}', '')
+      return cp as any
+    })
+
+    await upgradeCommand()
+
+    expect(p.spinner).toHaveBeenCalledTimes(1)
+    expect(startSpy).toHaveBeenCalledTimes(1)
+  })
+
   it('should check package version', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
     execSpy.mockImplementationOnce((cmd, cb) => {
@@ -107,7 +143,8 @@ describe('upgradeCommand', () => {
 
     await upgradeCommand()
 
-    expect(p.outro).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
   })
 
   it('should print a message if it is on latest version', async () => {
@@ -123,7 +160,8 @@ describe('upgradeCommand', () => {
 
     await upgradeCommand()
 
-    expect(p.outro).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledTimes(1)
+    expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
   })
 
   it('should upgrade package to latest version', async () => {
