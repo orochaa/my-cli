@@ -1,4 +1,4 @@
-import { getParams, hasParams } from '@/utils/cmd'
+import { getParams, hasParams, isSilent } from '@/utils/cmd'
 import { Lockfile, readLockfile, writeLockfile } from '@/utils/file-system'
 import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
@@ -23,7 +23,9 @@ export async function storeCommand(): Promise<void> {
   pruneData(result)
   writeLockfile(result)
 
-  console.log({ stored: result })
+  if (!isSilent()) {
+    console.log({ stored: result })
+  }
 }
 
 async function storePrompt(

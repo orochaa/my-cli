@@ -1,3 +1,4 @@
+import { mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
 import {
   getPackageJson,
@@ -30,6 +31,7 @@ describe('file-system', () => {
       const packageContent = readFileSync(packagePath).toString()
       if (existsSync(packagePath)) rmSync(packagePath)
 
+      mockParams()
       getPackageJson()
       writeFileSync(packagePath, packageContent)
 

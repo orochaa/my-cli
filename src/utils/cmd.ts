@@ -3,9 +3,11 @@ import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
 
 export function errorHandler(error: Error): never {
-  process.stdout.write(`${error.name}: `)
-  process.stdout.write(error.message)
-  process.stdout.write('\n')
+  if (!isSilent()) {
+    process.stdout.write(`${error.name}: `)
+    process.stdout.write(error.message)
+    process.stdout.write('\n')
+  }
   process.exit(0)
 }
 
@@ -38,5 +40,11 @@ export function hasParams(): boolean {
 }
 
 export function getParams(): string[] {
-  return process.argv.slice(3).filter(Boolean)
+  return process.argv
+    .slice(3)
+    .filter(data => Boolean(data) && !/^--\w+/.test(data))
+}
+
+export function isSilent(): boolean {
+  return process.argv.includes('--silent')
 }
