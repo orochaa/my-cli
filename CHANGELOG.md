@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.1.3
+
+### Patch Changes
+
+- 7925b38: feat: branch command
+- 3e2b093: feat: upgrade commands
+- 3e2b093: fix: `pomodoro` strobbing
+
 ## 0.1.2
 
 ### Patch Changes
