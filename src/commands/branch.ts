@@ -27,7 +27,7 @@ export async function branchCommand(): Promise<void> {
 }
 
 function formatBranch(response: string): string {
-  return response.replace(/.+?([^\s]+)$/, '$1')
+  return response.replace(/.*?([^\s]+)$/, '$1')
 }
 
 function formatRemoteBranch(response: string): string {
