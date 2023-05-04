@@ -3,23 +3,46 @@
   "name": "@mist3rbru/my-cli",
   "access": "public",
   "private": false,
-  "main": "dist/index.js",
-  "bin": {
-    "my-cli": "./dist/index.js",
-    "my": "./dist/index.js"
+  "author": {
+    "name": "Mist3rBru",
+    "git": "https://github.com/Mist3rBru"
   },
-  "author": "Mist3rBru",
   "license": "MIT",
   "homepage": "https://github.com/Mist3rBru/my-cli#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Mist3rBru/my-cli-api"
+    "url": "https://github.com/Mist3rBru/my-cli"
   },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "my-cli": "./dist/index.cjs",
+    "my": "./dist/index.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "cli",
+    "prompt",
+    "api",
+    "template",
+    "git"
+  ],
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx src/index.ts",
     "my": "run-s \"dev {@}\" --",
     "lint": "tsc && prettier --write .",
-    "build": "tsup src",
+    "build": "unbuild",
     "test": "jest --no-cache",
     "test:w": "npm test -- --watch",
     "test:ci": "npm test -- --coverage --silent",
@@ -44,8 +67,8 @@
     "jest": "^29.5.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.7",
-    "tsup": "^6.7.0",
     "tsx": "^3.12.6",
-    "typescript": "^5.0.3"
+    "typescript": "^5.0.3",
+    "unbuild": "^1.2.1"
   }
 }
