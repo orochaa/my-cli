@@ -1,4 +1,5 @@
-import { errorHandler, getParams, hasParams, remove } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { errorHandler, remove } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
@@ -6,11 +7,11 @@ import { existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
-export async function removeCommand(): Promise<void> {
+async function removeCommand(params: string[]): Promise<void> {
   let items: string[] = []
 
-  if (hasParams()) {
-    items = getParams()
+  if (params.length) {
+    items = params
     const error = verifyItems(items)
     if (error) return errorHandler(error)
   } else {
@@ -67,4 +68,14 @@ function verifyItems(items: string[]): Error | null {
     }
   }
   return null
+}
+
+export function removeRecord(app: App): void {
+  app.register({
+    name: 'remove',
+    alias: 'rm',
+    params: ['<folder | file>...'],
+    description: 'Remove recursively a folder or file on the relative given path',
+    action: removeCommand
+  })
 }

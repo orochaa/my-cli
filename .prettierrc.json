@@ -11,6 +11,7 @@
   "plugins": ["@trivago/prettier-plugin-sort-imports"],
   "importOrder": [
     "^@/tests",
+    "^@/main",
     "^@/commands",
     "^@/utils",
     "^@/(.*)",

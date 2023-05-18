@@ -35,16 +35,6 @@ export async function execAsync(cmd: string): Promise<string> {
   })
 }
 
-export function hasParams(): boolean {
-  return process.argv.length > 3
-}
-
-export function getParams(): string[] {
-  return process.argv
-    .slice(3)
-    .filter(data => Boolean(data) && !/^--\w+/.test(data))
-}
-
 export function isSilent(): boolean {
   return process.argv.includes('--silent')
 }

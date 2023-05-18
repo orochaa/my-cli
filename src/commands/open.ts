@@ -1,4 +1,5 @@
-import { exec, getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { exec } from '@/utils/cmd'
 import { readLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
@@ -6,7 +7,7 @@ import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
-export async function openCommand(): Promise<void> {
+async function openCommand(params: string[]): Promise<void> {
   const lockfile = readLockfile()
   const controller: Record<string, string[]> = {}
   let projects: string[] = []
@@ -15,8 +16,7 @@ export async function openCommand(): Promise<void> {
     controller[path] = readdirSync(path)
   }
 
-  if (hasParams()) {
-    const params = getParams()
+  if (params.length) {
     const controllerEntries = objectEntries(controller)
     controllerEntries.forEach(([root, folders]) => {
       params.forEach(param => {
@@ -53,4 +53,14 @@ async function openPrompt(
   })
   verifyPromptResponse(response)
   return response
+}
+
+export function openRecord(app: App): void {
+  app.register({
+    name: 'open',
+    alias: null,
+    params: ['<project>'],
+    description: 'Open a project on vscode, the projects available are based on `setup`',
+    action: openCommand
+  })
 }

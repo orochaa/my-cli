@@ -1,11 +1,12 @@
-import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { errorHandler, exec } from '@/utils/cmd'
 import { NotFoundError } from '@/utils/errors'
 import { PackageJson, getPackageJson } from '@/utils/file-system'
 import { objectKeys } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
-export async function runCommand(): Promise<void> {
+async function runCommand(params: string[]): Promise<void> {
   let scripts: string[]
 
   const packageJson = getPackageJson()
@@ -13,8 +14,8 @@ export async function runCommand(): Promise<void> {
     return errorHandler(new NotFoundError('scripts'))
   }
 
-  if (hasParams()) {
-    scripts = getParams()
+  if (params.length) {
+    scripts = params
     const error = verifyScripts(scripts, packageJson)
     if (error) return errorHandler(error)
   } else {
@@ -49,4 +50,14 @@ async function runPrompt(packageJson: PackageJson): Promise<string[]> {
   })
   verifyPromptResponse(response)
   return response
+}
+
+export function runRecord(app: App): void {
+  app.register({
+    name: 'run',
+    alias: null,
+    params: ['<script>...'],
+    description: 'Run scripts from project\'s package.json in sequence',
+    action: runCommand
+  })
 }

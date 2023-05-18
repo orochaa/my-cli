@@ -1,4 +1,5 @@
-import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { errorHandler, exec } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { readLockfile } from '@/utils/file-system'
@@ -14,7 +15,7 @@ type Repository = {
   updated_at: string
 }
 
-export async function cloneCommand(): Promise<void> {
+async function cloneCommand(params: string[]): Promise<void> {
   const username = readLockfile().git
   let repo: Repository
 
@@ -27,8 +28,7 @@ export async function cloneCommand(): Promise<void> {
     }
   )
 
-  if (hasParams()) {
-    const params = getParams()
+  if (params.length) {
     const foundRepo = repositories.find(repo => repo.name === params[0])
     if (!foundRepo) {
       return errorHandler(new NotFoundError(params[0]))
@@ -73,4 +73,14 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
   })
   verifyPromptResponse(response)
   return response
+}
+
+export function cloneRecord(app: App): void {
+  app.register({
+    name: 'clone',
+    alias: null,
+    params: ['<repository>'],
+    description: 'Clone a Github\'s repository based on `setup`',
+    action: cloneCommand
+  })
 }

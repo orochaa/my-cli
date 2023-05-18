@@ -1,4 +1,5 @@
-import { errorHandler, getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { errorHandler } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
@@ -9,11 +10,10 @@ const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const numbers = '0123456789'
 const all = specials + lowercase + uppercase + numbers
 
-export async function passwordCommand(): Promise<void> {
+async function passwordCommand(params: string[]): Promise<void> {
   let passwordLength: number
 
-  if (hasParams()) {
-    const params = getParams()
+  if (params.length) {
     const length = Number(params[0])
 
     const error = verifyPasswordLength(length)
@@ -83,4 +83,14 @@ function shuffle(str: string): string {
   }
 
   return array.join('')
+}
+
+export function passwordRecord(app: App): void {
+  app.register({
+    name: 'password',
+    alias: 'pass',
+    params: ['<length>'],
+    description: 'Generate a random and safe password with the given length',
+    action: passwordCommand
+  })
 }

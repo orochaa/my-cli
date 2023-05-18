@@ -3,7 +3,7 @@
     "scope": "typescript",
     "prefix": "command",
     "body": [
-      "export async function $1Command(): Promise<void> {",
+      "async function $1Command(params: string[]): Promise<void> {",
       "  $0",
       "}",
       ""
@@ -21,6 +21,22 @@
       "  return response",
       "}",
       ""
+    ]
+  },
+  "register command": {
+    "scope": "typescript",
+    "prefix": "record",
+    "body": [
+      "import { App } from '@/main/app'",
+      "export function $1Record(app: App): void {",
+      "  app.register({",
+      "    name: '$1',",
+      "    alias: ${2:null},",
+      "    params: ${3:null},",
+      "    description: '$0',",
+      "    action: $1Command",
+      "  })",
+      "}"
     ]
   }
 }

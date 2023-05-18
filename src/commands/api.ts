@@ -1,13 +1,13 @@
-import { getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
 import { verifyPromptResponse } from '@/utils/prompt'
 import { createApi } from '@mist3rbru/create-ts-api'
 import * as p from '@clack/prompts'
 
-export async function apiCommand(): Promise<void> {
+async function apiCommand(params: string[]): Promise<void> {
   let name: string
 
-  if (hasParams()) {
-    name = getParams()[0]
+  if (params.length) {
+    name = params[0]
   } else {
     name = await apiPrompt()
   }
@@ -25,4 +25,14 @@ async function apiPrompt(): Promise<string> {
   })
   verifyPromptResponse(response)
   return response
+}
+
+export function apiRecord(app: App): void {
+  app.register({
+    name: 'api',
+    alias: null,
+    params: ['<name>'],
+    description: 'Create an api with typescript, prettier, eslint and jest with opined configuration',
+    action: apiCommand
+  })
 }

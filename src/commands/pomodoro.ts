@@ -1,4 +1,5 @@
-import { errorHandler, getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { errorHandler } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { block, verifyPromptResponse } from '@/utils/prompt'
 import color from 'picocolors'
@@ -10,24 +11,24 @@ type PomodoroController = Record<PomodoroPeriod, number> & {
   period: PomodoroPeriod
 }
 
-export async function pomodoroCommand(): Promise<void> {
+async function pomodoroCommand(params: string[]): Promise<void> {
   const controller: PomodoroController = {
     work: 25,
     rest: 5,
     period: 'work'
   }
 
-  if (getParams()[0] !== 'd') {
-    if (hasParams()) {
-      const params = getParams().map(Number)
+  if (params[0] !== 'd') {
+    if (params.length) {
+      const times = params.map(Number)
       for (let i = 0; i < 2; i++) {
-        const error = verifyPeriod(params[i])
+        const error = verifyPeriod(times[i])
         if (error) {
           return errorHandler(error)
         }
       }
-      controller.work = params[0]
-      controller.rest = params[1]
+      controller.work = times[0]
+      controller.rest = times[1]
     } else {
       const params = await setupPomodoroPrompt()
       controller.work = params[0]
@@ -126,4 +127,14 @@ function concatTime(...time: number[]): string {
 
 function display(...time: string[]): string {
   return time.join(color.blue(' | '))
+}
+
+export function pomodoroRecord(app: App): void {
+  app.register({
+    name: 'pomodoro',
+    alias: 'pomo',
+    params: ['d', '<work> <rest>'],
+    description: 'Start a pomodoro timer',
+    action: pomodoroCommand
+  })
 }

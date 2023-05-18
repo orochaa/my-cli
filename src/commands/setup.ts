@@ -1,3 +1,4 @@
+import { App } from '@/main/app'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import {
@@ -12,7 +13,7 @@ import { readdirSync } from 'node:fs'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
-export async function setupCommand(): Promise<void> {
+async function setupCommand(): Promise<void> {
   const lockfile: Lockfile = verifyLockfile()
     ? readLockfile()
     : ({} as Lockfile)
@@ -84,4 +85,14 @@ async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
     git,
     projects
   }
+}
+
+export function setupRecord(app: App): void {
+  app.register({
+    name: 'setup',
+    alias: null,
+    params: null,
+    description: 'Prepare the required setup',
+    action: setupCommand
+  })
 }

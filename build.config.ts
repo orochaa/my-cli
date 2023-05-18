@@ -5,11 +5,13 @@ export default defineBuildConfig({
   entries: ['src/index'],
   rollup: {
     inlineDependencies: true,
-    emitCJS: true
+    emitCJS: true,
+    esbuild: {
+      minify: true
+    }
   },
   alias: {
     '@': resolve('src')
   },
-  clean: true,
-  declaration: true
+  clean: true
 })
