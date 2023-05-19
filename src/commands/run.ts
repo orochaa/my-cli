@@ -1,42 +1,68 @@
 import { App } from '@/main/app'
 import { errorHandler, exec } from '@/utils/cmd'
+import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { PackageJson, getPackageJson } from '@/utils/file-system'
 import { objectKeys } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
+import { readdirSync } from 'node:fs'
+import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
-async function runCommand(params: string[]): Promise<void> {
-  let scripts: string[]
+async function runCommand(scripts: string[], flags: string[]): Promise<void> {
+  const hasScripts = scripts.length
+  const isDeep = flags.includes('--deep') || flags.includes('-D')
 
-  const packageJson = getPackageJson()
-  if (!packageJson?.scripts) {
-    return errorHandler(new NotFoundError('scripts'))
-  }
-
-  if (params.length) {
-    scripts = params
-    const error = verifyScripts(scripts, packageJson)
-    if (error) return errorHandler(error)
+  if (hasScripts && isDeep) {
+    deepRun(scripts)
+  } else if (hasScripts) {
+    shallowRun(scripts)
   } else {
-    scripts = await runPrompt(packageJson)
+    await promptRun()
   }
+}
 
+function run(scripts: string[]): void {
   for (const script of scripts) {
     exec(`npm run ${script}`)
   }
 }
 
-function verifyScripts(
-  scripts: string[],
-  packageJson: PackageJson
-): Error | null {
-  for (const script of scripts) {
-    if (!packageJson.scripts[script]) {
-      return new NotFoundError(`${script} script`)
+function shallowRun(scripts: string[]): void {
+  const packageJson = getPackageJson()
+  if (!packageJson?.scripts) {
+    return errorHandler(new NotFoundError('packageJson.scripts'))
+  }
+  run(verifyScripts(scripts, packageJson))
+}
+
+function deepRun(scripts: string[]): void {
+  const localFolders = readdirSync(cwd).filter(d => !/\./.test(d))
+  for (const folder of localFolders) {
+    const packageJson = getPackageJson(join(cwd, folder, 'package.json'))
+    if (packageJson?.scripts) {
+      process.chdir(join(cwd, folder))
+      run(verifyScripts(scripts, packageJson))
     }
   }
-  return null
+}
+
+async function promptRun(): Promise<void> {
+  const packageJson = getPackageJson()
+  if (!packageJson?.scripts) {
+    return errorHandler(new NotFoundError('packageJson.scripts'))
+  }
+  run(await runPrompt(packageJson))
+}
+
+function verifyScripts(scripts: string[], packageJson: PackageJson): string[] {
+  const result: string[] = []
+  for (const script of scripts) {
+    if (packageJson?.scripts?.[script]) {
+      result.push(script)
+    }
+  }
+  return result
 }
 
 async function runPrompt(packageJson: PackageJson): Promise<string[]> {
@@ -57,7 +83,8 @@ export function runRecord(app: App): void {
     name: 'run',
     alias: null,
     params: ['<script>...'],
-    description: 'Run scripts from project\'s package.json in sequence',
+    flags: ['--deep', '-D'],
+    description: "Run scripts from project's package.json in sequence",
     action: runCommand
   })
 }

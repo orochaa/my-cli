@@ -4,18 +4,17 @@ import {
   packageJsonPath,
   tempFolderPath
 } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 
 export type PackageJson = {
   scripts: Record<string, string>
 }
 
-export function getPackageJson(): PackageJson {
-  if (!existsSync(packageJsonPath)) {
-    return errorHandler(new NotFoundError('package.json'))
+export function getPackageJson(path = packageJsonPath): PackageJson | null {
+  if (!existsSync(path)) {
+    return null
   }
-  return JSON.parse(readFileSync(packageJsonPath).toString())
+  return JSON.parse(readFileSync(path).toString())
 }
 
 export function verifyLockfile(): boolean {

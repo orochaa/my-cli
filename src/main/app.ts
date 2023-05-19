@@ -31,10 +31,10 @@ export class App {
       return errorHandler(new InvalidParamError(name))
     }
 
-    const params = process.argv
-      .slice(3)
-      .filter(data => Boolean(data) && !/^--\w+/.test(data))
-    await command.action(params)
+    const args = process.argv.slice(3)
+    const params = args.filter(arg => !/^-/.test(arg))
+    const flags = args.filter(arg => /^-/.test(arg))
+    await command.action(params, flags)
   }
 
   private log(msg: string): void {
@@ -51,8 +51,16 @@ export class App {
         this.log(`  alias: ${command.alias}\n`)
       }
       if (command.params?.length) {
-        const params = command.params.map(p => colors.magenta(`'${p}'`)).join(' | ')
+        const params = command.params
+          .map(p => colors.magenta(`'${p}'`))
+          .join(' | ')
         this.log(`  params: ${params}\n`)
+      }
+      if (command.flags?.length) {
+        const flags = command.flags
+          .map(p => colors.magenta(`'${p}'`))
+          .join(' | ')
+        this.log(`  flags: ${flags}\n`)
       }
       this.log(`  description: ${command.description}\n`)
       this.log('\n')
@@ -61,12 +69,13 @@ export class App {
 }
 
 export namespace App {
-  export type Action = (params: string[]) => Promise<void>
+  export type Action = (params: string[], flags: string[]) => Promise<void>
 
   export interface Command {
     name: string
     alias: string | null
     params: string[] | null
+    flags?: string[]
     description: string
     action: Action
   }
