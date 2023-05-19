@@ -1,4 +1,3 @@
-import { errorHandler } from '@/utils/cmd'
 import {
   lockfilePath,
   packageJsonPath,

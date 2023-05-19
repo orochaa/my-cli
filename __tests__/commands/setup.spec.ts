@@ -33,6 +33,7 @@ jest.mock('@clack/prompts', () => ({
 }))
 
 jest.mock('axios', () => ({
+  create: () => {},
   get: jest.fn(async () => ({
     data: {
       login: '',
