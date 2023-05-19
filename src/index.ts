@@ -1,113 +1,21 @@
 #!/usr/bin/env node
-import * as command from '@/commands'
-import { errorHandler } from '@/utils/cmd'
-import { InvalidParamError } from '@/utils/errors'
+import { setupApp } from '@/main/setup'
 import { Lockfile, readLockfile, verifyLockfile } from '@/utils/file-system'
-import { PromptOption } from '@/utils/prompt'
-import * as p from '@clack/prompts'
 
-type CommandKey = keyof typeof command
+async function main(): Promise<void> {
+  const app = setupApp()
 
-type Command = CommandKey extends `${infer TCommand}Command` ? TCommand : never
-
-const commandAlias = {
-  rm: 'removeCommand',
-  pass: 'passwordCommand',
-  pomo: 'pomodoroCommand',
-  b: 'branchCommand',
-  up: 'upgradeCommand'
-} satisfies Record<string, CommandKey>
-
-type CommandAlias = keyof typeof commandAlias
-
-async function selectCommandPrompt(): Promise<void> {
-  console.clear()
-  p.intro('⚡ Welcome to `my-cli` ⚡')
-  const option = await p.select<PromptOption<Command>[], Command>({
-    message: 'Select a command:',
-    options: [
-      {
-        label: 'Setup config',
-        value: 'setup'
-      },
-      {
-        label: 'Delete item',
-        value: 'remove'
-      },
-      {
-        label: 'Store value',
-        value: 'store'
-      },
-      {
-        label: 'Recover value',
-        value: 'recover'
-      },
-      {
-        label: 'Generate password',
-        value: 'password'
-      },
-      {
-        label: 'Init project',
-        value: 'init'
-      },
-      {
-        label: 'Create api project',
-        value: 'api'
-      },
-      {
-        label: 'Open project',
-        value: 'open'
-      },
-      {
-        label: 'Run scripts',
-        value: 'run'
-      },
-      {
-        label: 'Clone repository',
-        value: 'clone'
-      },
-      {
-        label: 'Play music',
-        value: 'play'
-      },
-      {
-        label: 'Start Pomodoro',
-        value: 'pomodoro'
-      }
-    ]
-  })
-
-  await switchCommand(option)
-}
-
-async function switchCommand(
-  cmdCommand: Command | CommandAlias | symbol
-): Promise<void> {
-  if (!cmdCommand || typeof cmdCommand !== 'string') return
-
-  const commandKey = `${cmdCommand}Command`
-
-  if (commandKey in command) {
-    await command[commandKey as CommandKey]()
-  } else if (cmdCommand in commandAlias) {
-    await command[commandAlias[cmdCommand as CommandAlias]]()
-  } else {
-    errorHandler(new InvalidParamError(cmdCommand))
-  }
-}
-
-export async function main(): Promise<void> {
   const lockfile: Partial<Lockfile> = verifyLockfile() ? readLockfile() : {}
-  const cmdCommand = process.argv[2] as Command
+  const cmdCommand = process.argv[2]
 
   if (cmdCommand !== 'setup' && !(lockfile.git && lockfile.projects)) {
-    await command.setupCommand()
+    await app.exec('setup')
   }
 
   if (process.argv.length > 2) {
-    await switchCommand(cmdCommand)
+    await app.exec(cmdCommand)
   } else {
-    await selectCommandPrompt()
+    app.displayCommands()
   }
 }
 

@@ -1,6 +1,9 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
-import { runCommand } from '@/commands'
+import { cwd } from '@/utils/constants'
 import cp from 'node:child_process'
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { makeSut } from '../mocks/make-sut'
 
 jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
@@ -10,46 +13,125 @@ jest.mock('@clack/prompts', () => ({
 
 jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 
-describe('runCommand', () => {
+describe('run', () => {
+  const sut = makeSut('run')
+
   beforeEach(() => {
     clearParams()
   })
 
-  it("should run prompt's selected scripts", async () => {
-    await runCommand()
+  describe('shallowRun', () => {
+    it('should verify package.json scripts', async () => {
+      jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
 
-    expect(cp.execSync).toHaveBeenCalledTimes(2)
-    expect(cp.execSync).toHaveBeenCalledWith('npm run lint', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('npm run build', expect.anything())
-  })
+      mockParams('lint')
+      await sut.exec()
 
-  it("should run prompt's selected scripts", async () => {
-    mockParams('lint', 'build', 'test')
-
-    await runCommand()
-
-    expect(cp.execSync).toHaveBeenCalledTimes(3)
-    expect(cp.execSync).toHaveBeenCalledWith('npm run lint', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('npm run build', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('npm run test', expect.anything())
-  })
-
-  it('should verify package.json scripts', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
-
-    await runCommand()
-
-    expect(process.exit).toHaveBeenCalledTimes(1)
-  })
-
-  it('should verify if script exists in package.json', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({
-      scripts: {}
+      expect(process.exit).toHaveBeenCalledTimes(1)
     })
-    mockParams('lint')
 
-    await runCommand()
+    it('should verify if script exists in package.json', async () => {
+      jest.spyOn(JSON, 'parse').mockReturnValueOnce({
+        scripts: {}
+      })
 
-    expect(process.exit).toHaveBeenCalledTimes(1)
+      mockParams('lint')
+      await sut.exec()
+
+      expect(process.exit).toHaveBeenCalledTimes(1)
+    })
+
+    it('should run scripts', async () => {
+      jest.spyOn(JSON, 'parse').mockReturnValueOnce({
+        scripts: {
+          lint: ' ',
+          build: ' '
+        }
+      })
+
+      mockParams('lint', 'build')
+      await sut.exec()
+
+      expect(cp.execSync).toHaveBeenNthCalledWith(
+        1,
+        'npm run lint',
+        expect.anything()
+      )
+      expect(cp.execSync).toHaveBeenNthCalledWith(
+        2,
+        'npm run build',
+        expect.anything()
+      )
+    })
+  })
+
+  describe('deepRun', () => {
+    beforeAll(() => {
+      writeFileSync(
+        join(cwd, '__tests__', 'package.json'),
+        JSON.stringify({
+          scripts: {
+            lint: ' ',
+            test: ' '
+          }
+        })
+      )
+    })
+
+    afterEach(() => {
+      process.chdir(cwd)
+    })
+
+    afterAll(() => {
+      rmSync(join(cwd, '__tests__', 'package.json'))
+    })
+
+    it('should run scripts of each package.json', async () => {
+      mockParams('lint', 'build', 'test', '-D')
+      await sut.exec()
+
+      expect(cp.execSync).toHaveBeenNthCalledWith(
+        1,
+        'npm run lint',
+        expect.anything()
+      )
+      expect(cp.execSync).toHaveBeenNthCalledWith(
+        2,
+        'npm run test',
+        expect.anything()
+      )
+    })
+  })
+
+  describe('promptRun', () => {
+    it('should verify package.json', async () => {
+      jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
+
+      await sut.exec()
+
+      expect(process.exit).toHaveBeenCalledTimes(1)
+    })
+
+    it('should verify package.json scripts', async () => {
+      jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
+
+      await sut.exec()
+
+      expect(process.exit).toHaveBeenCalledTimes(1)
+    })
+
+    it("should run prompt's selected scripts", async () => {
+      await sut.exec()
+
+      expect(cp.execSync).toHaveBeenCalledTimes(2)
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'npm run lint',
+        expect.anything()
+      )
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'npm run build',
+        expect.anything()
+      )
+    })
   })
 })

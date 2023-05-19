@@ -1,5 +1,11 @@
 export function mockParams(...params: string[]): void {
-  process.argv = ['node', 'index.[tj]s', 'command', ...params, '--silent']
+  process.argv = [
+    'node',
+    'index.[tj]s',
+    'command',
+    ...params.map(p => p.split(' ')).flat(),
+    '--silent'
+  ]
 }
 
 export function clearParams(): void {

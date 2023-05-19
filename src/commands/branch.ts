@@ -1,8 +1,9 @@
+import { App } from '@/main/app'
 import { exec, execAsync } from '@/utils/cmd'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
-export async function branchCommand(): Promise<void> {
+async function branchCommand(): Promise<void> {
   const data = await execAsync('git branch -a')
   const branches = data.split('\n').filter(Boolean)
 
@@ -36,4 +37,16 @@ function formatRemoteBranch(response: string): string {
 
 function formatRemoteOrigin(response: string): string {
   return response.replace(/^\s*\w+\/(\w+).+/, '$1')
+}
+
+export function branchRecord(app: App): void {
+  app.register({
+    name: 'branch',
+    alias: 'b',
+    params: null,
+    description:
+      'List all local and remote branches, to select and checkout to it',
+    example: 'my b',
+    action: branchCommand
+  })
 }

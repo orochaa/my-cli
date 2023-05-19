@@ -1,4 +1,5 @@
-import { errorHandler, exec, getParams, hasParams } from '@/utils/cmd'
+import { App } from '@/main/app'
+import { errorHandler, exec } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { objectEntries, objectValues } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
@@ -15,11 +16,11 @@ const players = {
   }
 }
 
-export async function playCommand(): Promise<void> {
+async function playCommand(params: string[]): Promise<void> {
   let player: string = ''
 
-  if (hasParams()) {
-    const alias = getParams()[0]
+  if (params.length) {
+    const alias = params[0]
     for (const data of objectValues(players)) {
       if (data.aliases.includes(alias)) {
         player = data.url
@@ -47,4 +48,15 @@ async function playPrompt(): Promise<string> {
   })
   verifyPromptResponse(response)
   return response
+}
+
+export function playRecord(app: App): void {
+  app.register({
+    name: 'play',
+    alias: null,
+    params: ['<provider>'],
+    description: 'Open a music player on your default browser',
+    example: 'my play yt',
+    action: playCommand
+  })
 }

@@ -1,5 +1,9 @@
-import { mockParams } from '@/tests/mocks/mock-params'
-import { cwd, lockfilePath } from '@/utils/constants'
+import {
+  cwd,
+  lockfilePath,
+  packageJsonPath,
+  tempFolderPath
+} from '@/utils/constants'
 import {
   getPackageJson,
   readLockfile,
@@ -26,22 +30,19 @@ describe('file-system', () => {
       expect(result).toStrictEqual(expected)
     })
 
-    it('should end process if there is no package.json', () => {
-      const packagePath = join(cwd, 'package.json')
-      const packageContent = readFileSync(packagePath).toString()
-      if (existsSync(packagePath)) rmSync(packagePath)
+    it('should return null if there is no package.json', () => {
+      const packageContent = readFileSync(packageJsonPath).toString()
+      rmSync(packageJsonPath)
 
-      mockParams()
-      getPackageJson()
-      writeFileSync(packagePath, packageContent)
+      const result = getPackageJson()
+      writeFileSync(packageJsonPath, packageContent)
 
-      expect(exitSpy).toHaveBeenCalledTimes(1)
+      expect(result).toBeNull()
     })
   })
 
   describe('verifyLockfile()', () => {
     it('should return true if there is a lockfile', () => {
-      const lockfilePath = join(cwd, 'src/temp/store-lock.json')
       if (!existsSync(lockfilePath)) writeLockfile({})
 
       const result = verifyLockfile()
@@ -50,7 +51,6 @@ describe('file-system', () => {
     })
 
     it('should return false if there is not a lockfile', () => {
-      const lockfilePath = join(cwd, 'src/temp/store-lock.json')
       if (existsSync(lockfilePath)) rmSync(lockfilePath)
 
       const result = verifyLockfile()
@@ -72,7 +72,6 @@ describe('file-system', () => {
 
   describe('writeLockfile()', () => {
     it('should create temp folder', () => {
-      const tempFolderPath = join(cwd, 'src/temp')
       if (existsSync(tempFolderPath))
         rmSync(tempFolderPath, { recursive: true })
 
@@ -82,7 +81,6 @@ describe('file-system', () => {
     })
 
     it('should write lockfile', () => {
-      const lockfilePath = join(cwd, 'src/temp/store-lock.json')
       if (existsSync(lockfilePath)) rmSync(lockfilePath)
 
       const mock = { test: 'foo' }

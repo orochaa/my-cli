@@ -54,3 +54,9 @@ A compilation of my CLI snippets.
   - usage: `my upgrade`
   - alias:
     - upgrade: `up`
+- `http`: do an http request to the given endpoint
+  - usage: `my http <method?> <url> <body?>... <headers?>...`
+    - method: `get` | `post` | `put` | `delete`
+    - url: `/<uri>` | `:<port>/<uri>` | `http://<host>:<port>/<uri>`
+    - body: `<key>=<value>`
+    - headers: `h.<key>=<value>`

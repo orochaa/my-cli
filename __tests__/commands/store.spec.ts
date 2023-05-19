@@ -1,9 +1,9 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
-import { storeCommand } from '@/commands'
 import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import { existsSync, rmSync } from 'fs'
+import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => 'any'),
@@ -18,7 +18,9 @@ jest.mock('@clack/prompts', () => ({
   })
 }))
 
-describe('storeCommand', () => {
+describe('store', () => {
+  const sut = makeSut('store')
+
   beforeEach(() => {
     clearParams()
     writeLockfile({})
@@ -31,7 +33,7 @@ describe('storeCommand', () => {
   })
 
   it('should store key-value of prompt', async () => {
-    await storeCommand()
+    await sut.exec()
 
     expect(readLockfile()).toStrictEqual({
       any: 'any'
@@ -41,7 +43,7 @@ describe('storeCommand', () => {
   it('should store key-value of params', async () => {
     mockParams('git=any-git')
 
-    await storeCommand()
+    await sut.exec()
 
     expect(readLockfile()).toStrictEqual({
       git: 'any-git'
@@ -54,7 +56,7 @@ describe('storeCommand', () => {
     })
     mockParams('git=')
 
-    await storeCommand()
+    await sut.exec()
 
     expect(readLockfile()).toStrictEqual({})
   })

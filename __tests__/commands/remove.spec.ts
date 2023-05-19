@@ -1,9 +1,9 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
-import { removeCommand } from '@/commands'
 import { cwd } from '@/utils/constants'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
+import { makeSut } from '../mocks/make-sut'
 
 const mock = 'test-delete.mock'
 const mockPath = join(cwd, mock)
@@ -17,7 +17,9 @@ jest.mock('@clack/prompts', () => ({
 
 const verifyMock = () => !existsSync(mockPath)
 
-describe('removeCommand', () => {
+describe('remove', () => {
+  const sut = makeSut('remove')
+
   beforeEach(() => {
     writeFileSync(mockPath, '')
     clearParams()
@@ -32,7 +34,7 @@ describe('removeCommand', () => {
   it('should delete prompt select item', async () => {
     ;(p.confirm as jest.Mock).mockResolvedValueOnce(true)
 
-    await removeCommand()
+    await sut.exec()
 
     expect(verifyMock()).toBeTruthy()
     expect(p.outro).toHaveBeenCalledWith(`Removed: ${mockPath}`)
@@ -41,7 +43,7 @@ describe('removeCommand', () => {
   it('should delete prompt text item', async () => {
     ;(p.confirm as jest.Mock).mockResolvedValueOnce(false)
 
-    await removeCommand()
+    await sut.exec()
 
     expect(verifyMock()).toBeTruthy()
     expect(p.outro).toHaveBeenCalledWith(`Removed: ${mockPath}`)
@@ -50,7 +52,7 @@ describe('removeCommand', () => {
   it('should delete params item', async () => {
     mockParams(mock)
 
-    await removeCommand()
+    await sut.exec()
 
     expect(verifyMock()).toBeTruthy()
     expect(p.outro).toHaveBeenCalledWith(`Removed: ${mockPath}`)
@@ -62,7 +64,7 @@ describe('removeCommand', () => {
     const exitSpy = jest.spyOn(global.process, 'exit')
     exitSpy.mockImplementation(() => ({} as never))
 
-    await removeCommand()
+    await sut.exec()
 
     expect(exitSpy).toHaveBeenCalledTimes(1)
   })
