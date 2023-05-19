@@ -44,7 +44,9 @@ export function branchRecord(app: App): void {
     name: 'branch',
     alias: 'b',
     params: null,
-    description: 'List all local and remote branches, to select and checkout to it',
+    description:
+      'List all local and remote branches, to select and checkout to it',
+    example: 'my b',
     action: branchCommand
   })
 }

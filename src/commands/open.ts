@@ -59,8 +59,10 @@ export function openRecord(app: App): void {
   app.register({
     name: 'open',
     alias: null,
-    params: ['<project>'],
-    description: 'Open a project on vscode, the projects available are based on `setup`',
+    params: ['<project>...'],
+    description:
+      'Open a project on vscode, the projects available are based on `setup`',
+    example: 'my open my-cli my-app my-api',
     action: openCommand
   })
 }

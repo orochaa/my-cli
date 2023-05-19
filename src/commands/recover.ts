@@ -51,6 +51,7 @@ export function recoverRecord(app: App): void {
     alias: null,
     params: ['<key>'],
     description: 'Return the value of a saved key',
+    example: 'my recover git',
     action: recoverCommand
   })
 }

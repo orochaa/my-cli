@@ -63,6 +63,7 @@ export class App {
         this.log(`  flags: ${flags}\n`)
       }
       this.log(`  description: ${command.description}\n`)
+      this.log(`  example: ${command.example}\n`)
       this.log('\n')
     }
   }
@@ -77,6 +78,7 @@ export namespace App {
     params: string[] | null
     flags?: string[]
     description: string
+    example: `my ${string}`
     action: Action
   }
 }

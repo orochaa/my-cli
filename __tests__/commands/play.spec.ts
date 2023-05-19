@@ -23,7 +23,7 @@ jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('play', () => {
   const sut = makeSut('play')
-  
+
   beforeEach(() => {
     clearParams()
   })

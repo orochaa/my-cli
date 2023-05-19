@@ -80,7 +80,8 @@ export function cloneRecord(app: App): void {
     name: 'clone',
     alias: null,
     params: ['<repository>'],
-    description: 'Clone a Github\'s repository based on `setup`',
+    description: "Clone a Github's repository based on `setup`",
+    example: 'my clone my-cli',
     action: cloneCommand
   })
 }

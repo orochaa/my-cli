@@ -14,7 +14,7 @@ jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('recover', () => {
   const sut = makeSut('recover')
-  
+
   beforeAll(() => {
     writeLockfile({
       git: 'any-git',

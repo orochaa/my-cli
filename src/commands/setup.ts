@@ -93,6 +93,7 @@ export function setupRecord(app: App): void {
     alias: null,
     params: null,
     description: 'Prepare the required setup',
+    example: 'my setup',
     action: setupCommand
   })
 }

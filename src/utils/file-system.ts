@@ -14,7 +14,7 @@ export function getPackageJson(path = packageJsonPath): PackageJson | null {
   if (!existsSync(path)) {
     return null
   }
-  return JSON.parse(readFileSync(path).toString())
+  return JSON.parse(readFileSync(path).toString()) as PackageJson
 }
 
 export function verifyLockfile(): boolean {
@@ -28,7 +28,7 @@ export type Lockfile = {
 } & Record<string, string | string[]>
 
 export function readLockfile(): Lockfile {
-  return JSON.parse(readFileSync(lockfilePath).toString())
+  return JSON.parse(readFileSync(lockfilePath).toString()) as Lockfile
 }
 
 export function writeLockfile(content: Record<string, unknown>): void {

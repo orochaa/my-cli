@@ -59,28 +59,9 @@ describe('App', () => {
     const sut = makeSut()
     const log = jest.spyOn(process.stdout, 'write')
 
-    sut.register({
-      name: 'foo',
-      action: async () => {},
-      alias: ' ',
-      description: ' ',
-      params: [' '],
-      flags: [' ']
-    })
-    sut.register({
-      name: 'bar',
-      action: async () => {},
-      alias: ' ',
-      description: ' ',
-      params: [' ']
-    })
-    sut.register({
-      name: 'baz',
-      action: async () => {},
-      alias: ' ',
-      description: ' ',
-      params: [' ']
-    })
+    sut.register({ name: 'foo' } as App.Command)
+    sut.register({ name: 'bar' } as App.Command)
+    sut.register({ name: 'baz' } as App.Command)
     sut.displayCommands()
 
     expect(log).toHaveBeenCalledWith(

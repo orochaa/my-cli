@@ -90,6 +90,7 @@ export function runRecord(app: App): void {
     params: ['<script>...'],
     flags: ['--deep', '-D'],
     description: "Run scripts from project's package.json in sequence",
+    example: 'my run lint build test',
     action: runCommand
   })
 }

@@ -91,6 +91,7 @@ export function passwordRecord(app: App): void {
     alias: 'pass',
     params: ['<length>'],
     description: 'Generate a random and safe password with the given length',
+    example: 'my pass 30',
     action: passwordCommand
   })
 }

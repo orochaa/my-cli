@@ -135,6 +135,7 @@ export function pomodoroRecord(app: App): void {
     alias: 'pomo',
     params: ['d', '<work> <rest>'],
     description: 'Start a pomodoro timer',
+    example: 'my pomo d',
     action: pomodoroCommand
   })
 }

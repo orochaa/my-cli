@@ -15,7 +15,7 @@ jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 
 describe('open', () => {
   const sut = makeSut('open')
-  
+
   beforeAll(() => {
     writeLockfile({
       git: 'any-git',

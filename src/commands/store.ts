@@ -60,6 +60,7 @@ export function storeRecord(app: App): void {
     alias: null,
     params: ['<key>=<value>'],
     description: 'Save a key=value on a local json file',
+    example: 'my store git=user',
     action: storeCommand
   })
 }

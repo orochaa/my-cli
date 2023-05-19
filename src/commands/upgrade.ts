@@ -52,16 +52,18 @@ export function upgradeRecord(app: App): void {
     alias: 'up',
     params: null,
     description: 'Update package to latest version',
+    example: 'my up',
     action: upgradeCommand
   })
 }
 
-  export function outdatedRecord(app: App): void {
+export function outdatedRecord(app: App): void {
   app.register({
     name: 'outdated',
     alias: null,
     params: null,
     description: 'Check if package is on latest version',
+    example: 'my outdated',
     action: outdatedCommand
   })
 }

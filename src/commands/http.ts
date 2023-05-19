@@ -89,7 +89,6 @@ function getHeaders(params: string[]): Record<string, string> {
 }
 
 function convertToJSON(keyValueList: string[]): Record<string, unknown> {
-  console.log(keyValueList)
   const result: Record<string, unknown> = {}
 
   for (let item of keyValueList) {
@@ -129,7 +128,7 @@ export function httpRecord(app: App): void {
     params: ['<method?> <url> <body?> <headers?>'],
     description: 'Make an http request',
     example:
-      'my http post /user email=john@gmail.com password=123123 h.authorization=token',
+      'my http post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World',
     action: httpCommand
   })
 }

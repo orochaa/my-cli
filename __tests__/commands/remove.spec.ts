@@ -19,7 +19,7 @@ const verifyMock = () => !existsSync(mockPath)
 
 describe('remove', () => {
   const sut = makeSut('remove')
-  
+
   beforeEach(() => {
     writeFileSync(mockPath, '')
     clearParams()

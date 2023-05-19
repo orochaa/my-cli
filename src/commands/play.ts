@@ -55,7 +55,8 @@ export function playRecord(app: App): void {
     name: 'play',
     alias: null,
     params: ['<provider>'],
-     description: 'Open a music player on your default browser',
+    description: 'Open a music player on your default browser',
+    example: 'my play yt',
     action: playCommand
   })
 }

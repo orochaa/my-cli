@@ -32,7 +32,9 @@ export function apiRecord(app: App): void {
     name: 'api',
     alias: null,
     params: ['<name>'],
-    description: 'Create an api with typescript, prettier, eslint and jest with opined configuration',
+    description:
+      'Create an api with typescript, prettier, eslint and jest with opined configuration',
+    example: 'my api ts-api',
     action: apiCommand
   })
 }
