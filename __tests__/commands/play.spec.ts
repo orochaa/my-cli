@@ -1,6 +1,6 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
-import { playCommand } from '@/commands'
 import cp from 'node:child_process'
+import { makeSut } from '../mocks/make-sut'
 
 const players = [
   {
@@ -21,13 +21,15 @@ jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 
 jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
-describe('playCommand', () => {
+describe('play', () => {
+  const sut = makeSut('play')
+  
   beforeEach(() => {
     clearParams()
   })
 
   it('should open prompt selected player', async () => {
-    await playCommand()
+    await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -42,7 +44,7 @@ describe('playCommand', () => {
     for (const { aliases, url } of players) {
       for (const alias of aliases) {
         mockParams(alias)
-        await playCommand()
+        await sut.exec()
         expect(cp.execSync).toHaveBeenCalledWith(
           `start ${url}`,
           expect.anything()
@@ -54,7 +56,7 @@ describe('playCommand', () => {
   it('should not open invalid players', async () => {
     mockParams('invalid-player')
 
-    await playCommand()
+    await sut.exec()
 
     expect(process.exit).toHaveBeenCalledTimes(1)
   })

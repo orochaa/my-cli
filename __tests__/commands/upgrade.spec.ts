@@ -1,6 +1,6 @@
-import { outdatedCommand, upgradeCommand } from '@/commands'
 import cp from 'node:child_process'
 import * as p from '@clack/prompts'
+import { makeSut } from '../mocks/make-sut'
 
 const startSpy = jest.fn()
 const stopSpy = jest.fn()
@@ -14,7 +14,9 @@ jest.mock('@clack/prompts', () => ({
   }))
 }))
 
-describe('outdatedCommand', () => {
+describe('outdated', () => {
+  const sut = makeSut('outdated')
+
   it('should start spinner', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
     execSpy.mockImplementationOnce((cmd, cb) => {
@@ -22,7 +24,7 @@ describe('outdatedCommand', () => {
       return cp as any
     })
 
-    await outdatedCommand()
+    await sut.exec()
 
     expect(p.spinner).toHaveBeenCalledTimes(1)
     expect(startSpy).toHaveBeenCalledTimes(1)
@@ -35,7 +37,7 @@ describe('outdatedCommand', () => {
       return cp as any
     })
 
-    await outdatedCommand()
+    await sut.exec()
 
     expect(execSpy).toHaveBeenCalledTimes(1)
     expect(execSpy).toHaveBeenCalledWith(
@@ -51,7 +53,7 @@ describe('outdatedCommand', () => {
       return cp as any
     })
 
-    await outdatedCommand()
+    await sut.exec()
 
     expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
@@ -68,7 +70,7 @@ describe('outdatedCommand', () => {
       return cp as any
     })
 
-    await outdatedCommand()
+    await sut.exec()
 
     expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
@@ -85,7 +87,7 @@ describe('outdatedCommand', () => {
       return cp as any
     })
 
-    await outdatedCommand()
+    await sut.exec()
 
     expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(p.note).toHaveBeenCalledTimes(1)
@@ -98,13 +100,15 @@ describe('outdatedCommand', () => {
       return cp as any
     })
 
-    const promise = outdatedCommand()
+    const promise = sut.exec()
 
     await expect(promise).rejects.toBe('error')
   })
 })
 
-describe('upgradeCommand', () => {
+describe('upgrade', () => {
+  const sut = makeSut('upgrade')
+
   it('should start spinner', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
     execSpy.mockImplementationOnce((cmd, cb) => {
@@ -112,7 +116,7 @@ describe('upgradeCommand', () => {
       return cp as any
     })
 
-    await upgradeCommand()
+    await sut.exec()
 
     expect(p.spinner).toHaveBeenCalledTimes(1)
     expect(startSpy).toHaveBeenCalledTimes(1)
@@ -125,7 +129,7 @@ describe('upgradeCommand', () => {
       return cp as any
     })
 
-    await upgradeCommand()
+    await sut.exec()
 
     expect(execSpy).toHaveBeenCalledTimes(1)
     expect(execSpy).toHaveBeenCalledWith(
@@ -141,7 +145,7 @@ describe('upgradeCommand', () => {
       return cp as any
     })
 
-    await upgradeCommand()
+    await sut.exec()
 
     expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
@@ -158,7 +162,7 @@ describe('upgradeCommand', () => {
       return cp as any
     })
 
-    await upgradeCommand()
+    await sut.exec()
 
     expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
@@ -176,7 +180,7 @@ describe('upgradeCommand', () => {
     const execSpy = jest.spyOn(cp, 'execSync')
     execSpy.mockImplementationOnce(() => ({} as any))
 
-    await upgradeCommand()
+    await sut.exec()
 
     expect(execSpy).toHaveBeenCalledTimes(1)
     expect(execSpy).toHaveBeenCalledWith(

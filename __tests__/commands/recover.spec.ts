@@ -1,9 +1,9 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
-import { recoverCommand } from '@/commands'
 import { lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import { existsSync, rmSync } from 'node:fs'
 import * as p from '@clack/prompts'
+import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'any-git'),
@@ -12,7 +12,9 @@ jest.mock('@clack/prompts', () => ({
 
 jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
-describe('recoverCommand', () => {
+describe('recover', () => {
+  const sut = makeSut('recover')
+  
   beforeAll(() => {
     writeLockfile({
       git: 'any-git',
@@ -31,7 +33,7 @@ describe('recoverCommand', () => {
   })
 
   it('should recover value of prompt selected key', async () => {
-    await recoverCommand()
+    await sut.exec()
 
     expect(p.outro).toHaveBeenCalledWith('any-git')
   })
@@ -39,7 +41,7 @@ describe('recoverCommand', () => {
   it('should recover value of param key', async () => {
     mockParams('projects')
 
-    await recoverCommand()
+    await sut.exec()
 
     expect(p.outro).toHaveBeenCalledWith('any-project')
     expect(p.outro).toHaveBeenCalledWith('other-project')
@@ -48,7 +50,7 @@ describe('recoverCommand', () => {
   it("should print 'undefined' on not found param key", async () => {
     mockParams('invalid-param')
 
-    await recoverCommand()
+    await sut.exec()
 
     expect(p.outro).toHaveBeenCalledWith('undefined')
   })
@@ -56,7 +58,7 @@ describe('recoverCommand', () => {
   it('should verify lockfile length', async () => {
     writeLockfile({})
 
-    await recoverCommand()
+    await sut.exec()
 
     expect(process.exit).toHaveBeenCalledTimes(1)
   })

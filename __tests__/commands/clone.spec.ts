@@ -1,5 +1,4 @@
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
-import { cloneCommand } from '@/commands'
 import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
@@ -7,6 +6,7 @@ import { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
 import * as p from '@clack/prompts'
+import { makeSut } from '../mocks/make-sut'
 
 const repo = {
   name: 'my-cli',
@@ -29,7 +29,9 @@ jest.mock('axios', () => ({
   }))
 }))
 
-describe('cloneCommand', () => {
+describe('clone', () => {
+  const sut = makeSut('clone')
+
   beforeAll(() => {
     writeLockfile({
       git: 'any-git'
@@ -49,7 +51,7 @@ describe('cloneCommand', () => {
   })
 
   it('should get github repositories', async () => {
-    await cloneCommand()
+    await sut.exec()
 
     expect(axios.get).toHaveBeenCalledTimes(1)
   })
@@ -57,7 +59,7 @@ describe('cloneCommand', () => {
   it('should return error on invalid repository name', async () => {
     mockParams('your-cli')
 
-    await cloneCommand()
+    await sut.exec()
 
     expect(process.exit).toHaveBeenCalledTimes(1)
   })
@@ -65,7 +67,7 @@ describe('cloneCommand', () => {
   it('should clone on valid repository', async () => {
     mockParams('my-cli')
 
-    await cloneCommand()
+    await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -84,7 +86,7 @@ describe('cloneCommand', () => {
     const repositoryPath = join(cwd, 'my-cli')
     if (!existsSync(repositoryPath)) mkdirSync(repositoryPath)
 
-    await cloneCommand()
+    await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -95,7 +97,7 @@ describe('cloneCommand', () => {
   })
 
   it('should render prompts', async () => {
-    await cloneCommand()
+    await sut.exec()
 
     expect(p.select).toHaveBeenCalledTimes(1)
   })

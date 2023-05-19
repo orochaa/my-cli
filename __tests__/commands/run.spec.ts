@@ -78,6 +78,10 @@ describe('run', () => {
       )
     })
 
+    afterEach(() => {
+      process.chdir(cwd)
+    })
+
     afterAll(() => {
       rmSync(join(cwd, '__tests__', 'package.json'))
     })

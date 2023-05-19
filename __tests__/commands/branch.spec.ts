@@ -1,12 +1,14 @@
-import { branchCommand } from '@/commands'
 import cp from 'node:child_process'
 import * as p from '@clack/prompts'
+import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'master')
 }))
 
-describe('branchCommand', () => {
+describe('branch', () => {
+  const sut = makeSut('branch')
+
   beforeAll(() => {
     jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as never))
     jest.spyOn(cp, 'exec').mockImplementationOnce((cmd, cb) => {
@@ -16,7 +18,7 @@ describe('branchCommand', () => {
   })
 
   it('should read git branches', async () => {
-    await branchCommand()
+    await sut.exec()
 
     expect(cp.exec).toHaveBeenCalledTimes(1)
     expect(cp.exec).toHaveBeenCalledWith('git branch -a', expect.any(Function))
@@ -25,7 +27,7 @@ describe('branchCommand', () => {
   it('should checkout to selected local branch', async () => {
     ;(p.select as jest.Mock).mockResolvedValueOnce('   master')
 
-    await branchCommand()
+    await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -39,7 +41,7 @@ describe('branchCommand', () => {
       '   remotes/origin/pull_request/test'
     )
 
-    await branchCommand()
+    await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(

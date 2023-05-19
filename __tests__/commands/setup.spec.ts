@@ -1,10 +1,10 @@
-import { setupCommand } from '@/commands'
 import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import axios from 'axios'
 import { existsSync, rmSync } from 'fs'
 import * as p from '@clack/prompts'
+import { makeSut } from '../mocks/make-sut'
 
 const mock = {
   git: 'any',
@@ -43,7 +43,9 @@ jest.mock('axios', () => ({
 
 jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
-describe('setupCommand', () => {
+describe('setup', () => {
+  const sut = makeSut('setup')
+
   beforeAll(() => {
     if (existsSync(lockfilePath)) {
       rmSync(lockfilePath)
@@ -58,7 +60,7 @@ describe('setupCommand', () => {
 
   it('should call prompts with default value', async () => {
     writeLockfile(mock)
-    await setupCommand()
+    await sut.exec()
 
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
@@ -69,7 +71,7 @@ describe('setupCommand', () => {
   })
 
   it('should call prompts with default value', async () => {
-    await setupCommand()
+    await sut.exec()
 
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
@@ -87,7 +89,7 @@ describe('setupCommand', () => {
       data
     })
 
-    await setupCommand()
+    await sut.exec()
 
     expect(startSpy).toHaveBeenCalledWith('Validating user')
     expect(axios.get).toHaveBeenCalledWith(
@@ -99,14 +101,14 @@ describe('setupCommand', () => {
   it('should retry on validation fail', async () => {
     ;(axios.get as jest.Mock).mockRejectedValueOnce('')
 
-    await setupCommand()
+    await sut.exec()
 
     expect(stopSpy).toHaveBeenCalledWith('Invalid user')
     expect(axios.get).toHaveBeenCalledTimes(2)
   })
 
   it('should store the result', async () => {
-    await setupCommand()
+    await sut.exec()
 
     expect(readLockfile()).toStrictEqual(mock)
   })

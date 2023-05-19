@@ -33,7 +33,12 @@ function shallowRun(scripts: string[]): void {
   if (!packageJson?.scripts) {
     return errorHandler(new NotFoundError('packageJson.scripts'))
   }
-  run(verifyScripts(scripts, packageJson))
+  for (const script of scripts) {
+    if (!packageJson.scripts[script]) {
+      return errorHandler(new NotFoundError(script))
+    }
+  }
+  run(scripts)
 }
 
 function deepRun(scripts: string[]): void {
