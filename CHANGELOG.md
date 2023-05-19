@@ -1,5 +1,16 @@
 # @mist3rbru/my-cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 79f9e2f: refactor: add centralized app instance
+
+### Patch Changes
+
+- 68a1d15: feat: deep run command
+- 2e7015d: feat: http command
+
 ## 0.1.3
 
 ### Patch Changes
