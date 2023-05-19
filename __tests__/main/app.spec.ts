@@ -57,7 +57,9 @@ describe('App', () => {
 
   it('should display all known commands', () => {
     const sut = makeSut()
-    const log = jest.spyOn(process.stdout, 'write')
+    const log = jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((() => {}) as any)
 
     sut.register({ name: 'foo' } as App.Command)
     sut.register({ name: 'bar' } as App.Command)

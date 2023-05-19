@@ -14,35 +14,15 @@ type Http = Record<
   ) => Promise<unknown>
 >
 
-const a = axios.create({
-  validateStatus: () => true
-})
-
-const http: Http = {
-  async get(url, headers) {
-    const { data } = await a.get(url, { headers })
-    return data
-  },
-  async post(url, headers, body) {
-    const { data } = await a.post(url, body, { headers })
-    return data
-  },
-  async put(url, headers, body) {
-    const { data } = await a.put(url, body, { headers })
-    return data
-  },
-  async delete(url, headers) {
-    const { data } = await a.delete(url, { headers })
-    return data
-  }
-}
-
 async function httpCommand(params: string[]): Promise<void> {
   const [method, urlParams] = getMethod(params)
   const [url, bodyHeadersParams] = getUrl(urlParams)
   const body = getBody(bodyHeadersParams)
   const headers = getHeaders(bodyHeadersParams)
+
+  const http = createHttp()
   const result = await http[method](url, headers, body)
+
   if (!isSilent() && result) {
     console.log(result)
   }
@@ -118,6 +98,31 @@ function parseValue(value: any): unknown {
     return parseFloat(value)
   } else {
     return value.replace('+', ' ')
+  }
+}
+
+function createHttp(): Http {
+  const a = axios.create({
+    validateStatus: () => true
+  })
+
+  return {
+    async get(url, headers) {
+      const { data } = await a.get(url, { headers })
+      return data
+    },
+    async post(url, headers, body) {
+      const { data } = await a.post(url, body, { headers })
+      return data
+    },
+    async put(url, headers, body) {
+      const { data } = await a.put(url, body, { headers })
+      return data
+    },
+    async delete(url, headers) {
+      const { data } = await a.delete(url, { headers })
+      return data
+    }
   }
 }
 
