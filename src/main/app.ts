@@ -3,7 +3,7 @@ import { InvalidParamError } from '@/utils/errors'
 import colors from 'picocolors'
 
 export class App {
-  private readonly commands: App.Command[] = []
+  public readonly commands: App.Command[] = []
 
   public register(command: App.Command): void {
     this.commands.push(command)
