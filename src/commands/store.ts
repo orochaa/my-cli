@@ -1,20 +1,22 @@
 import { App } from '@/main/app'
 import { isSilent } from '@/utils/cmd'
 import { Lockfile, readLockfile, writeLockfile } from '@/utils/file-system'
-import { mergeObjects, objectEntries, objectKeys } from '@/utils/mappers'
+import {
+  convertToJSON,
+  mergeObjects,
+  objectEntries,
+  objectKeys
+} from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
 async function storeCommand(params: string[]): Promise<void> {
   const lockfile = readLockfile()
-  const store: Record<string, unknown> = {}
+  let store: Record<string, unknown> = {}
   const result: Record<string, unknown> = {}
 
   if (params.length) {
-    params.forEach(param => {
-      const [key, value] = param.split('=')
-      store[key] = value
-    })
+    store = convertToJSON(params)
   } else {
     await storePrompt(store, lockfile)
   }
@@ -59,8 +61,8 @@ export function storeRecord(app: App): void {
     name: 'store',
     alias: null,
     params: ['<key>=<value>'],
-    description: 'Save a key=value on a local json file',
-    example: 'my store git=user',
+    description: 'Save a key1=value on a local json file',
+    example: 'my store key1=foo key2.subset1=bar',
     action: storeCommand
   })
 }

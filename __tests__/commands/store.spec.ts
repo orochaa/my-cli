@@ -1,9 +1,9 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import { existsSync, rmSync } from 'fs'
-import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => 'any'),
@@ -41,23 +41,29 @@ describe('store', () => {
   })
 
   it('should store key-value of params', async () => {
-    mockParams('git=any-git')
+    mockParams('key1=foo key2.subset1=bar')
 
     await sut.exec()
 
     expect(readLockfile()).toStrictEqual({
-      git: 'any-git'
+      key1: 'foo',
+      key2: {
+        subset1: 'bar'
+      }
     })
   })
 
   it('should delete empty key of params', async () => {
     writeLockfile({
-      git: 'any'
+      key1: 'foo',
+      key2: 'bar'
     })
-    mockParams('git=')
 
+    mockParams('key1=')
     await sut.exec()
 
-    expect(readLockfile()).toStrictEqual({})
+    expect(readLockfile()).toStrictEqual({
+      key2: 'bar'
+    })
   })
 })
