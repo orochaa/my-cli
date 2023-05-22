@@ -54,7 +54,7 @@ describe('http', () => {
 
   it('should parse nested body', async () => {
     mockParams(
-      'post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World'
+      'post /user key1=1 key2.subset1=true key2.subset2=false key3=Hello+World key4.subset1.subset2=3.14'
     )
     await sut.exec()
 
@@ -64,9 +64,14 @@ describe('http', () => {
         key1: 1,
         key2: {
           subset1: true,
-          subset2: 3.14
+          subset2: false
         },
-        key3: 'Hello World'
+        key3: 'Hello World',
+        key4: {
+          subset1: {
+            subset2: 3.14
+          }
+        }
       }),
       {
         headers: {}

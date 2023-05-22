@@ -61,9 +61,33 @@ describe('App', () => {
       .spyOn(process.stdout, 'write')
       .mockImplementation((() => {}) as any)
 
-    sut.register({ name: 'foo' } as App.Command)
-    sut.register({ name: 'bar' } as App.Command)
-    sut.register({ name: 'baz' } as App.Command)
+    sut.register({
+      name: 'foo',
+      action: async () => {},
+      alias: ' ',
+      description: ' ',
+      example: 'my ',
+      params: [' '],
+      flags: [' ']
+    })
+    sut.register({
+      name: 'bar',
+      action: async () => {},
+      alias: ' ',
+      description: ' ',
+      example: 'my ',
+      params: [' '],
+      flags: [' ']
+    })
+    sut.register({
+      name: 'baz',
+      action: async () => {},
+      alias: ' ',
+      description: ' ',
+      example: 'my ',
+      params: [' '],
+      flags: [' ']
+    })
     sut.displayCommands()
 
     expect(log).toHaveBeenCalledWith(

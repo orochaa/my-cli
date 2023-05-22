@@ -1,6 +1,7 @@
 import { App } from '@/main/app'
 import { errorHandler, isSilent } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
+import { convertToJSON } from '@/utils/mappers'
 import axios from 'axios'
 
 type Method = 'get' | 'post' | 'put' | 'delete'
@@ -68,39 +69,6 @@ function getHeaders(params: string[]): Record<string, string> {
   return convertToJSON(headerParams) as Record<string, string>
 }
 
-function convertToJSON(keyValueList: string[]): Record<string, unknown> {
-  const result: Record<string, unknown> = {}
-
-  for (let item of keyValueList) {
-    const [keys, value] = item.split('=')
-    const nestedKeys = keys.split('.')
-
-    let currentObject: any = result
-
-    for (let i = 0; i < nestedKeys.length - 1; i++) {
-      const key = nestedKeys[i]
-      currentObject[key] = currentObject[key] || {}
-      currentObject = currentObject[key]
-    }
-
-    currentObject[nestedKeys[nestedKeys.length - 1]] = parseValue(value)
-  }
-
-  return result
-}
-
-function parseValue(value: any): unknown {
-  if (value === 'true') {
-    return true
-  } else if (value === 'false') {
-    return false
-  } else if (!isNaN(value)) {
-    return parseFloat(value)
-  } else {
-    return value.replace('+', ' ')
-  }
-}
-
 function createHttp(): Http {
   const a = axios.create({
     validateStatus: () => true
@@ -133,7 +101,7 @@ export function httpRecord(app: App): void {
     params: ['<method?> <url> <body?> <headers?>'],
     description: 'Make an http request',
     example:
-      'my http post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World',
+      'my http post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World h.authorization=token',
     action: httpCommand
   })
 }

@@ -38,3 +38,36 @@ export function mergeObjects<T extends Record<string, unknown>[]>(
     })
   return result as MergeObjects<T>
 }
+
+export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
+  const result: Record<string, unknown> = {}
+
+  for (let item of keyValueList) {
+    const [keys, value] = item.split('=')
+    const nestedKeys = keys.split('.')
+
+    let currentObject: any = result
+
+    for (let i = 0; i < nestedKeys.length - 1; i++) {
+      const key = nestedKeys[i]
+      currentObject[key] = currentObject[key] || {}
+      currentObject = currentObject[key]
+    }
+
+    currentObject[nestedKeys[nestedKeys.length - 1]] = parseValue(value)
+  }
+
+  return result
+}
+
+function parseValue(value: any): unknown {
+  if (value === 'true') {
+    return true
+  } else if (value === 'false') {
+    return false
+  } else if (!isNaN(value)) {
+    return parseFloat(value)
+  } else {
+    return value.replace('+', ' ')
+  }
+}
