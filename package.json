@@ -30,7 +30,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development tsx src/index.ts",
     "my": "run-s \"dev {@}\" --",
-    "lint": "tsc && prettier --write .",
+    "lint": "tsc --noEmit && prettier --write .",
     "build": "unbuild",
     "test": "jest --no-cache",
     "test:w": "npm test -- --watch",
