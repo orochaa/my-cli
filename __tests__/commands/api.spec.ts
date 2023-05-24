@@ -1,7 +1,7 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { createApi } from '@mist3rbru/create-ts-api'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => 'my-api')
@@ -10,8 +10,6 @@ jest.mock('@clack/prompts', () => ({
 jest.mock('@mist3rbru/create-ts-api', () => ({
   createApi: jest.fn(async () => {})
 }))
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('api', () => {
   const sut = makeSut('api')

@@ -1,6 +1,7 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
+import { InvalidParamError } from '@/utils/errors'
 import cp from 'node:child_process'
-import { makeSut } from '../mocks/make-sut'
 
 const players = [
   {
@@ -18,8 +19,6 @@ jest.mock('@clack/prompts', () => ({
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('play', () => {
   const sut = makeSut('play')
@@ -56,8 +55,6 @@ describe('play', () => {
   it('should not open invalid players', async () => {
     mockParams('invalid-player')
 
-    await sut.exec()
-
-    expect(process.exit).toHaveBeenCalledTimes(1)
+    expect(sut.exec()).rejects.toThrowError(InvalidParamError)
   })
 })

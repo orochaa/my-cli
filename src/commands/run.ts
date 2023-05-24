@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { errorHandler, exec } from '@/utils/cmd'
+import { exec } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { PackageJson, getPackageJson } from '@/utils/file-system'
@@ -31,11 +31,11 @@ function run(scripts: string[]): void {
 function shallowRun(scripts: string[]): void {
   const packageJson = getPackageJson()
   if (!packageJson?.scripts) {
-    return errorHandler(new NotFoundError('packageJson.scripts'))
+    throw new NotFoundError('packageJson.scripts')
   }
   for (const script of scripts) {
     if (!packageJson.scripts[script]) {
-      return errorHandler(new NotFoundError(script))
+      throw new NotFoundError(script)
     }
   }
   run(scripts)
@@ -55,7 +55,7 @@ function deepRun(scripts: string[]): void {
 async function promptRun(): Promise<void> {
   const packageJson = getPackageJson()
   if (!packageJson?.scripts) {
-    return errorHandler(new NotFoundError('packageJson.scripts'))
+    throw new NotFoundError('packageJson.scripts')
   }
   run(await runPrompt(packageJson))
 }

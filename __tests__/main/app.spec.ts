@@ -1,22 +1,24 @@
 import { App } from '@/main/app'
+import { InvalidParamError } from '@/utils/errors'
 import picocolors from 'picocolors'
 
 const makeSut = () => {
   return new App()
 }
 
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
-
 describe('App', () => {
-  it('should not exec unknown command', () => {
+  it('should not exec unknown command', async () => {
     const sut = makeSut()
+    const errorHandlerSpy = jest
+      .spyOn(sut, 'errorHandler')
+      .mockImplementation((() => {}) as any)
 
-    sut.exec('foo')
+    await sut.exec('foo')
 
-    expect(process.exit).toHaveBeenCalledTimes(1)
+    expect(errorHandlerSpy).toHaveBeenCalledTimes(1)
   })
 
-  it('should exec known command', () => {
+  it('should exec known command', async () => {
     const sut = makeSut()
     let data
 
@@ -27,7 +29,7 @@ describe('App', () => {
       }
     } as App.Command)
     process.argv = ['node', 'index.js', 'foo', 'bar', '--baz']
-    sut.exec('foo')
+    await sut.exec('foo')
 
     expect(data).toStrictEqual({
       params: ['bar'],
@@ -35,7 +37,7 @@ describe('App', () => {
     })
   })
 
-  it('should exec known command by alias', () => {
+  it('should exec known command by alias', async () => {
     const sut = makeSut()
     let data
 
@@ -47,7 +49,7 @@ describe('App', () => {
       }
     } as App.Command)
     process.argv = ['node', 'index.js', 'f', 'bar', '--baz']
-    sut.exec('f')
+    await sut.exec('f')
 
     expect(data).toStrictEqual({
       params: ['bar'],
@@ -55,7 +57,20 @@ describe('App', () => {
     })
   })
 
-  it('should display all known commands', () => {
+  it('should throw on error', async () => {
+    const sut = makeSut()
+
+    sut.register({
+      name: 'foo',
+      action: async (params, flags): Promise<void> => {
+        throw new Error('')
+      }
+    } as App.Command)
+
+    expect(sut.exec('foo')).rejects.toThrow()
+  })
+
+  it('should display all known commands', async () => {
     const sut = makeSut()
     const log = jest
       .spyOn(process.stdout, 'write')

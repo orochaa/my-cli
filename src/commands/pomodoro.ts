@@ -1,5 +1,4 @@
 import { App } from '@/main/app'
-import { errorHandler } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { block, verifyPromptResponse } from '@/utils/prompt'
 import color from 'picocolors'
@@ -24,7 +23,7 @@ async function pomodoroCommand(params: string[]): Promise<void> {
       for (let i = 0; i < 2; i++) {
         const error = verifyPeriod(times[i])
         if (error) {
-          return errorHandler(error)
+          throw error
         }
       }
       controller.work = times[0]

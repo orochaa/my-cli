@@ -1,9 +1,10 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd } from '@/utils/constants'
+import { NotFoundError } from '@/utils/errors'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 const mock = 'test-delete.mock'
 const mockPath = join(cwd, mock)
@@ -61,11 +62,7 @@ describe('remove', () => {
   it('should verify param item', async () => {
     rmSync(mockPath)
     mockParams(mock)
-    const exitSpy = jest.spyOn(global.process, 'exit')
-    exitSpy.mockImplementation(() => ({} as never))
 
-    await sut.exec()
-
-    expect(exitSpy).toHaveBeenCalledTimes(1)
+    expect(sut.exec()).rejects.toThrowError(NotFoundError)
   })
 })

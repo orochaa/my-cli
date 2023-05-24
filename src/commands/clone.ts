@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { errorHandler, exec } from '@/utils/cmd'
+import { exec } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { readLockfile } from '@/utils/file-system'
@@ -31,7 +31,7 @@ async function cloneCommand(params: string[]): Promise<void> {
   if (params.length) {
     const foundRepo = repositories.find(repo => repo.name === params[0])
     if (!foundRepo) {
-      return errorHandler(new NotFoundError(params[0]))
+      throw new NotFoundError(params[0])
     }
     repo = foundRepo
   } else {

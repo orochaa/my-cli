@@ -1,11 +1,10 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd } from '@/utils/constants'
+import { NotFoundError } from '@/utils/errors'
 import cp from 'node:child_process'
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { makeSut } from '../mocks/make-sut'
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 jest.mock('@clack/prompts', () => ({
   multiselect: jest.fn(async () => ['lint', 'build'])
@@ -23,22 +22,18 @@ describe('run', () => {
   describe('shallowRun', () => {
     it('should verify package.json scripts', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
-
       mockParams('lint')
-      await sut.exec()
 
-      expect(process.exit).toHaveBeenCalledTimes(1)
+      expect(sut.exec()).rejects.toThrowError(NotFoundError)
     })
 
     it('should verify if script exists in package.json', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({
         scripts: {}
       })
-
       mockParams('lint')
-      await sut.exec()
 
-      expect(process.exit).toHaveBeenCalledTimes(1)
+      expect(sut.exec()).rejects.toThrowError(NotFoundError)
     })
 
     it('should run scripts', async () => {
@@ -107,17 +102,13 @@ describe('run', () => {
     it('should verify package.json', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
 
-      await sut.exec()
-
-      expect(process.exit).toHaveBeenCalledTimes(1)
+      expect(sut.exec()).rejects.toThrowError(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
 
-      await sut.exec()
-
-      expect(process.exit).toHaveBeenCalledTimes(1)
+      expect(sut.exec()).rejects.toThrowError(NotFoundError)
     })
 
     it("should run prompt's selected scripts", async () => {

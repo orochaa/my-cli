@@ -8,14 +8,18 @@ async function main(): Promise<void> {
   const lockfile: Partial<Lockfile> = verifyLockfile() ? readLockfile() : {}
   const cmdCommand = process.argv[2]
 
-  if (cmdCommand !== 'setup' && !(lockfile.git && lockfile.projects)) {
-    await app.exec('setup')
-  }
+  try {
+    if (cmdCommand !== 'setup' && !(lockfile.git && lockfile.projects)) {
+      await app.exec('setup')
+    }
 
-  if (process.argv.length > 2) {
-    await app.exec(cmdCommand)
-  } else {
-    app.displayCommands()
+    if (process.argv.length > 2) {
+      await app.exec(cmdCommand)
+    } else {
+      app.displayCommands()
+    }
+  } catch (error) {
+    app.errorHandler(error)
   }
 }
 

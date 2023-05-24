@@ -1,10 +1,10 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import axios from 'axios'
 import { existsSync, rmSync } from 'fs'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 const mock = {
   git: 'any',
@@ -40,8 +40,6 @@ jest.mock('axios', () => ({
     }
   }))
 }))
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('setup', () => {
   const sut = makeSut('setup')

@@ -1,4 +1,4 @@
-import { errorHandler } from '@/utils/cmd'
+import { isSilent } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import colors from 'picocolors'
 
@@ -9,36 +9,17 @@ export class App {
     this.commands.push(command)
   }
 
-  private getCommand(name: string): App.Command | null {
-    let command: App.Command | null = null
-
-    for (const _command of this.commands) {
-      if (_command.name === name) {
-        command = _command
-        break
-      } else if (_command.alias && _command.alias === name) {
-        command = _command
-        break
-      }
-    }
-
-    return command
-  }
-
   public async exec(name: string): Promise<void> {
     const command = this.getCommand(name)
     if (!command) {
-      return errorHandler(new InvalidParamError(name))
+      return this.errorHandler(new InvalidParamError(name))
     }
 
     const args = process.argv.slice(3)
     const params = args.filter(arg => !/^-/.test(arg))
     const flags = args.filter(arg => /^-/.test(arg))
-    await command.action(params, flags)
-  }
 
-  private log(msg: string): void {
-    process.stdout.write(msg)
+    return command.action(params, flags)
   }
 
   public displayCommands(): void {
@@ -66,6 +47,35 @@ export class App {
       this.log(`  example: ${command.example}\n`)
       this.log('\n')
     }
+  }
+
+  public errorHandler(error: Error): never {
+    if (!isSilent()) {
+      this.log(`${error.name}: `)
+      this.log(error.message)
+      this.log('\n')
+    }
+    process.exit(0)
+  }
+
+  private log(msg: string): void {
+    process.stdout.write(msg)
+  }
+
+  private getCommand(name: string): App.Command | null {
+    let command: App.Command | null = null
+
+    for (const _command of this.commands) {
+      if (_command.name === name) {
+        command = _command
+        break
+      } else if (_command.alias && _command.alias === name) {
+        command = _command
+        break
+      }
+    }
+
+    return command
   }
 }
 

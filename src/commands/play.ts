@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { errorHandler, exec } from '@/utils/cmd'
+import { exec } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { objectEntries, objectValues } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
@@ -28,7 +28,7 @@ async function playCommand(params: string[]): Promise<void> {
       }
     }
     if (!player) {
-      return errorHandler(new InvalidParamError('player'))
+      throw new InvalidParamError('player')
     }
   } else {
     player = await playPrompt()

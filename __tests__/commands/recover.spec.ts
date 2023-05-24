@@ -1,16 +1,15 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { lockfilePath } from '@/utils/constants'
+import { NotFoundError } from '@/utils/errors'
 import { writeLockfile } from '@/utils/file-system'
 import { existsSync, rmSync } from 'node:fs'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'any-git'),
   outro: jest.fn()
 }))
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('recover', () => {
   const sut = makeSut('recover')
@@ -58,8 +57,6 @@ describe('recover', () => {
   it('should verify lockfile length', async () => {
     writeLockfile({})
 
-    await sut.exec()
-
-    expect(process.exit).toHaveBeenCalledTimes(1)
+    expect(sut.exec()).rejects.toThrowError(NotFoundError)
   })
 })

@@ -1,10 +1,9 @@
 import { App } from '@/main/app'
-import { errorHandler } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
-const specials = '!@#$%^&*()_+{}:"<>?|[];\',./`~'
+const specials = '!@#$%&_?.'
 const lowercase = 'abcdefghijklmnopqrstuvwxyz'
 const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const numbers = '0123456789'
@@ -17,7 +16,7 @@ async function passwordCommand(params: string[]): Promise<void> {
     const length = Number(params[0])
 
     const error = verifyPasswordLength(length)
-    if (error) return errorHandler(error)
+    if (error) throw error
 
     passwordLength = length
   } else {

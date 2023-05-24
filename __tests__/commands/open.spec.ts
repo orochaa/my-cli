@@ -1,9 +1,9 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
 import { existsSync, readdirSync, rmSync } from 'node:fs'
-import { makeSut } from '../mocks/make-sut'
 
 const projects = readdirSync(cwd).filter(folder => !/\.\w+$/.test(folder))
 

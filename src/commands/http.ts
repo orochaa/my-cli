@@ -1,6 +1,6 @@
 import { App } from '@/main/app'
-import { errorHandler, isSilent } from '@/utils/cmd'
-import { InvalidParamError } from '@/utils/errors'
+import { isSilent } from '@/utils/cmd'
+import { InvalidParamError, MissingParamError } from '@/utils/errors'
 import { convertToJSON } from '@/utils/mappers'
 import axios from 'axios'
 
@@ -46,7 +46,7 @@ function getUrl(params: string[]): [string, string[]] {
   } else if (url.startsWith(':')) {
     url = `http://localhost${url}`
   } else if (!/https?:\/\//.test(url)) {
-    errorHandler(new InvalidParamError('request'))
+    throw new InvalidParamError('request')
   }
   return [url, rest]
 }

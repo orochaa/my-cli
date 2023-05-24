@@ -1,5 +1,4 @@
 import { App } from '@/main/app'
-import { errorHandler } from '@/utils/cmd'
 import { NotFoundError } from '@/utils/errors'
 import { Lockfile, readLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
@@ -29,7 +28,7 @@ async function recoverCommand(params: string[]): Promise<void> {
 async function recoverPrompt(lockfile: Lockfile): Promise<string | string[]> {
   const lockEntries = objectEntries(lockfile)
   if (!lockEntries.length) {
-    errorHandler(new NotFoundError('stored data'))
+    throw new NotFoundError('stored data')
   }
   const response = await p.select({
     message: 'Select the key you want to recover:',
