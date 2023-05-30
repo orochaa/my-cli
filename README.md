@@ -10,53 +10,52 @@ A compilation of my CLI snippets.
 
 ## Commands
 
-- `setup`: prepare the required setup.
-  - usage: `my setup`
-- `remove`: remove recursively a folder or file on the relative given path.
-  - usage: `my remove` | `my remove dist` | `my remove ./dist`
-  - alias:
-    - remove: `rm`
-- `store`: save a key=value on a local json file.
-  - usage: `my store` | `my store key=value`
-- `recover`: return the value of a saved key.
-  - usage: `my recover` | `my recover key`
-- `password`: generate a random and safe password with the given length.
-  - usage: `my password` | `my password 20`
-  - alias:
-    - password: `pass`
-- `init`: initialize a default project with git and typescript.
-  - usage: `my init`
-- `api`: create an api with typescript, prettier, eslint and jest with opined configuration.
-  - usage: `my api` | `my api my-app`
-- `open`: open a project on vscode, the projects available are based on `setup`
-  - usage: `my open` | `my open my-app other-app`
-- `run`: run scripts from project's package.json in sequence.
-  - usage: `my run` | `my run lint build test`
-- `branch`: list all local and remote branches, to select and checkout to it.
-  - usage: `my branch`
-  - alias:
-    - branch: `b`
-- `clone`: clone a Github's repository based on `setup`.
-  - usage: `my clone` | `my clone repository`
-- `play`: open a music player on your default browser.
-  - usage: `my play` | `my play spotify`
-  - alias:
-    - youtube: `y` | `yt`
-    - spotify: `s` | `spot`
-- `pomodoro`: start a pomodoro timer.
-  - usage: `my pomodoro` | `my pomodoro 25 5`
-  - alias:
-    - pomodoro: `pomo`
-    - 25 5: `d`
-- `outdated`: check if package is on latest version.
-  - usage: `my outdated`
-- `upgrade`: update package to latest version.
-  - usage: `my upgrade`
-  - alias:
-    - upgrade: `up`
-- `http`: do an http request to the given endpoint
-  - usage: `my http <method?> <url> <body?>... <headers?>...`
-    - method: `get` | `post` | `put` | `delete`
-    - url: `/<uri>` | `:<port>/<uri>` | `http://<host>:<port>/<uri>`
-    - body: `<key>=<value>`
-    - headers: `h.<key>=<value>`
+- `setup`: Prepare the required setup
+  - example: my setup
+- `remove`: Remove recursively a folder or file on the relative given path
+  - alias: `rm`
+  - params: `<folder | file>...`
+  - example: my rm dist coverage
+- `store`: Save a key1=value on a local json file
+  - params: `<key>=<value>`
+  - example: my store key1=foo key2.subset1=bar
+- `recover`: Return the value of a saved key
+  - params: `<key>...`
+  - example: my recover git projects
+- `password`: Generate a random and safe password with the given length
+  - alias: `pass`
+  - params: `<length>`
+  - example: my pass 30
+- `init`: Initialize a default project with git and typescript
+  - example: my init
+- `api`: Create an api with typescript, prettier, eslint and jest with opined configuration
+  - params: `<name>`
+  - example: my api ts-api
+- `open`: Open a project on vscode, the projects available are based on `setup`
+  - params: `<project>...`
+  - example: my open my-cli my-app my-api
+- `run`: Run scripts from project's package.json in sequence
+  - params: `<script>...`
+  - flags: `--deep` | `-D`
+  - example: my run lint build test
+- `clone`: Clone a Github's repository based on `setup`
+  - params: `<repository>`
+  - example: my clone my-cli
+- `play`: Open a music player on your default browser
+  - params: `yt` | `spotify`
+  - example: my play yt
+- `pomodoro`: Start a pomodoro timer
+  - alias: `pomo`
+  - params: `d` | `<work> <rest>`
+  - example: my pomo d
+- `outdated`: Check if package is on latest version
+  - example: my outdated
+- `upgrade`: Update package to latest version
+  - alias: `up`
+  - example: my up
+- `branch`: List all local and remote branches, to select and checkout to it
+  - alias: `b`
+  - example: my b
+- `http`: Make an http request
+  - params: `<method?> <url> <body?> <headers?>`
+  - example: my http post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World h.authorization=token

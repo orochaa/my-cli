@@ -3,6 +3,8 @@ __tests__/
 .changeset/
 .github/
 .vscode/
+scripts/
+
 src/
 
 .editorconfig
