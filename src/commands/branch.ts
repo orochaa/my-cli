@@ -4,26 +4,20 @@ import { verifyPromptResponse } from '@/utils/prompt'
 import * as p from '@clack/prompts'
 
 async function branchCommand(): Promise<void> {
-  const data = await execAsync('git branch -a')
-  const branches = data.split('\n').filter(Boolean)
+  const branchesData = await execAsync('git branch -a')
+  const branches = branchesData.split('\n').filter(Boolean)
 
-  const response = await p.select({
-    message: 'Select a branch:',
-    options: branches.map(branch => ({
-      label: branch,
-      value: branch
-    })),
-    initialValue: branches.find(branch => /^\*/.test(branch))
-  })
-  verifyPromptResponse(response)
+  const selectedBranch = await branchPrompt(branches)
 
-  if (/^\s*remote/.test(response)) {
-    exec(`git checkout -b ${formatRemoteBranch(response)}`)
-    exec(
-      `git pull ${formatRemoteOrigin(response)} ${formatRemoteBranch(response)}`
-    )
+  const isRemote = /^\s*remote/.test(selectedBranch)
+  if (isRemote) {
+    const remoteBrach = formatRemoteBranch(selectedBranch)
+    const remoteOrigin = formatRemoteOrigin(selectedBranch)
+    exec(`git checkout -b ${remoteBrach}`)
+    exec(`git pull ${remoteOrigin} ${remoteBrach}`)
   } else {
-    exec(`git checkout ${formatBranch(response)}`)
+    const branch = formatBranch(selectedBranch)
+    exec(`git checkout ${branch}`)
   }
 }
 
@@ -37,6 +31,19 @@ function formatRemoteBranch(response: string): string {
 
 function formatRemoteOrigin(response: string): string {
   return response.replace(/^\s*\w+\/(\w+).+/, '$1')
+}
+
+async function branchPrompt(branches: string[]): Promise<string> {
+  const response = await p.select({
+    message: 'Select a branch:',
+    options: branches.map(branch => ({
+      label: branch,
+      value: branch
+    })),
+    initialValue: branches.find(branch => /^\*/.test(branch))
+  })
+  verifyPromptResponse(response)
+  return response
 }
 
 export function branchRecord(app: App): void {

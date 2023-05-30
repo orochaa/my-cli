@@ -21,9 +21,9 @@ async function playCommand(params: string[]): Promise<void> {
 
   if (params.length) {
     const alias = params[0]
-    for (const data of objectValues(players)) {
-      if (data.aliases.includes(alias)) {
-        player = data.url
+    for (const playerData of objectValues(players)) {
+      if (playerData.aliases.includes(alias)) {
+        player = playerData.url
         break
       }
     }

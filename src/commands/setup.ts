@@ -30,61 +30,67 @@ type GitUser = {
 }
 
 async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
-  const s = p.spinner()
-  let repeat: boolean = false
+  const git = await gitPrompt(lockfile)
+  const projects = await projectsPrompt(lockfile)
+  return { git, projects }
+}
 
+async function gitPrompt(lockfile: Lockfile): Promise<string> {
+  const spinner = p.spinner()
+  let repeat: boolean = false
   let git: string = lockfile.git
+
   do {
     const response = await p.text({
-      message: 'What is your GitHub user name?',
+      message: 'What is your GitHub username?',
       initialValue: git
     })
     verifyPromptResponse(response)
     git = response
 
     try {
-      s.start('Validating user')
+      spinner.start('Validating user')
       const { data: user } = await axios.get<GitUser>(
         `https://api.github.com/users/${git}`
       )
-      s.stop(`User: ${user.login} | ${user.name}`)
+      spinner.stop(`User: ${user.login} | ${user.name}`)
       repeat = false
     } catch {
-      s.stop('Invalid user')
+      spinner.stop('Invalid user')
       repeat = true
     }
   } while (repeat)
 
+  return git
+}
+
+async function projectsPrompt(lockfile: Lockfile): Promise<string[]> {
   const projects: string[] = []
+  let repeat: boolean | symbol = false
+
   do {
-    const response = await p.group({
-      projectRoot: () =>
-        p.text({
-          message: 'What is your root projects path:',
-          initialValue: cwd.replace(/(^.*?)[\\/].+/, '$1').concat('/git'),
-          validate: res => {
-            try {
-              readdirSync(res)
-            } catch {
-              return new NotFoundError('path').message
-            }
-          }
-        }),
-      more: () =>
-        p.confirm({
-          message: 'Add more?',
-          initialValue: false
-        })
+    const projectRoot = await p.text({
+      message: 'What is your root projects path:',
+      initialValue: cwd.replace(/(^.*?)[\\/].+/, '$1').concat('/git'),
+      validate: res => {
+        try {
+          readdirSync(res)
+        } catch {
+          return new NotFoundError('path').message
+        }
+      }
     })
-    verifyPromptResponse(response)
-    projects.push(response.projectRoot)
-    repeat = response.more
+    verifyPromptResponse(projectRoot)
+    projects.push(projectRoot)
+
+    repeat = await p.confirm({
+      message: 'Do you want to add other root?',
+      initialValue: false
+    })
+    verifyPromptResponse(repeat)
   } while (repeat)
 
-  return {
-    git,
-    projects
-  }
+  return projects
 }
 
 export function setupRecord(app: App): void {

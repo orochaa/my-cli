@@ -58,6 +58,7 @@ async function removePrompt(): Promise<string[]> {
     verifyPromptResponse(response)
     paths = response.split(' ')
   }
+
   return paths
 }
 

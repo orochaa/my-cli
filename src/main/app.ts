@@ -16,15 +16,20 @@ export class App {
     }
 
     const args = process.argv.slice(3)
-    const params = args.filter(arg => !/^-/.test(arg))
-    const flags = args.filter(arg => /^-/.test(arg))
+    const params: string[] = []
+    const flags: string[] = []
+    for (const arg of args) {
+      if (arg.startsWith('-')) {
+        flags.push(arg)
+      } else {
+        params.push(arg)
+      }
+    }
 
     return command.action(params, flags)
   }
 
   public displayCommands(): void {
-    console.clear()
-
     this.log('# List of Commands\n')
     for (const command of this.commands) {
       this.log(`${colors.magenta('-')} command: ${colors.cyan(command.name)}\n`)

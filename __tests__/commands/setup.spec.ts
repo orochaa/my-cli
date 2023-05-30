@@ -20,16 +20,7 @@ jest.mock('@clack/prompts', () => ({
   spinner: jest.fn(() => ({
     start: startSpy,
     stop: stopSpy
-  })),
-  group: jest.fn(async (prompts: Record<string, () => Promise<any>>) => {
-    const result: any = {}
-    objectEntries(prompts).forEach(([key, cb]) => {
-      cb().then(res => {
-        result[key] = res
-      })
-    })
-    return result
-  })
+  }))
 }))
 
 jest.mock('axios', () => ({
@@ -56,19 +47,7 @@ describe('setup', () => {
     }
   })
 
-  it('should call prompts with default value', async () => {
-    writeLockfile(mock)
-    await sut.exec()
-
-    expect(p.text).toHaveBeenCalledTimes(2)
-    expect(p.text).toHaveBeenCalledWith({
-      message: expect.any(String),
-      initialValue: mock.git
-    })
-    expect(p.group).toHaveBeenCalledTimes(1)
-  })
-
-  it('should call prompts with default value', async () => {
+  it('should render git prompt with no default value', async () => {
     await sut.exec()
 
     expect(p.text).toHaveBeenCalledTimes(2)
@@ -78,14 +57,24 @@ describe('setup', () => {
     })
   })
 
+  it('should render git prompt with default value', async () => {
+    writeLockfile(mock)
+
+    await sut.exec()
+
+    expect(p.text).toHaveBeenCalledTimes(2)
+    expect(p.text).toHaveBeenCalledWith({
+      message: expect.any(String),
+      initialValue: mock.git
+    })
+  })
+
   it('should validate git user', async () => {
     const data = {
       login: 'user-login',
       name: 'user-name'
     }
-    ;(axios.get as jest.Mock).mockReturnValueOnce({
-      data
-    })
+    ;(axios.get as jest.Mock).mockResolvedValueOnce({ data })
 
     await sut.exec()
 

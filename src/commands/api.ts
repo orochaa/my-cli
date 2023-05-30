@@ -4,15 +4,15 @@ import { createApi } from '@mist3rbru/create-ts-api'
 import * as p from '@clack/prompts'
 
 async function apiCommand(params: string[]): Promise<void> {
-  let name: string
+  let apiName: string
 
   if (params.length) {
-    name = params[0]
+    apiName = params[0]
   } else {
-    name = await apiPrompt()
+    apiName = await apiPrompt()
   }
 
-  await createApi(name)
+  await createApi(apiName)
 }
 
 async function apiPrompt(): Promise<string> {

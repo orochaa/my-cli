@@ -1,6 +1,5 @@
 import { App } from '@/main/app'
-import { InvalidParamError } from '@/utils/errors'
-import picocolors from 'picocolors'
+import colors from 'picocolors'
 
 const makeSut = () => {
   return new App()
@@ -106,13 +105,13 @@ describe('App', () => {
     sut.displayCommands()
 
     expect(log).toHaveBeenCalledWith(
-      `${picocolors.magenta('-')} command: ${picocolors.cyan('foo')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`
     )
     expect(log).toHaveBeenCalledWith(
-      `${picocolors.magenta('-')} command: ${picocolors.cyan('bar')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('bar')}\n`
     )
     expect(log).toHaveBeenCalledWith(
-      `${picocolors.magenta('-')} command: ${picocolors.cyan('baz')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('baz')}\n`
     )
   })
 })

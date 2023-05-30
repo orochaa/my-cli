@@ -16,44 +16,28 @@ type Repository = {
 }
 
 async function cloneCommand(params: string[]): Promise<void> {
-  const username = readLockfile().git
-  let repo: Repository
-
-  const { data: repositories } = await axios.get<Repository[]>(
-    `https://api.github.com/users/${username}/repos`,
-    {
-      data: {
-        username
-      }
-    }
-  )
+  const repositories = await getUserRepositories()
+  const repositoryName = params[0]
+  let repository: Repository
 
   if (params.length) {
-    const foundRepo = repositories.find(repo => repo.name === params[0])
-    if (!foundRepo) {
-      throw new NotFoundError(params[0])
-    }
-    repo = foundRepo
-  } else {
-    repo = await clonePrompt(
-      repositories
-        .sort((a, b) => {
-          const date = [
-            new Date(a.updated_at).getTime(),
-            new Date(b.updated_at).getTime()
-          ]
-          return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
-        })
-        .slice(0, 10)
+    const foundRepository = repositories.find(
+      repository => repository.name === repositoryName
     )
+    if (!foundRepository) {
+      throw new NotFoundError(repositoryName)
+    }
+    repository = foundRepository
+  } else {
+    repository = await clonePrompt(repositories)
   }
 
-  const isNotCloned = !existsSync(join(cwd, repo.name))
+  const shouldClone = !existsSync(join(cwd, repository.name))
   exec(
     [
-      isNotCloned && `git clone ${repo.clone_url} ${repo.name}`,
-      `cd ${repo.name}`,
-      isNotCloned && 'git remote rename origin o',
+      shouldClone && `git clone ${repository.clone_url} ${repository.name}`,
+      `cd ${repository.name}`,
+      shouldClone && 'git remote rename origin o',
       'pnpm install',
       'code .'
     ]
@@ -62,14 +46,37 @@ async function cloneCommand(params: string[]): Promise<void> {
   )
 }
 
+async function getUserRepositories(): Promise<Repository[]> {
+  const username = readLockfile().git
+  const { data: repositories } = await axios.get<Repository[]>(
+    `https://api.github.com/users/${username}/repos`,
+    {
+      data: {
+        username
+      }
+    }
+  )
+  return repositories
+}
+
 async function clonePrompt(repositories: Repository[]): Promise<Repository> {
+  const sortedRepositories = repositories
+    .sort((a, b) => {
+      const date = [
+        new Date(a.updated_at).getTime(),
+        new Date(b.updated_at).getTime()
+      ]
+      return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
+    })
+    .slice(0, 10)
+
   const response = await p.select({
     message: 'Select one of your repositories:',
-    options: repositories.map(d => ({
-      label: d.name,
-      value: d
+    options: sortedRepositories.map(repository => ({
+      label: repository.name,
+      value: repository
     })),
-    initialValue: repositories[0]
+    initialValue: sortedRepositories[0]
   })
   verifyPromptResponse(response)
   return response

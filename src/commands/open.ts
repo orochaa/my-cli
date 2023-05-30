@@ -12,19 +12,20 @@ async function openCommand(params: string[]): Promise<void> {
   const controller: Record<string, string[]> = {}
   let projects: string[] = []
 
-  for (const path of lockfile.projects) {
-    controller[path] = readdirSync(path)
+  for (const projectsRoot of lockfile.projects) {
+    const projectsFolders = readdirSync(projectsRoot)
+    controller[projectsRoot] = projectsFolders
   }
 
   if (params.length) {
     const controllerEntries = objectEntries(controller)
-    controllerEntries.forEach(([root, folders]) => {
-      params.forEach(param => {
+    for (const [root, folders] of controllerEntries) {
+      for (const param of params) {
         if (folders.includes(param)) {
           projects.push(join(root, param))
         }
-      })
-    })
+      }
+    }
   } else {
     projects = await openPrompt(controller)
   }

@@ -13,14 +13,14 @@ import * as p from '@clack/prompts'
 async function storeCommand(params: string[]): Promise<void> {
   const lockfile = readLockfile()
   let store: Record<string, unknown> = {}
-  const result: Record<string, unknown> = {}
 
   if (params.length) {
     store = convertToJSON(params)
   } else {
-    await storePrompt(store, lockfile)
+    store = await storePrompt(lockfile)
   }
 
+  const result: Record<string, unknown> = {}
   mergeObjects(result, lockfile, store)
   pruneData(result)
   writeLockfile(result)
@@ -31,9 +31,8 @@ async function storeCommand(params: string[]): Promise<void> {
 }
 
 async function storePrompt(
-  store: Record<string, unknown>,
   lockfile: Lockfile
-): Promise<void> {
+): Promise<Record<string, unknown>> {
   const response = await p.group({
     key: () =>
       p.text({
@@ -47,7 +46,8 @@ async function storePrompt(
       })
   })
   verifyPromptResponse(response)
-  store[response.key] = response.value
+
+  return { [response.key]: response.value }
 }
 
 function pruneData(data: Record<string, unknown>): void {

@@ -1,7 +1,7 @@
 import { App } from '@/main/app'
 import { InvalidParamError } from '@/utils/errors'
 import { block, verifyPromptResponse } from '@/utils/prompt'
-import color from 'picocolors'
+import colors from 'picocolors'
 import * as p from '@clack/prompts'
 
 type PomodoroPeriod = 'work' | 'rest'
@@ -125,7 +125,7 @@ function concatTime(...time: number[]): string {
 }
 
 function display(...time: string[]): string {
-  return time.join(color.blue(' | '))
+  return time.join(colors.blue(' | '))
 }
 
 export function pomodoroRecord(app: App): void {

@@ -7,40 +7,36 @@ import * as p from '@clack/prompts'
 
 async function recoverCommand(params: string[]): Promise<void> {
   const lockfile = readLockfile()
-  let value: string | string[]
+  let values: string[] = []
 
   if (params.length) {
-    const key = process.argv[3]
-    value = lockfile[key]
+    for (const param of params) {
+      const key = param
+      values.push(String(lockfile[key]))
+    }
   } else {
-    value = await recoverPrompt(lockfile)
+    values = await recoverPrompt(lockfile)
   }
 
-  if (!value || typeof value === 'string') {
-    p.outro(String(value))
-  } else {
-    value.forEach(v => {
-      p.outro(String(v))
-    })
+  for (const value of values) {
+    p.outro(value)
   }
 }
 
-async function recoverPrompt(lockfile: Lockfile): Promise<string | string[]> {
+async function recoverPrompt(lockfile: Lockfile): Promise<string[]> {
   const lockEntries = objectEntries(lockfile)
   if (!lockEntries.length) {
     throw new NotFoundError('stored data')
   }
-  const response = await p.select({
+  const response = (await p.multiselect({
     message: 'Select the key you want to recover:',
     options: lockEntries.map(([label, value]) => ({
       label,
-      value: value as string
+      value: String(value)
     })),
-    initialValue: lockfile.git
-  })
-
+    required: true
+  })) as symbol | string[]
   verifyPromptResponse(response)
-
   return response
 }
 
@@ -48,9 +44,9 @@ export function recoverRecord(app: App): void {
   app.register({
     name: 'recover',
     alias: null,
-    params: ['<key>'],
+    params: ['<key>...'],
     description: 'Return the value of a saved key',
-    example: 'my recover git',
+    example: 'my recover git projects',
     action: recoverCommand
   })
 }

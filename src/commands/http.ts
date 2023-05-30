@@ -1,6 +1,6 @@
 import { App } from '@/main/app'
 import { isSilent } from '@/utils/cmd'
-import { InvalidParamError, MissingParamError } from '@/utils/errors'
+import { InvalidParamError } from '@/utils/errors'
 import { convertToJSON } from '@/utils/mappers'
 import axios from 'axios'
 
@@ -17,9 +17,11 @@ type Http = Record<
 
 async function httpCommand(params: string[]): Promise<void> {
   const [method, urlParams] = getMethod(params)
-  const [url, bodyHeadersParams] = getUrl(urlParams)
-  const body = getBody(bodyHeadersParams)
-  const headers = getHeaders(bodyHeadersParams)
+  const [url, bodyAndHeadersParams] = getUrl(urlParams)
+  const [bodyParams, headerParams] =
+    splitBodyAndHeaderParams(bodyAndHeadersParams)
+  const body = getBody(bodyParams)
+  const headers = getHeaders(headerParams)
 
   const http = createHttp()
   const result = await http[method](url, headers, body)
@@ -41,21 +43,22 @@ function getMethod(params: string[]): [Method, string[]] {
 function getUrl(params: string[]): [string, string[]] {
   let url: string = params[0]
   const rest = params.slice(1)
+
   if (url.startsWith('/')) {
     url = `http://localhost:3000${url}`
   } else if (url.startsWith(':')) {
     url = `http://localhost${url}`
   } else if (!/https?:\/\//.test(url)) {
-    throw new InvalidParamError('request')
+    throw new InvalidParamError('url')
   }
+
   return [url, rest]
 }
 
-function getBody(params: string[]): string {
-  if (!params[0]) {
+function getBody(bodyParams: string[]): string {
+  if (!bodyParams[0]) {
     return '{}'
   }
-  const bodyParams = params.filter(p => !/^h\./.test(p))
   return JSON.stringify(convertToJSON(bodyParams))
 }
 
@@ -63,10 +66,23 @@ function getHeaders(params: string[]): Record<string, string> {
   if (!params[0]) {
     return {}
   }
-  const headerParams = params
-    .filter(p => p.startsWith('h.'))
-    .map(p => p.replace(/^h\./, ''))
+  const headerParams = params.map(p => p.replace(/^h\./, ''))
   return convertToJSON(headerParams) as Record<string, string>
+}
+
+function splitBodyAndHeaderParams(params: string[]): [string[], string[]] {
+  const bodyParams: string[] = []
+  const headersParams: string[] = []
+
+  for (const param of params) {
+    if (param.startsWith('h.')) {
+      headersParams.push(param)
+    } else {
+      bodyParams.push(param)
+    }
+  }
+
+  return [bodyParams, headersParams]
 }
 
 function createHttp(): Http {
