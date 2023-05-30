@@ -35,7 +35,8 @@
     "test": "jest",
     "test:w": "npm test -- --watch",
     "test:ci": "npm test -- --coverage --silent",
-    "ci": "run-s lint build test",
+    "docs": "tsx scripts/docs",
+    "ci": "run-s lint build test docs",
     "publish": "changeset publish",
     "release": "run-s ci publish"
   },
