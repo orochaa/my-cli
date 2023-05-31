@@ -21,7 +21,9 @@ function run(): void {
   const app = setupApp()
 
   for (const command of app.commands) {
-    newReadmeContent.push(`- ${highlight(command.name)}: ${command.description}`)
+    newReadmeContent.push(
+      `- ${highlight(command.name)}: ${command.description}`
+    )
     if (command.alias)
       newReadmeContent.push(`  - alias: ${highlight(command.alias)}`)
 
