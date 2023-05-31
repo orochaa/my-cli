@@ -3,7 +3,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cwd } from 'node:process'
 
-async function run(): Promise<void> {
+function run(): void {
   const readmePath = join(cwd(), 'README.md')
   if (!existsSync(readmePath)) {
     throw new Error('README file not found')
@@ -45,7 +45,4 @@ function highlight(text: string | string[]): string {
   return text.map(t => `\`${t}\``).join(' | ')
 }
 
-run().catch(error => {
-  console.error(error)
-  process.exit(1)
-})
+run()
