@@ -1,5 +1,11 @@
 # @mist3rbru/my-cli
 
+## 0.2.1
+
+### Patch Changes
+
+- b164c3c: feat: commands documentation script
+
 ## 0.2.0
 
 ### Minor Changes
