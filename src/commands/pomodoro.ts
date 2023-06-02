@@ -1,8 +1,7 @@
 import { App } from '@/main/app'
-import { errorHandler } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { block, verifyPromptResponse } from '@/utils/prompt'
-import color from 'picocolors'
+import colors from 'picocolors'
 import * as p from '@clack/prompts'
 
 type PomodoroPeriod = 'work' | 'rest'
@@ -24,7 +23,7 @@ async function pomodoroCommand(params: string[]): Promise<void> {
       for (let i = 0; i < 2; i++) {
         const error = verifyPeriod(times[i])
         if (error) {
-          return errorHandler(error)
+          throw error
         }
       }
       controller.work = times[0]
@@ -126,7 +125,7 @@ function concatTime(...time: number[]): string {
 }
 
 function display(...time: string[]): string {
-  return time.join(color.blue(' | '))
+  return time.join(colors.blue(' | '))
 }
 
 export function pomodoroRecord(app: App): void {

@@ -60,14 +60,20 @@ export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
   return result
 }
 
-function parseValue(value: any): unknown {
-  if (value === 'true') {
+export function parseValue(value: string): unknown {
+  if (!value) {
+    return value
+  } else if (value === 'true') {
     return true
   } else if (value === 'false') {
     return false
-  } else if (!isNaN(value)) {
+  } else if (!isNaN(Number(value))) {
     return parseFloat(value)
+  } else if (/^\[.*?\]$/i.test(value)) {
+    return value.slice(1, -1).split(',').filter(Boolean).map(parseValue)
+  } else if (/^{.*?}$/i.test(value)) {
+    return JSON.parse(value)
   } else {
-    return value.replace('+', ' ')
+    return value.replace('+', ' ').replace(/(?:^["'])|(?:["']$)/g, '')
   }
 }

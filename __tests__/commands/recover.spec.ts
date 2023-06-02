@@ -1,16 +1,15 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { lockfilePath } from '@/utils/constants'
+import { NotFoundError } from '@/utils/errors'
 import { writeLockfile } from '@/utils/file-system'
 import { existsSync, rmSync } from 'node:fs'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
-  select: jest.fn(async () => 'any-git'),
+  multiselect: jest.fn(async () => 'any-git'),
   outro: jest.fn()
 }))
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('recover', () => {
   const sut = makeSut('recover')
@@ -33,9 +32,21 @@ describe('recover', () => {
   })
 
   it('should recover value of prompt selected key', async () => {
+    const git = 'any-git'
+    ;(p.multiselect as jest.Mock).mockResolvedValueOnce([git])
+
     await sut.exec()
 
-    expect(p.outro).toHaveBeenCalledWith('any-git')
+    expect(p.outro).toHaveBeenCalledWith(git)
+  })
+
+  it('should recover values of prompt selected keys', async () => {
+    const response = 'any-project,other-project'
+    ;(p.multiselect as jest.Mock).mockResolvedValueOnce([response])
+
+    await sut.exec()
+
+    expect(p.outro).toHaveBeenCalledWith(response)
   })
 
   it('should recover value of param key', async () => {
@@ -43,8 +54,16 @@ describe('recover', () => {
 
     await sut.exec()
 
-    expect(p.outro).toHaveBeenCalledWith('any-project')
-    expect(p.outro).toHaveBeenCalledWith('other-project')
+    expect(p.outro).toHaveBeenCalledWith('any-project,other-project')
+  })
+
+  it('should recover values of param keys', async () => {
+    mockParams('projects', 'git')
+
+    await sut.exec()
+
+    expect(p.outro).toHaveBeenCalledWith('any-project,other-project')
+    expect(p.outro).toHaveBeenCalledWith('any-git')
   })
 
   it("should print 'undefined' on not found param key", async () => {
@@ -58,8 +77,6 @@ describe('recover', () => {
   it('should verify lockfile length', async () => {
     writeLockfile({})
 
-    await sut.exec()
-
-    expect(process.exit).toHaveBeenCalledTimes(1)
+    expect(sut.exec()).rejects.toThrowError(NotFoundError)
   })
 })

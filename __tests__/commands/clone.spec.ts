@@ -1,12 +1,13 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
+import { InvalidParamError, NotFoundError } from '@/utils/errors'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
 import { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 const repo = {
   name: 'my-cli',
@@ -36,7 +37,7 @@ describe('clone', () => {
     writeLockfile({
       git: 'any-git'
     })
-    jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
+
     jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as never))
   })
 
@@ -56,12 +57,10 @@ describe('clone', () => {
     expect(axios.get).toHaveBeenCalledTimes(1)
   })
 
-  it('should return error on invalid repository name', async () => {
+  it('should throw on invalid repository name', async () => {
     mockParams('your-cli')
 
-    await sut.exec()
-
-    expect(process.exit).toHaveBeenCalledTimes(1)
+    expect(sut.exec()).rejects.toThrowError(NotFoundError)
   })
 
   it('should clone on valid repository', async () => {

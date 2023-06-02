@@ -1,10 +1,10 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import { objectEntries } from '@/utils/mappers'
 import axios from 'axios'
 import { existsSync, rmSync } from 'fs'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 const mock = {
   git: 'any',
@@ -20,16 +20,7 @@ jest.mock('@clack/prompts', () => ({
   spinner: jest.fn(() => ({
     start: startSpy,
     stop: stopSpy
-  })),
-  group: jest.fn(async (prompts: Record<string, () => Promise<any>>) => {
-    const result: any = {}
-    objectEntries(prompts).forEach(([key, cb]) => {
-      cb().then(res => {
-        result[key] = res
-      })
-    })
-    return result
-  })
+  }))
 }))
 
 jest.mock('axios', () => ({
@@ -40,8 +31,6 @@ jest.mock('axios', () => ({
     }
   }))
 }))
-
-jest.spyOn(global.process, 'exit').mockImplementation(() => ({} as never))
 
 describe('setup', () => {
   const sut = makeSut('setup')
@@ -58,19 +47,7 @@ describe('setup', () => {
     }
   })
 
-  it('should call prompts with default value', async () => {
-    writeLockfile(mock)
-    await sut.exec()
-
-    expect(p.text).toHaveBeenCalledTimes(2)
-    expect(p.text).toHaveBeenCalledWith({
-      message: expect.any(String),
-      initialValue: mock.git
-    })
-    expect(p.group).toHaveBeenCalledTimes(1)
-  })
-
-  it('should call prompts with default value', async () => {
+  it('should render git prompt with no default value', async () => {
     await sut.exec()
 
     expect(p.text).toHaveBeenCalledTimes(2)
@@ -80,14 +57,24 @@ describe('setup', () => {
     })
   })
 
+  it('should render git prompt with default value', async () => {
+    writeLockfile(mock)
+
+    await sut.exec()
+
+    expect(p.text).toHaveBeenCalledTimes(2)
+    expect(p.text).toHaveBeenCalledWith({
+      message: expect.any(String),
+      initialValue: mock.git
+    })
+  })
+
   it('should validate git user', async () => {
     const data = {
       login: 'user-login',
       name: 'user-name'
     }
-    ;(axios.get as jest.Mock).mockReturnValueOnce({
-      data
-    })
+    ;(axios.get as jest.Mock).mockResolvedValueOnce({ data })
 
     await sut.exec()
 

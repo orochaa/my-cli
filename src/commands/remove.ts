@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { errorHandler, remove } from '@/utils/cmd'
+import { remove } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
@@ -13,7 +13,7 @@ async function removeCommand(params: string[]): Promise<void> {
   if (params.length) {
     items = params
     const error = verifyItems(items)
-    if (error) return errorHandler(error)
+    if (error) throw error
   } else {
     items = await removePrompt()
   }
@@ -58,6 +58,7 @@ async function removePrompt(): Promise<string[]> {
     verifyPromptResponse(response)
     paths = response.split(' ')
   }
+
   return paths
 }
 

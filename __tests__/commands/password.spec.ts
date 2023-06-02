@@ -1,6 +1,7 @@
+import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
+import { InvalidParamError } from '@/utils/errors'
 import * as p from '@clack/prompts'
-import { makeSut } from '../mocks/make-sut'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => '20'),
@@ -31,14 +32,10 @@ describe('password', () => {
   it('should verify password length', async () => {
     expect.assertions(3)
     const edges = ['7', '101', 'NaN']
-    const exitSpy = jest.spyOn(global.process, 'exit')
-    exitSpy.mockImplementation(() => ({} as never))
 
     for (const edge of edges) {
-      exitSpy.mockClear()
       mockParams(edge)
-      await sut.exec()
-      expect(exitSpy).toHaveBeenCalledTimes(1)
+      expect(sut.exec()).rejects.toThrowError(InvalidParamError)
     }
   })
 })

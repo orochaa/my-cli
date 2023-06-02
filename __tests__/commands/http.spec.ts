@@ -1,5 +1,6 @@
+import { makeSut } from '@/tests/mocks/make-sut'
+import { InvalidParamError } from '@/utils/errors'
 import axios from 'axios'
-import { makeSut } from '../mocks/make-sut'
 import { mockParams } from '../mocks/mock-params'
 
 jest.mock('axios', () => {
@@ -45,11 +46,10 @@ describe('http', () => {
     })
   })
 
-  it('should exit on invalid url', async () => {
+  it('should throw on invalid url', async () => {
     mockParams('foo')
-    await sut.exec()
 
-    expect(process.exit).toHaveBeenCalledTimes(1)
+    expect(sut.exec()).rejects.toThrowError(InvalidParamError)
   })
 
   it('should parse nested body', async () => {
