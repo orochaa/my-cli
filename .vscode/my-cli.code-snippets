@@ -25,7 +25,7 @@
   },
   "register command": {
     "scope": "typescript",
-    "prefix": "record",
+    "prefix": ["record", "register"],
     "body": [
       "import { App } from '@/main/app'",
       "export function $1Record(app: App): void {",

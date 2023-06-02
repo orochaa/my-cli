@@ -9,11 +9,13 @@ async function main(): Promise<void> {
   const cmdCommand = process.argv[2]
 
   try {
-    if (cmdCommand !== 'setup' && !(lockfile.git && lockfile.projects)) {
+    const isNotSetupCommand = cmdCommand !== 'setup'
+    const hasNotRanSetup = !(lockfile.git && lockfile.projects)
+    if (isNotSetupCommand && hasNotRanSetup) {
       await app.exec('setup')
     }
 
-    if (process.argv.length > 2) {
+    if (cmdCommand) {
       await app.exec(cmdCommand)
     } else {
       app.displayCommands()

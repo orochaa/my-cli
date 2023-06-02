@@ -38,7 +38,7 @@ A compilation of my CLI snippets.
   - params: `<script>...`
   - flags: `--deep` | `-D`
   - example: my run lint build test
-- `clone`: Clone a Github's repository based on `setup`
+- `clone`: Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode
   - params: `<repository>`
   - example: my clone my-cli
 - `play`: Open a music player on your default browser
