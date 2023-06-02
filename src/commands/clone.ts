@@ -87,7 +87,7 @@ export function cloneRecord(app: App): void {
     name: 'clone',
     alias: null,
     params: ['<repository>'],
-    description: "Clone a Github's repository based on `setup`",
+    description: "Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode",
     example: 'my clone my-cli',
     action: cloneCommand
   })
