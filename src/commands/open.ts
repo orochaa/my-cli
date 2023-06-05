@@ -1,59 +1,82 @@
 import { App } from '@/main/app'
 import { exec } from '@/utils/cmd'
 import { readLockfile } from '@/utils/file-system'
-import { objectEntries } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
+type Controller = [projectsRoot: string, projects: string[]][]
+
 async function openCommand(params: string[]): Promise<void> {
   const lockfile = readLockfile()
-  const controller: Record<string, string[]> = {}
-  let projects: string[] = []
+  const controller: Controller = []
+  let openList: string[] = []
 
   for (const projectsRoot of lockfile.projects) {
-    const projectsFolders = readdirSync(projectsRoot)
-    controller[projectsRoot] = projectsFolders
+    const projects = readdirSync(projectsRoot, { withFileTypes: true })
+      .filter(item => item.isDirectory())
+      .map(item => item.name)
+    controller.push([projectsRoot, projects])
   }
 
   if (params.length) {
-    const controllerEntries = objectEntries(controller)
-    for (const [root, folders] of controllerEntries) {
-      for (const param of params) {
-        if (folders.includes(param)) {
-          projects.push(join(root, param))
-        }
-      }
-    }
+    openList = getParamProjects(params, controller)
   } else {
-    projects = await openPrompt(controller)
+    openList = await openPrompt(controller)
   }
 
-  projects.forEach(project => {
+  for (const project of openList) {
     exec(`code ${project}`)
-  })
+  }
 }
 
-async function openPrompt(
-  controller: Record<string, string[]>
-): Promise<string[]> {
+function getParamProjects(params: string[], controller: Controller): string[] {
+  const result: string[] = []
+
+  for (const param of params) {
+    const paramParts = param.split('/')
+    const hasRoot = paramParts.length === 2
+
+    for (const [projectsRoot, projects] of controller) {
+      if (hasRoot) {
+        const [paramRoot, paramProject] = paramParts
+        const rootEnd = getPathEnd(projectsRoot)
+        const isRoot = rootEnd === paramRoot
+        const hasProject = projects.includes(paramProject)
+        if (isRoot && hasProject) {
+          result.push(join(projectsRoot, paramProject))
+          break
+        }
+      } else if (projects.includes(param)) {
+        result.push(join(projectsRoot, param))
+        break
+      }
+    }
+  }
+
+  return result
+}
+
+async function openPrompt(controller: Controller): Promise<string[]> {
   const response = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select a project to open:',
-    options: objectEntries(controller)
+    options: controller
       .map(([root, folders]) => {
-        const rootEnd = root.replace(/.+[\\/](\w+)/i, '$1')
-        return folders
-          .filter(folder => !/\.\w+$/.test(folder))
-          .map(folder => ({
-            label: `${rootEnd}/${folder}`,
-            value: join(root, folder)
-          }))
+        const rootEnd = getPathEnd(root)
+        return folders.map(folder => ({
+          label: `${rootEnd}/${folder}`,
+          value: join(root, folder)
+        }))
       })
       .flat()
   })
   verifyPromptResponse(response)
   return response
+}
+
+function getPathEnd(path: string): string {
+  return path.replace(/.+[\/\\](.+)$/i, '$1')
 }
 
 export function openRecord(app: App): void {
