@@ -4,6 +4,7 @@ import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
 import fs, { Dirent } from 'node:fs'
+import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
 const mockDirent = (folders: string[]): Dirent[] => {
@@ -65,17 +66,17 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${cwd}\\any-project`,
+      `code ${join(cwd, 'any-project')}`,
       expect.anything()
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${cwd}\\other-project`,
+      `code ${join(cwd, 'other-project')}`,
       expect.anything()
     )
   })
 
   it('should differ projects by root', async () => {
-    writeLockfile({ projects: [`${cwd}/root1`, `${cwd}/root2`] })
+    writeLockfile({ projects: [join(cwd, '/root1'), join(cwd, '/root2')] })
     mockReaddir(['project'])
 
     mockParams('project', 'root2/project')
@@ -83,30 +84,30 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${cwd}\\root1\\project`,
+      `code ${join(cwd, '/root1/project')}`,
       expect.anything()
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${cwd}\\root2\\project`,
+      `code ${join(cwd, '/root2/project')}`,
       expect.anything()
     )
   })
 
   it('should open all prompt options', async () => {
     ;(p.multiselect as jest.Mock).mockReturnValueOnce([
-      `${cwd}\\root1`,
-      `${cwd}\\root2`
+      join(cwd, '/root1'),
+      join(cwd, '/root2')
     ])
 
     await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${cwd}\\root1`,
+      `code ${join(cwd, '/root1')}`,
       expect.anything()
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${cwd}\\root2`,
+      `code ${join(cwd, '/root2')}`,
       expect.anything()
     )
   })
