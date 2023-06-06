@@ -27,16 +27,9 @@ type MergeObjects<T, K = T> = T extends [infer F, ...infer R]
   : K
 
 export function mergeObjects<T extends Record<string, unknown>[]>(
-  ...data: T
+  ...[first, ...rest]: T
 ): MergeObjects<T> {
-  const result = data.shift() as T[0]
-  data
-    .map(obj => objectEntries<Record<string, any>>(obj))
-    .flat()
-    .forEach(([key, value]) => {
-      result[key as keyof T[0]] = value
-    })
-  return result as MergeObjects<T>
+  return Object.assign(first, ...rest)
 }
 
 export function convertToJSON(keyValueList: string[]): Record<string, unknown> {

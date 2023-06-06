@@ -49,9 +49,9 @@ describe('mappers', () => {
 
   describe('mergeObjects()', () => {
     it('should return a merged object', () => {
-      const foo = { foo: 1 } as const
-      const bar = { bar: '2' } as const
-      const baz = { baz: null } as const
+      const foo = { foo: 1 }
+      const bar = { bar: '2' }
+      const baz = { baz: null }
       const result = mergeObjects(foo, bar, baz)
       const expected: typeof result = {
         foo: 1,

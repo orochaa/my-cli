@@ -1,6 +1,6 @@
 import { App } from '@/main/app'
 import { isSilent } from '@/utils/cmd'
-import { InvalidParamError } from '@/utils/errors'
+import { InvalidParamError, MissingParamError } from '@/utils/errors'
 import { convertToJSON } from '@/utils/mappers'
 import axios from 'axios'
 
@@ -16,6 +16,10 @@ type Http = Record<
 >
 
 async function httpCommand(params: string[]): Promise<void> {
+  if(!params.length) {
+    throw new MissingParamError('params')
+  }
+  
   const [method, urlParams] = getMethod(params)
   const [url, bodyAndHeadersParams] = getUrl(urlParams)
   const [bodyParams, headerParams] =
