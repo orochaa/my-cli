@@ -100,9 +100,7 @@ describe('outdated', () => {
       return cp as any
     })
 
-    const promise = sut.exec()
-
-    await expect(promise).rejects.toBe('error')
+    expect(sut.exec()).rejects.toBe('error')
   })
 })
 
