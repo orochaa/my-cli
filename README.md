@@ -43,7 +43,7 @@ A compilation of my CLI snippets.
   - params: `<repository>`
   - example: my clone my-cli
 - `play`: Open a music player on your default browser
-  - params: `yt` | `spotify`
+  - params: `y` | `yt` | `youtube` | `s` | `spot` | `spotify`
   - example: my play yt
 - `pomodoro`: Start a pomodoro timer
   - alias: `pomo`

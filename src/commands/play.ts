@@ -54,7 +54,7 @@ export function playRecord(app: App): void {
   app.register({
     name: 'play',
     alias: null,
-    params: ['yt', 'spotify'],
+    params: objectValues(players).map((player) => player.aliases).flat(),
     description: 'Open a music player on your default browser',
     example: 'my play yt',
     action: playCommand

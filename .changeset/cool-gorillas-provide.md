@@ -1,5 +1,5 @@
 ---
-'@mist3rbru/my-cli': minor
+'@mist3rbru/my-cli': patch
 ---
 
-feat: support concatenated paths on `open` command params
+feat(open): support concatenated paths
