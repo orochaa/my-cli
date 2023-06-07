@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { exec } from '@/utils/cmd'
+import { exec, hasFlag } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { PackageJson, getPackageJson } from '@/utils/file-system'
@@ -11,7 +11,7 @@ import * as p from '@clack/prompts'
 
 async function runCommand(scripts: string[], flags: string[]): Promise<void> {
   const hasScripts = scripts.length
-  const isDeep = flags.includes('--deep') || flags.includes('-D')
+  const isDeep = hasFlag(['--deep', '-D'], flags)
 
   if (hasScripts && isDeep) {
     deepRun(scripts)

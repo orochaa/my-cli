@@ -26,6 +26,25 @@ export async function execAsync(cmd: string): Promise<string> {
   })
 }
 
+export function hasFlag(target: string | string[], flags: string[]): boolean {
+  let result = false
+
+  if (typeof target === 'string') {
+    target = [target]
+  }
+
+  flagLoop: for (const flag of flags) {
+    for (const _target of target) {
+      if (flag === _target) {
+        result = true
+        break flagLoop
+      }
+    }
+  }
+
+  return result
+}
+
 export function isSilent(): boolean {
-  return process.argv.includes('--silent')
+  return hasFlag('--silent', process.argv)
 }
