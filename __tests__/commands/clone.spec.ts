@@ -1,7 +1,7 @@
 import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
-import { InvalidParamError, NotFoundError } from '@/utils/errors'
+import { NotFoundError } from '@/utils/errors'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
 import { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
@@ -14,6 +14,8 @@ const repo = {
   clone_url: 'https://github.com/Mist3rBru/my-cli.git',
   updated_at: new Date()
 }
+
+const repositoryPath = join(cwd, 'my-cli')
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => repo)
@@ -30,6 +32,10 @@ jest.mock('axios', () => ({
   }))
 }))
 
+jest.spyOn(process, 'chdir').mockImplementation()
+
+jest.spyOn(cp, 'execSync').mockImplementation()
+
 describe('clone', () => {
   const sut = makeSut('clone')
 
@@ -37,8 +43,6 @@ describe('clone', () => {
     writeLockfile({
       git: 'any-git'
     })
-
-    jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as never))
   })
 
   beforeEach(() => {
@@ -46,9 +50,7 @@ describe('clone', () => {
   })
 
   afterAll(() => {
-    if (existsSync(lockfilePath)) {
-      rmSync(lockfilePath)
-    }
+    rmSync(lockfilePath)
   })
 
   it('should get github repositories', async () => {
@@ -68,30 +70,29 @@ describe('clone', () => {
 
     await sut.exec()
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
-      [
-        `git clone ${repo.clone_url} ${repo.name}`,
-        `cd ${repo.name}`,
-        'git remote rename origin o',
-        'pnpm install',
-        'code .'
-      ].join(' && '),
+      `git clone ${repo.clone_url} ${repo.name}`,
       expect.anything()
     )
+    expect(process.chdir).toHaveBeenCalledWith(repo.name)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'git remote rename origin o',
+      expect.anything()
+    )
+    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
+    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
   it('should still prepare pre-cloned repository', async () => {
-    const repositoryPath = join(cwd, 'my-cli')
     if (!existsSync(repositoryPath)) mkdirSync(repositoryPath)
 
     await sut.exec()
 
-    expect(cp.execSync).toHaveBeenCalledTimes(1)
-    expect(cp.execSync).toHaveBeenCalledWith(
-      [`cd ${repo.name}`, 'pnpm install', 'code .'].join(' && '),
-      expect.anything()
-    )
+    expect(cp.execSync).toHaveBeenCalledTimes(2)
+    expect(process.chdir).toHaveBeenCalledWith(repo.name)
+    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
+    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
     rmdirSync(repositoryPath)
   })
 

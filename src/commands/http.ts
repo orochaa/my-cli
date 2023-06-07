@@ -16,10 +16,10 @@ type Http = Record<
 >
 
 async function httpCommand(params: string[]): Promise<void> {
-  if(!params.length) {
+  if (!params.length) {
     throw new MissingParamError('params')
   }
-  
+
   const [method, urlParams] = getMethod(params)
   const [url, bodyAndHeadersParams] = getUrl(urlParams)
   const [bodyParams, headerParams] =
