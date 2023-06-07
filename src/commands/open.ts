@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { exec } from '@/utils/cmd'
+import { exec, hasFlag } from '@/utils/cmd'
 import { readLockfile } from '@/utils/file-system'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
@@ -8,26 +8,31 @@ import * as p from '@clack/prompts'
 
 type Controller = [projectsRoot: string, projects: string[]][]
 
-async function openCommand(params: string[]): Promise<void> {
+async function openCommand(params: string[], flags: string[]): Promise<void> {
   const lockfile = readLockfile()
   const controller: Controller = []
-  let openList: string[] = []
+  let openProjectList: string[] = []
 
   for (const projectsRoot of lockfile.projects) {
     const projects = readdirSync(projectsRoot, { withFileTypes: true })
       .filter(item => item.isDirectory())
-      .map(item => item.name)
+      .map(project => project.name)
     controller.push([projectsRoot, projects])
   }
 
   if (params.length) {
-    openList = getParamProjects(params, controller)
+    openProjectList = getParamProjects(params, controller)
   } else {
-    openList = await openPrompt(controller)
+    openProjectList = await openPrompt(controller)
   }
 
-  for (const project of openList) {
-    exec(`code ${project}`)
+  const isWorkspace = hasFlag(['-W', '--workspace'], flags)
+  if (isWorkspace) {
+    exec(`code ${openProjectList.join(' ')}`)
+  } else {
+    for (const project of openProjectList) {
+      exec(`code ${project}`)
+    }
   }
 }
 
@@ -59,7 +64,7 @@ function getParamProjects(params: string[], controller: Controller): string[] {
 }
 
 async function openPrompt(controller: Controller): Promise<string[]> {
-  const response = await p.multiselect<PromptOption<string>[], string>({
+  const projects = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select a project to open:',
     options: controller
       .map(([root, folders]) => {
@@ -71,8 +76,15 @@ async function openPrompt(controller: Controller): Promise<string[]> {
       })
       .flat()
   })
-  verifyPromptResponse(response)
-  return response
+  verifyPromptResponse(projects)
+
+  const isWorkspace = await p.confirm({
+    message: 'Open on workspace?',
+    initialValue: false
+  })
+  verifyPromptResponse(isWorkspace)
+
+  return isWorkspace ? [projects.join(' ')] : projects
 }
 
 function getPathEnd(path: string): string {
@@ -84,6 +96,7 @@ export function openRecord(app: App): void {
     name: 'open',
     alias: null,
     params: ['<project>...'],
+    flags: ['--workspace', '-W'],
     description:
       'Open a project on vscode, the projects available are based on `setup`',
     example: 'my open my-cli my-app my-api',

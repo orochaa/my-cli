@@ -26,7 +26,8 @@ const mockReaddir = (paths: string[] | Dirent[]): void => {
 }
 
 jest.mock('@clack/prompts', () => ({
-  multiselect: jest.fn(async () => [cwd])
+  multiselect: jest.fn(async () => [cwd]),
+  confirm: jest.fn(async () => false)
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
@@ -66,11 +67,25 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, 'any-project')}`,
+      `code ${join(cwd, projects[0])}`,
       expect.anything()
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, 'other-project')}`,
+      `code ${join(cwd, projects[1])}`,
+      expect.anything()
+    )
+  })
+
+  it('should open all valid projects on workspace', async () => {
+    const projects = ['any-project', 'other-project']
+    mockReaddir(projects)
+
+    mockParams(...projects, '-W')
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])}`,
       expect.anything()
     )
   })
@@ -108,6 +123,22 @@ describe('open', () => {
     )
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, '/root2')}`,
+      expect.anything()
+    )
+  })
+
+  it('should open all prompt options on workspace', async () => {
+    ;(p.multiselect as jest.Mock).mockResolvedValueOnce([
+      join(cwd, '/root1'),
+      join(cwd, '/root2')
+    ])
+    ;(p.confirm as jest.Mock).mockResolvedValueOnce(true)
+
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, '/root1')} ${join(cwd, '/root2')}`,
       expect.anything()
     )
   })
