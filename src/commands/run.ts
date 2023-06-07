@@ -24,7 +24,7 @@ async function runCommand(scripts: string[], flags: string[]): Promise<void> {
 
 function run(scripts: string[]): void {
   for (const script of scripts) {
-    exec(`npm run ${script}`)
+    exec(`npm run ${script}`, { log: false })
   }
 }
 
@@ -88,7 +88,7 @@ export function runRecord(app: App): void {
     name: 'run',
     alias: null,
     params: ['<script>...'],
-    flags: ['--deep', '-D'],
+    flags: ['--deep', '-d'],
     description: "Run scripts from project's package.json in sequence",
     example: 'my run lint build test',
     action: runCommand

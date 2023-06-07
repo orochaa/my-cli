@@ -80,7 +80,7 @@ describe('open', () => {
     const projects = ['any-project', 'other-project']
     mockReaddir(projects)
 
-    mockParams(...projects, '-W')
+    mockParams(...projects, '-w')
     await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)

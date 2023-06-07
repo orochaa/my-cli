@@ -26,7 +26,7 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
     openProjectList = await openPrompt(controller)
   }
 
-  const isWorkspace = hasFlag(['-W', '--workspace'], flags)
+  const isWorkspace = hasFlag(['-w', '--workspace'], flags)
   if (isWorkspace) {
     exec(`code ${openProjectList.join(' ')}`)
   } else {
@@ -96,7 +96,7 @@ export function openRecord(app: App): void {
     name: 'open',
     alias: null,
     params: ['<project>...'],
-    flags: ['--workspace', '-W'],
+    flags: ['--workspace', '-w'],
     description:
       'Open a project on vscode, the projects available are based on `setup`',
     example: 'my open my-cli my-app my-api',

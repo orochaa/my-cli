@@ -33,10 +33,11 @@ A compilation of my CLI snippets.
   - example: my api ts-api
 - `open`: Open a project on vscode, the projects available are based on `setup`
   - params: `<project>...`
+  - flags: `--workspace` | `-w`
   - example: my open my-cli my-app my-api
 - `run`: Run scripts from project's package.json in sequence
   - params: `<script>...`
-  - flags: `--deep` | `-D`
+  - flags: `--deep` | `-d`
   - example: my run lint build test
 - `clone`: Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode
   - params: `<repository>`
@@ -59,3 +60,8 @@ A compilation of my CLI snippets.
 - `http`: Make an http request
   - params: `<method?> <url> <body?> <headers?>`
   - example: my http post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World h.authorization=token
+
+### Global flags:
+
+- `--silent`: ignores cmd outputs
+- `--force`: ignores previous `setup`
