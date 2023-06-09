@@ -1,5 +1,18 @@
 # @mist3rbru/my-cli
 
+## 0.2.2
+
+### Patch Changes
+
+- 13f08e9: feat(open): add workspace support
+- d59fa50: feat(open): support concatenated paths
+- f9c75df: fix(http): uncaught missing params error
+- 6af72d3: feat(cmd): add hasFlag() utility function
+- 7da999f: feat(global): log cmd commands
+- 8355b6e: feat(global): --silent and --force flags
+- e284d01: refactor(mappers): improve mergeObjects() performance
+- b1e910f: fix(docs): map all `play` params
+
 ## 0.2.1
 
 ### Patch Changes
