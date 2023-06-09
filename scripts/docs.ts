@@ -1,4 +1,4 @@
-import { setupApp } from '@/main/setup'
+import { setupApp } from '@/main/setup-app'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cwd } from 'node:process'
@@ -35,6 +35,11 @@ function run(): void {
 
     newReadmeContent.push(`  - example: ${command.example}`)
   }
+  newReadmeContent.push('')
+  newReadmeContent.push('### Global flags:')
+  newReadmeContent.push('')
+  newReadmeContent.push('- `--silent`: ignores cmd outputs')
+  newReadmeContent.push('- `--force`: ignores previous `setup`')
   newReadmeContent.push('')
 
   writeFileSync(readmePath, newReadmeContent.join('\r\n'), { encoding: 'utf8' })

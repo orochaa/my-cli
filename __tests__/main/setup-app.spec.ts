@@ -1,4 +1,4 @@
-import { setupApp } from '@/main/setup'
+import { setupApp } from '@/main/setup-app'
 import * as commands from '@/commands'
 
 describe('setup', () => {
@@ -8,15 +8,7 @@ describe('setup', () => {
     expect(sut.commands).toHaveLength(Object.keys(commands).length)
   })
 
-  it('should not have duplicate commands', async () => {
-    const sut = setupApp()
-
-    const expected = [...new Set(sut.commands.map(_command => _command.name))]
-
-    expect(sut.commands).toHaveLength(expected.length)
-  })
-
-  it('should not have duplicate commands', async () => {
+  it('should not have duplicate command name', async () => {
     const sut = setupApp()
 
     const nameList = sut.commands.map(c => c.name)
@@ -32,5 +24,16 @@ describe('setup', () => {
     const noDuplicateAliasList = [...new Set(aliasList)]
 
     expect(aliasList.length).toBe(noDuplicateAliasList.length)
+  })
+
+  it('should not have --force flag', async () => {
+    const sut = setupApp()
+
+    const flagsList = sut.commands
+      .map(c => c.flags)
+      .filter(Boolean)
+      .flat()
+
+    expect(flagsList).not.toContain('--force')
   })
 })

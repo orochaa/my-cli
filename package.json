@@ -28,17 +28,16 @@
     "git"
   ],
   "scripts": {
-    "dev": "cross-env NODE_ENV=development tsx src/index.ts",
-    "my": "run-s \"dev {@}\" --",
+    "my": "cross-env NODE_ENV=development tsx src/index.ts",
     "lint": "tsc --noEmit && prettier --write .",
     "build": "unbuild",
-    "test": "jest",
+    "test": "jest --no-cache",
     "test:w": "npm test -- --watch",
     "test:ci": "npm test -- --coverage --silent",
     "docs": "tsx scripts/docs",
-    "ci": "run-s lint build test docs",
+    "ci": "npm run my run lint build test docs -- --force",
     "publish": "changeset publish",
-    "release": "run-s ci publish"
+    "release": "npm run my run ci publish -- --force"
   },
   "dependencies": {
     "@clack/prompts": "^0.6.3",
@@ -56,7 +55,6 @@
     "@types/node": "^20.2.1",
     "cross-env": "^7.0.3",
     "jest": "^29.5.0",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.8",
     "tsx": "^3.12.7",
     "typescript": "^5.0.4",

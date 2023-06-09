@@ -1,4 +1,5 @@
 import { makeSut } from '@/tests/mocks/make-sut'
+import { clearParams } from '@/tests/mocks/mock-params'
 import cp from 'node:child_process'
 import * as p from '@clack/prompts'
 
@@ -6,15 +7,17 @@ jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'master')
 }))
 
+jest.spyOn(cp, 'execSync').mockImplementation()
+jest.spyOn(cp, 'exec').mockImplementation((cmd, cb) => {
+  ;(cb as any)(null, '', '')
+  return cp as any
+})
+
 describe('branch', () => {
   const sut = makeSut('branch')
 
-  beforeAll(() => {
-    jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as never))
-    jest.spyOn(cp, 'exec').mockImplementationOnce((cmd, cb) => {
-      ;(cb as any)(null, '', '')
-      return cp as any
-    })
+  beforeEach(() => {
+    clearParams()
   })
 
   it('should read git branches', async () => {

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { setupApp } from '@/main/setup'
+import { setupApp } from '@/main/setup-app'
 import { Lockfile, readLockfile, verifyLockfile } from '@/utils/file-system'
 
 async function main(): Promise<void> {
@@ -11,7 +11,13 @@ async function main(): Promise<void> {
   try {
     const isNotSetupCommand = cmdCommand !== 'setup'
     const hasNotRanSetup = !(lockfile.git && lockfile.projects)
-    if (isNotSetupCommand && hasNotRanSetup) {
+    const isForced = process.argv.includes('--force')
+
+    if (isForced) {
+      process.argv = process.argv.filter(param => param !== '--force')
+    }
+
+    if (isNotSetupCommand && hasNotRanSetup && !isForced) {
       await app.exec('setup')
     }
 

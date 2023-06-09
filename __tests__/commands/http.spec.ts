@@ -1,7 +1,7 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { InvalidParamError } from '@/utils/errors'
+import { clearParams, mockParams } from '@/tests/mocks/mock-params'
+import { InvalidParamError, MissingParamError } from '@/utils/errors'
 import axios from 'axios'
-import { mockParams } from '../mocks/mock-params'
 
 jest.mock('axios', () => {
   class Axios {
@@ -18,6 +18,11 @@ jest.spyOn(process, 'exit').mockImplementation((() => {}) as any)
 
 describe('http', () => {
   const sut = makeSut('http')
+
+  it('should throw on missing params', async () => {
+    clearParams()
+    expect(sut.exec()).rejects.toThrowError(MissingParamError)
+  })
 
   it('should complete host and port', async () => {
     mockParams('/user')
@@ -48,7 +53,6 @@ describe('http', () => {
 
   it('should throw on invalid url', async () => {
     mockParams('foo')
-
     expect(sut.exec()).rejects.toThrowError(InvalidParamError)
   })
 

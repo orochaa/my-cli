@@ -1,5 +1,5 @@
 import { App } from '@/main/app'
-import { exec } from '@/utils/cmd'
+import { exec, logCommand } from '@/utils/cmd'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { readLockfile } from '@/utils/file-system'
@@ -32,18 +32,14 @@ async function cloneCommand(params: string[]): Promise<void> {
     repository = await clonePrompt(repositories)
   }
 
-  const shouldClone = !existsSync(join(cwd, repository.name))
-  exec(
-    [
-      shouldClone && `git clone ${repository.clone_url} ${repository.name}`,
-      `cd ${repository.name}`,
-      shouldClone && 'git remote rename origin o',
-      'pnpm install',
-      'code .'
-    ]
-      .filter(Boolean)
-      .join(' && ')
-  )
+  const isNotCloned = !existsSync(join(cwd, repository.name))
+
+  if (isNotCloned) exec(`git clone ${repository.clone_url} ${repository.name}`)
+  logCommand(`cd ${repository.name}\n`)
+  process.chdir(repository.name)
+  if (isNotCloned) exec('git remote rename origin o')
+  exec('pnpm install')
+  exec('code .')
 }
 
 async function getUserRepositories(): Promise<Repository[]> {
