@@ -5,7 +5,7 @@ import { App } from './app'
 export function setupApp(): App {
   const app = new App()
 
-  objectValues(command).map(register => {
+  objectValues(command).forEach(register => {
     register(app)
   })
 
