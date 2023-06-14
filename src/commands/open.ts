@@ -88,7 +88,7 @@ async function openPrompt(controller: Controller): Promise<string[]> {
 }
 
 function getPathEnd(path: string): string {
-  return path.replace(/.+[\/\\](.+)$/i, '$1')
+  return path.replace(/.*[/\\](.+)$/i, '$1')
 }
 
 export function openRecord(app: App): void {
@@ -103,3 +103,4 @@ export function openRecord(app: App): void {
     action: openCommand
   })
 }
+

@@ -71,7 +71,7 @@ async function projectsPrompt(lockfile: Lockfile): Promise<string[]> {
   do {
     const projectRoot = await p.text({
       message: 'What is your root projects path:',
-      initialValue: cwd.replace(/(^.*?)[\\/].+/, '$1').concat('/git'),
+      initialValue: cwd.replace(/^(.*?)[\\/].+/, '$1').concat('/git'),
       validate: res => {
         try {
           readdirSync(res)

@@ -108,6 +108,36 @@ describe('open', () => {
     )
   })
 
+  it("should not display path's root", async () => {
+    writeLockfile({
+      projects: [
+        '~/root/sub1',
+        'C:/root/sub2',
+        '/root/sub3',
+        '~\\root\\sub4',
+        'C:\\root\\sub5',
+        '\\root\\sub6',
+        '\\root',
+      ]
+    })
+    mockReaddir(['project'])
+
+    await sut.exec()
+
+    expect(p.multiselect).toHaveBeenCalledWith({
+      message: expect.any(String),
+      options: [
+        { label: 'sub1/project', value: '~/root/sub1/project' },
+        { label: 'sub2/project', value: 'C:/root/sub2/project' },
+        { label: 'sub3/project', value: '/root/sub3/project' },
+        { label: 'sub4/project', value: '~\\root\\sub4/project' },
+        { label: 'sub5/project', value: 'C:\\root\\sub5/project' },
+        { label: 'sub6/project', value: '\\root\\sub6/project' },
+        { label: 'root/project', value: '\\root/project' },
+      ]
+    })
+  })
+
   it('should open all prompt options', async () => {
     ;(p.multiselect as jest.Mock).mockReturnValueOnce([
       join(cwd, '/root1'),
@@ -143,3 +173,4 @@ describe('open', () => {
     )
   })
 })
+
