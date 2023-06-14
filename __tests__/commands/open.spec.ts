@@ -117,7 +117,7 @@ describe('open', () => {
         '~\\root\\sub4',
         'C:\\root\\sub5',
         '\\root\\sub6',
-        '\\root',
+        '\\root'
       ]
     })
     mockReaddir(['project'])
@@ -133,7 +133,7 @@ describe('open', () => {
         { label: 'sub4/project', value: '~\\root\\sub4/project' },
         { label: 'sub5/project', value: 'C:\\root\\sub5/project' },
         { label: 'sub6/project', value: '\\root\\sub6/project' },
-        { label: 'root/project', value: '\\root/project' },
+        { label: 'root/project', value: '\\root/project' }
       ]
     })
   })
@@ -173,4 +173,3 @@ describe('open', () => {
     )
   })
 })
-

@@ -103,4 +103,3 @@ export function openRecord(app: App): void {
     action: openCommand
   })
 }
-
