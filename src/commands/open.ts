@@ -26,12 +26,17 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
     openProjectList = await openPrompt(controller)
   }
 
-  const isWorkspace = hasFlag(['-w', '--workspace'], flags)
+  const isReuseWindow = hasFlag(['-r', '--reuse-window'], flags)
+  const isWorkspace =
+    hasFlag(['-w', '--workspace'], flags) ||
+    (isReuseWindow && openProjectList.length > 1)
+  const openFlags = [isReuseWindow && '--reuse-window']
   if (isWorkspace) {
-    exec(`code ${openProjectList.join(' ')}`)
+    const workspace = openProjectList.join(' ')
+    exec(code(workspace, openFlags))
   } else {
     for (const project of openProjectList) {
-      exec(`code ${project}`)
+      exec(code(project, openFlags))
     }
   }
 }
@@ -91,12 +96,17 @@ function getPathEnd(path: string): string {
   return path.replace(/.*[/\\](.+)$/i, '$1')
 }
 
+function code(project: string, flags?: unknown[]): string {
+  const _flags = (flags ?? []).filter(Boolean)
+  return ['code', project, ..._flags].join(' ')
+}
+
 export function openRecord(app: App): void {
   app.register({
     name: 'open',
     alias: null,
     params: ['<project>...'],
-    flags: ['--workspace', '-w'],
+    flags: ['--workspace', '-w', '--reuse-window', '-r'],
     description:
       'Open a project on vscode, the projects available are based on `setup`',
     example: 'my open my-cli my-app my-api',

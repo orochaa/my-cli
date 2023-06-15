@@ -19,7 +19,7 @@ A compilation of my CLI snippets.
   - example: my api ts-api
 - `open`: Open a project on vscode, the projects available are based on `setup`
   - params: `<project>...`
-  - flags: `--workspace` | `-w`
+  - flags: `--workspace` | `-w` | `--reuse-window` | `-r`
   - example: my open my-cli my-app my-api
 - `run`: Run scripts from project's package.json in sequence
   - params: `<script>...`

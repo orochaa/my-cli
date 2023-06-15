@@ -35,12 +35,9 @@ jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 describe('open', () => {
   const sut = makeSut('open')
 
-  beforeAll(() => {
-    writeLockfile({ projects: [cwd] })
-  })
-
   beforeEach(() => {
     clearParams()
+    writeLockfile({ projects: [cwd] })
   })
 
   afterAll(() => {
@@ -58,7 +55,7 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(0)
   })
 
-  it('should open all valid projects', async () => {
+  it('should open projects', async () => {
     const projects = ['any-project', 'other-project']
     mockReaddir(projects)
 
@@ -72,20 +69,6 @@ describe('open', () => {
     )
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[1])}`,
-      expect.anything()
-    )
-  })
-
-  it('should open all valid projects on workspace', async () => {
-    const projects = ['any-project', 'other-project']
-    mockReaddir(projects)
-
-    mockParams(...projects, '-w')
-    await sut.exec()
-
-    expect(cp.execSync).toHaveBeenCalledTimes(1)
-    expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])}`,
       expect.anything()
     )
   })
@@ -108,7 +91,56 @@ describe('open', () => {
     )
   })
 
-  it("should not display path's root", async () => {
+  it('should open all projects on workspace', async () => {
+    const projects = ['any-project', 'other-project']
+    mockReaddir(projects)
+
+    mockParams(...projects, '-w')
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])}`,
+      expect.anything()
+    )
+  })
+
+  it('should open project on same window', async () => {
+    const project = 'any-project'
+    mockReaddir([project])
+
+    mockParams(project, '-r')
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, project)} --reuse-window`,
+      expect.anything()
+    )
+  })
+
+  it('should open workspace and reuse window', async () => {
+    const projects = ['any-project', 'other-project']
+    mockReaddir(projects)
+
+    mockParams(...projects, '-w', '-r')
+    await sut.exec()
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
+      expect.anything()
+    )
+
+    mockParams(...projects, '-r')
+    await sut.exec()
+    expect(cp.execSync).toHaveBeenCalledTimes(2)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
+      expect.anything()
+    )
+  })
+
+  it("should not display path's root on prompt", async () => {
     writeLockfile({
       projects: [
         '~/root/sub1',
@@ -138,7 +170,7 @@ describe('open', () => {
     })
   })
 
-  it('should open all prompt options', async () => {
+  it('should open all prompt selected options', async () => {
     ;(p.multiselect as jest.Mock).mockReturnValueOnce([
       join(cwd, '/root1'),
       join(cwd, '/root2')
@@ -157,7 +189,7 @@ describe('open', () => {
     )
   })
 
-  it('should open all prompt options on workspace', async () => {
+  it('should open all prompt selected options on workspace', async () => {
     ;(p.multiselect as jest.Mock).mockResolvedValueOnce([
       join(cwd, '/root1'),
       join(cwd, '/root2')
