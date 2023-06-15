@@ -1,5 +1,14 @@
 # @mist3rbru/my-cli
 
+## 0.2.3
+
+### Patch Changes
+
+- dfc7e3a: fix(open): prevent prompt to display root paths
+- 0b184c9: fix(clone): prevent install dependencies of non node project
+- 48e0f98: fix(run): -d flag not catching up
+- c5dfa59: feat(open): reuse window on -r flag
+
 ## 0.2.2
 
 ### Patch Changes
