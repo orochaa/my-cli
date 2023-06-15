@@ -4,7 +4,7 @@ import { cwd, lockfilePath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { writeLockfile } from '@/utils/file-system'
 import cp from 'node:child_process'
-import { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
+import fs, { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
 import * as p from '@clack/prompts'
@@ -94,6 +94,21 @@ describe('clone', () => {
     expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
     rmdirSync(repositoryPath)
+  })
+
+  it('should not install non node project dependencies', async () => {
+    const existsSpy = jest
+      .spyOn(fs, 'existsSync')
+      .mockImplementation()
+      .mockReturnValue(false)
+
+    await sut.exec()
+
+    expect(existsSpy).not.toHaveBeenCalledWith(
+      'pnpm install',
+      expect.anything()
+    )
+    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
   it('should render prompts', async () => {
