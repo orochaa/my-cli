@@ -33,12 +33,21 @@ async function cloneCommand(params: string[]): Promise<void> {
   }
 
   const isNotCloned = !existsSync(join(cwd, repository.name))
+  if (isNotCloned) {
+    exec(`git clone ${repository.clone_url} ${repository.name}`)
+    logCommand(`cd ${repository.name}\n`)
+    process.chdir(repository.name)
+    exec('git remote rename origin o')
+  } else {
+    logCommand(`cd ${repository.name}\n`)
+    process.chdir(repository.name)
+  }
 
-  if (isNotCloned) exec(`git clone ${repository.clone_url} ${repository.name}`)
-  logCommand(`cd ${repository.name}\n`)
-  process.chdir(repository.name)
-  if (isNotCloned) exec('git remote rename origin o')
-  exec('pnpm install')
+  const isNodeProject = existsSync(join(process.cwd(), 'package.json'))
+  if (isNodeProject) {
+    exec('pnpm install')
+  }
+
   exec('code .')
 }
 

@@ -82,7 +82,7 @@ describe('run', () => {
     })
 
     it('should run scripts of each package.json', async () => {
-      mockParams('lint', 'build', 'test', '-D')
+      mockParams('lint', 'build', 'test', '-d')
       await sut.exec()
 
       expect(cp.execSync).toHaveBeenNthCalledWith(
