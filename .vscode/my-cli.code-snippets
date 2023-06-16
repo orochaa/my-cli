@@ -3,7 +3,7 @@
     "scope": "typescript",
     "prefix": "command",
     "body": [
-      "async function $1Command(params: string[]): Promise<void> {",
+      "async function $1Command(params: string[], flags: string[]): Promise<void> {",
       "  $0",
       "}",
       ""

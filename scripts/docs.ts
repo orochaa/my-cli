@@ -42,7 +42,7 @@ function run(): void {
   newReadmeContent.push('- `--force`: ignores previous `setup`')
   newReadmeContent.push('')
 
-  writeFileSync(readmePath, newReadmeContent.join('\r\n'), { encoding: 'utf8' })
+  writeFileSync(readmePath, newReadmeContent.join('\n'), { encoding: 'utf8' })
 }
 
 function highlight(text: string | string[]): string {

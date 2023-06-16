@@ -66,7 +66,7 @@ export function parseValue(value: string): unknown {
     return value.slice(1, -1).split(',').filter(Boolean).map(parseValue)
   } else if (/^{.*?}$/i.test(value)) {
     return JSON.parse(value)
-  } else {
-    return value.replace('+', ' ').replace(/(?:^["'])|(?:["']$)/g, '')
   }
+
+  return value.replace('+', ' ').replace(/(?:^["'])|(?:["']$)/g, '')
 }
