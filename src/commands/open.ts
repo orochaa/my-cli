@@ -15,7 +15,7 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
 
   for (const projectsRoot of lockfile.projects) {
     const projects = readdirSync(projectsRoot, { withFileTypes: true })
-      .filter(item => item.isDirectory())
+      .filter(item => item.isDirectory() && !/^\./.test(item.name))
       .map(project => project.name)
     controller.push([projectsRoot, projects])
   }

@@ -142,4 +142,22 @@ describe('open', () => {
       expect.anything()
     )
   })
+
+  it('should ignore config folders', async () => {
+    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockReaddir(['.ignore_config', 'project'])
+
+    clearParams()
+    await sut.exec()
+
+    expect(p.multiselect).toHaveBeenCalledWith({
+      message: 'Select a project to open:',
+      options: [
+        {
+          label: 'root/project',
+          value: join(cwd, '/root/project')
+        }
+      ]
+    })
+  })
 })
