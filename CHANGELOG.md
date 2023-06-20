@@ -1,5 +1,12 @@
 # @mist3rbru/my-cli
 
+## 0.2.4
+
+### Patch Changes
+
+- a2ab47b: fix(open): ignore config folders
+- 6e9f812: chore(global): remove `store`and `recover` commands because it does not last on update
+
 ## 0.2.3
 
 ### Patch Changes
