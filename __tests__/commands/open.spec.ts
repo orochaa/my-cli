@@ -2,7 +2,7 @@ import { makeSut } from '@/tests/mocks/make-sut'
 import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
-import cp from 'node:child_process'
+import cp, { exec } from 'node:child_process'
 import fs, { Dirent } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -221,5 +221,14 @@ describe('open', () => {
         }
       ]
     })
+  })
+
+  it('should not prompt workspace on single project selection', async () => {
+    ;(p.multiselect as jest.Mock).mockResolvedValueOnce([join(cwd, '/root')])
+
+    clearParams()
+    await sut.exec()
+
+    expect(p.confirm).toHaveBeenCalledTimes(0)
   })
 })

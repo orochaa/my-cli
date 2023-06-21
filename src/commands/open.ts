@@ -83,11 +83,14 @@ async function openPrompt(controller: Controller): Promise<string[]> {
   })
   verifyPromptResponse(projects)
 
-  const isWorkspace = await p.confirm({
-    message: 'Open on workspace?',
-    initialValue: false
-  })
-  verifyPromptResponse(isWorkspace)
+  let isWorkspace: boolean | symbol = false
+  if (projects.length > 1) {
+    isWorkspace = await p.confirm({
+      message: 'Open on workspace?',
+      initialValue: false
+    })
+    verifyPromptResponse(isWorkspace)
+  }
 
   return isWorkspace ? [projects.join(' ')] : projects
 }
