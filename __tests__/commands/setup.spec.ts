@@ -1,7 +1,6 @@
 import { makeSut } from '@/tests/mocks/make-sut'
 import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
-import { objectEntries } from '@/utils/mappers'
 import axios from 'axios'
 import { existsSync, rmSync } from 'fs'
 import * as p from '@clack/prompts'
@@ -16,11 +15,12 @@ const stopSpy = jest.fn()
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => mock.git),
-  confirm: jest.fn(async () => false),
+  confirm: jest.fn(async options => options.initialValue),
   spinner: jest.fn(() => ({
     start: startSpy,
     stop: stopSpy
-  }))
+  })),
+  outro: jest.fn()
 }))
 
 jest.mock('axios', () => ({
@@ -53,7 +53,7 @@ describe('setup', () => {
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
       message: expect.any(String),
-      initialValue: undefined
+      initialValue: ''
     })
   })
 

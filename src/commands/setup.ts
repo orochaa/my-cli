@@ -1,6 +1,6 @@
 import { App } from '@/main/app'
 import { cwd } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
+import { InvalidParamError, NotFoundError } from '@/utils/errors'
 import {
   Lockfile,
   readLockfile,
@@ -9,7 +9,7 @@ import {
 } from '@/utils/file-system'
 import { mergeObjects } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import { readdirSync } from 'node:fs'
+import { statSync } from 'node:fs'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -24,24 +24,25 @@ async function setupCommand(): Promise<void> {
   writeLockfile(result)
 }
 
+async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
+  const git = await gitPrompt(lockfile.git)
+  const projects = await projectsPrompt(lockfile.projects ?? [])
+  p.outro('🚀 Setup finished')
+  return { git, projects }
+}
+
 type GitUser = {
   login: string
   name: string
 }
 
-async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
-  const git = await gitPrompt(lockfile)
-  const projects = await projectsPrompt(lockfile)
-  return { git, projects }
-}
-
-async function gitPrompt(lockfile: Lockfile): Promise<string> {
+async function gitPrompt(lastGit: string): Promise<string> {
   const spinner = p.spinner()
-  let repeat: boolean = false
-  let git: string = lockfile.git
-
+  let git = !!lastGit ? lastGit : ''
+  let repeat = false
+  let response
   do {
-    const response = await p.text({
+    response = await p.text({
       message: 'What is your GitHub username?',
       initialValue: git
     })
@@ -54,7 +55,13 @@ async function gitPrompt(lockfile: Lockfile): Promise<string> {
         `https://api.github.com/users/${git}`
       )
       spinner.stop(`User: ${user.login} | ${user.name}`)
-      repeat = false
+
+      response = await p.confirm({
+        message: 'Is that your user?',
+        initialValue: true
+      })
+      verifyPromptResponse(response)
+      repeat = !response
     } catch {
       spinner.stop('Invalid user')
       repeat = true
@@ -64,31 +71,44 @@ async function gitPrompt(lockfile: Lockfile): Promise<string> {
   return git
 }
 
-async function projectsPrompt(lockfile: Lockfile): Promise<string[]> {
+async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
   const projects: string[] = []
-  let repeat: boolean | symbol = false
+  const defaultProjectRoot = cwd.replace(/^(.*?)[\\/].+/, '$1').concat('/git')
 
-  do {
-    const projectRoot = await p.text({
+  let repeat: boolean | symbol = true
+  let response
+  for (let i = 0; repeat; i++) {
+    response = await p.text({
       message: 'What is your root projects path:',
-      initialValue: cwd.replace(/^(.*?)[\\/].+/, '$1').concat('/git'),
+      initialValue: lastProjects[i] ?? defaultProjectRoot,
       validate: res => {
+        if (projects.includes(res)) {
+          return new InvalidParamError(
+            'path',
+            'this path is already registered'
+          ).message
+        }
         try {
-          readdirSync(res)
+          const status = statSync(res)
+          if (!status.isDirectory()) {
+            return new InvalidParamError('path', 'it is not a directory')
+              .message
+          }
         } catch {
           return new NotFoundError('path').message
         }
       }
     })
-    verifyPromptResponse(projectRoot)
-    projects.push(projectRoot)
+    verifyPromptResponse(response)
+    projects.push(response)
 
-    repeat = await p.confirm({
-      message: 'Do you want to add other root?',
+    response = await p.confirm({
+      message: 'Do you want to add another root?',
       initialValue: false
     })
     verifyPromptResponse(repeat)
-  } while (repeat)
+    repeat = response
+  }
 
   return projects
 }
