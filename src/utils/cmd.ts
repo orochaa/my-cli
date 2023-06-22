@@ -71,3 +71,22 @@ export function hasFlag(target: string | string[], flags: string[]): boolean {
 export function isSilent(): boolean {
   return hasFlag('--silent', process.argv)
 }
+
+type Version = {
+  current: string
+  wanted: string
+  latest: string
+  dependent: string
+  location: string
+}
+
+type OutdatedResponse = {
+  '@mist3rbru/my-cli': Version
+}
+
+export async function execOutdated(): Promise<Version | null> {
+  const res = await execAsync('npm outdated @mist3rbru/my-cli --global --json')
+  const json = JSON.parse(res) as OutdatedResponse | null
+  const version = json?.['@mist3rbru/my-cli'] ?? null
+  return version
+}
