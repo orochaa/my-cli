@@ -54,6 +54,8 @@ A compilation of my CLI snippets.
 - `upgrade`: Update package to latest version
   - alias: `up`
   - example: my up
+- `version`: Display current package version
+  - example: my version
 
 ### Global flags:
 

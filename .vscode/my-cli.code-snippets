@@ -34,6 +34,7 @@
       "    alias: ${2:null},",
       "    params: ${3:null},",
       "    description: '$0',",
+      "    example: 'my $1',",
       "    action: $1Command",
       "  })",
       "}"

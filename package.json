@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "my": "cross-env NODE_ENV=development tsx src/index.ts",
+    "start": "node dist/index.cjs",
     "lint": "tsc --noEmit && prettier --write .",
     "build": "unbuild",
     "test": "jest --no-cache",
