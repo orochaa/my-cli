@@ -82,20 +82,22 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
       message: 'What is your root projects path:',
       initialValue: lastProjects[i] ?? defaultProjectRoot,
       validate: res => {
-        if (projects.includes(res)) {
-          return new InvalidParamError(
-            'path',
-            'this path is already registered'
-          ).message
-        }
-        try {
-          const status = statSync(res)
-          if (!status.isDirectory()) {
-            return new InvalidParamError('path', 'it is not a directory')
-              .message
+        if (!!res) {
+          if (projects.includes(res)) {
+            return new InvalidParamError(
+              'path',
+              'this path is already registered'
+            ).message
           }
-        } catch {
-          return new NotFoundError('path').message
+          try {
+            const status = statSync(res)
+            if (!status.isDirectory()) {
+              return new InvalidParamError('path', 'it is not a directory')
+                .message
+            }
+          } catch {
+            return new NotFoundError('path').message
+          }
         }
       }
     })
@@ -110,7 +112,7 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
     repeat = response
   }
 
-  return projects
+  return projects.filter(Boolean)
 }
 
 export function setupRecord(app: App): void {
