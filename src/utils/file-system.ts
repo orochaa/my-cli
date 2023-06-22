@@ -1,9 +1,5 @@
-import {
-  lockfilePath,
-  packageJsonPath,
-  tempFolderPath
-} from '@/utils/constants'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { lockfilePath, packageJsonPath } from '@/utils/constants'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
 export type PackageJson = {
   scripts: Record<string, string>
@@ -31,10 +27,5 @@ export function readLockfile(): Lockfile {
 }
 
 export function writeLockfile(content: Record<string, unknown>): void {
-  createTempFolder()
   writeFileSync(lockfilePath, JSON.stringify(content))
-}
-
-function createTempFolder(): void {
-  if (!existsSync(tempFolderPath)) mkdirSync(tempFolderPath)
 }

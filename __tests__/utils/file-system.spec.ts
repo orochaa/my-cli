@@ -1,9 +1,4 @@
-import {
-  cwd,
-  lockfilePath,
-  packageJsonPath,
-  tempFolderPath
-} from '@/utils/constants'
+import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants'
 import {
   getPackageJson,
   readLockfile,
@@ -71,15 +66,6 @@ describe('file-system', () => {
   })
 
   describe('writeLockfile()', () => {
-    it('should create temp folder', () => {
-      if (existsSync(tempFolderPath))
-        rmSync(tempFolderPath, { recursive: true })
-
-      writeLockfile({})
-
-      expect(existsSync(tempFolderPath)).toBeTruthy()
-    })
-
     it('should write lockfile', () => {
       if (existsSync(lockfilePath)) rmSync(lockfilePath)
 
