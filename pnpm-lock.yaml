@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 dependencies:
   '@clack/prompts':
     specifier: ^0.6.3
@@ -39,6 +43,9 @@ devDependencies:
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3
+  git-commit-msg-linter:
+    specifier: ^5.0.4
+    version: 5.0.4
   jest:
     specifier: ^29.5.0
     version: 29.5.0(@types/node@20.2.1)
@@ -1933,6 +1940,14 @@ packages:
       delayed-stream: 1.0.0
     dev: false
 
+  /commit-msg-linter@1.0.0:
+    resolution: {integrity: sha512-Di9oAjfjIwAcASQ8abW1936twemUdDQq4D1dBL42Y+S6rNXykauIBPztj8Ej4/MjI6zIziLVzfhmdkg0z4I4rg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      did-you-mean: 0.0.1
+      supports-color: 8.1.1
+    dev: true
+
   /commondir@1.0.1:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
     dev: true
@@ -2065,6 +2080,13 @@ packages:
   /detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
+    dev: true
+
+  /did-you-mean@0.0.1:
+    resolution: {integrity: sha512-rKxPpbrHr4/u8VMPde6Z3DhbGoXw7kepHZIU2FGs+IU+LKnhEIlw1cx80FZ7fLruJXDyu0slKMai2FhPRZjwxQ==}
+    dependencies:
+      levenshtein: 1.0.5
+      underscore: 1.13.6
     dev: true
 
   /diff-sequences@29.4.3:
@@ -2446,6 +2468,16 @@ packages:
 
   /get-tsconfig@4.5.0:
     resolution: {integrity: sha512-MjhiaIWCJ1sAU4pIQ5i5OfOuHHxVo1oYeNsWTON7jxYkod8pHocXeh+SSbmu5OZZZK73B6cbJ2XADzXehLyovQ==}
+    dev: true
+
+  /git-commit-msg-linter@5.0.4:
+    resolution: {integrity: sha512-XxdvLbgQDbPlZwru9Tns2zgFvk4UhcWT+LVVNP2tSiAjkY0RJws9zqhUgolXJvpiPDvSbbDMpGu3EtXiKN/IeA==}
+    engines: {node: '>= 14.0.0'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      chalk: 2.4.2
+      commit-msg-linter: 1.0.0
     dev: true
 
   /glob-parent@5.1.2:
@@ -3353,6 +3385,11 @@ packages:
   /leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
+    dev: true
+
+  /levenshtein@1.0.5:
+    resolution: {integrity: sha512-UQf1nnmxjl7O0+snDXj2YF2r74Gkya8ZpnegrUBYN9tikh2dtxV/ey8e07BO5wwo0i76yjOvbDhFHdcPEiH9aA==}
+    engines: {'0': node >=0.2.0}
     dev: true
 
   /lines-and-columns@1.2.4:
@@ -4366,6 +4403,10 @@ packages:
     transitivePeerDependencies:
       - sass
       - supports-color
+    dev: true
+
+  /underscore@1.13.6:
+    resolution: {integrity: sha512-+A5Sja4HP1M08MaXya7p5LvjuM7K6q/2EaC0+iovj/wOcMsTzMvDFbasi/oSapiwOlt252IqsKqPjCl7huKS0A==}
     dev: true
 
   /universalify@0.1.2:
