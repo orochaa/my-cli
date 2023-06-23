@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.2.5
+
+### Patch Changes
+
+- a497a11: feat(version): version command
+- f138931: feat(open): conditional workspace prompt
+- 67f293d: feat(setup): improve common mistake validations
+
 ## 0.2.4
 
 ### Patch Changes
