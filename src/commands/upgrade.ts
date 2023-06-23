@@ -10,7 +10,10 @@ async function upgradeCommand(): Promise<void> {
 
   if (version && version.current !== version.latest) {
     spinner.stop(`Upgrading to v${version.latest}...`)
-    exec('npm install -g @mist3rbru/my-cli@latest')
+    exec('npm install -g @mist3rbru/my-cli@latest', {
+      stdio: 'ignore',
+      log: false
+    })
     p.note(`🚀 Upgraded from v${version.current} to v${version.latest}`)
   } else {
     spinner.stop('🔥 You are up to date')
