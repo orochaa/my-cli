@@ -2,7 +2,7 @@ import { App } from '@/main/app'
 import { InvalidParamError } from '@/utils/errors'
 import { block, verifyPromptResponse } from '@/utils/prompt'
 import colors from 'picocolors'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 type PomodoroPeriod = 'work' | 'rest'
 

@@ -3,7 +3,7 @@ import { lockfilePath } from '@/utils/constants'
 import { readLockfile, writeLockfile } from '@/utils/file-system'
 import axios from 'axios'
 import { existsSync, rmSync } from 'fs'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 const mock = {
   git: 'any',

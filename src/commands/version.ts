@@ -2,7 +2,7 @@ import { App } from '@/main/app'
 import { root } from '@/utils/constants'
 import { getPackageJson } from '@/utils/file-system'
 import { join } from 'path'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function versionCommand(): Promise<void> {
   const packageJson = getPackageJson(join(root, 'package.json'))

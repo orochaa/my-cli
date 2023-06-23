@@ -7,7 +7,7 @@ import { objectKeys } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function runCommand(scripts: string[], flags: string[]): Promise<void> {
   const hasScripts = scripts.length

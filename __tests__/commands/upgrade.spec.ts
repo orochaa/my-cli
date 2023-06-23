@@ -1,6 +1,6 @@
 import { makeSut } from '@/tests/mocks/make-sut'
 import cp from 'node:child_process'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 import { clearParams } from '../mocks/mock-params'
 
 const startSpy = jest.fn()

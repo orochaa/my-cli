@@ -5,7 +5,7 @@ import { writeLockfile } from '@/utils/file-system'
 import cp, { exec } from 'node:child_process'
 import fs, { Dirent } from 'node:fs'
 import { join } from 'node:path'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 const mockDirent = (folders: string[]): Dirent[] => {
   return folders.map(

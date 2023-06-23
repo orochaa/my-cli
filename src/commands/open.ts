@@ -4,7 +4,7 @@ import { readLockfile } from '@/utils/file-system'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 type Controller = [projectsRoot: string, projects: string[]][]
 

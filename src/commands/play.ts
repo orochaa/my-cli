@@ -3,7 +3,7 @@ import { exec } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { objectEntries, objectValues } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 const players = {
   youtube: {

@@ -11,7 +11,7 @@ import { mergeObjects } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
 import { statSync } from 'node:fs'
 import axios from 'axios'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function setupCommand(): Promise<void> {
   const lockfile: Lockfile = verifyLockfile()

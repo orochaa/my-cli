@@ -1,6 +1,6 @@
 import { App } from '@/main/app'
 import { exec, execOutdated } from '@/utils/cmd'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function upgradeCommand(): Promise<void> {
   const spinner = p.spinner()

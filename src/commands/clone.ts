@@ -7,7 +7,7 @@ import { verifyPromptResponse } from '@/utils/prompt'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 type Repository = {
   name: string
