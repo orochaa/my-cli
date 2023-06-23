@@ -1,7 +1,7 @@
 node_modules/
 coverage/
 dist/
-src/temp/
+src/utils/store-lock.json
 
 package-lock.json
 todo.md

@@ -1,12 +1,13 @@
 import { verifyPromptResponse } from '@/utils/prompt'
 
-const exitSpy = jest.spyOn(global.process, 'exit')
-exitSpy.mockImplementation(() => ({} as never))
+const exitSpy = jest
+  .spyOn(global.process, 'exit')
+  .mockImplementation(() => ({} as never))
 
 describe('prompt', () => {
   describe('verifyPromptResponse()', () => {
     it('should end process cancel response', () => {
-      const responses = [Symbol(), { test: Symbol() }, undefined]
+      const responses = [Symbol(), { test: Symbol() }]
 
       expect.assertions(responses.length * 2)
       for (const response of responses) {

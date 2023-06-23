@@ -7,7 +7,7 @@ import { objectKeys } from '@/utils/mappers'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function runCommand(scripts: string[], flags: string[]): Promise<void> {
   const hasScripts = scripts.length
@@ -18,7 +18,7 @@ async function runCommand(scripts: string[], flags: string[]): Promise<void> {
   } else if (hasScripts) {
     shallowRun(scripts)
   } else {
-    await promptRun()
+    await runPrompt()
   }
 }
 
@@ -52,12 +52,23 @@ function deepRun(scripts: string[]): void {
   }
 }
 
-async function promptRun(): Promise<void> {
+async function runPrompt(): Promise<void> {
   const packageJson = getPackageJson()
   if (!packageJson?.scripts) {
     throw new NotFoundError('packageJson.scripts')
   }
-  run(await runPrompt(packageJson))
+
+  const scripts = await p.multiselect<PromptOption<string>[], string>({
+    message: 'Select some scripts to run in sequence: ',
+    options: objectKeys(packageJson.scripts).map(script => ({
+      label: script,
+      value: script
+    })),
+    required: true
+  })
+  verifyPromptResponse(scripts)
+
+  run(scripts)
 }
 
 function verifyScripts(scripts: string[], packageJson: PackageJson): string[] {
@@ -68,19 +79,6 @@ function verifyScripts(scripts: string[], packageJson: PackageJson): string[] {
     }
   }
   return result
-}
-
-async function runPrompt(packageJson: PackageJson): Promise<string[]> {
-  const response = await p.multiselect<PromptOption<string>[], string>({
-    message: 'Select some scripts to run in sequence: ',
-    options: objectKeys(packageJson.scripts).map(script => ({
-      label: script,
-      value: script
-    })),
-    required: true
-  })
-  verifyPromptResponse(response)
-  return response
 }
 
 export function runRecord(app: App): void {

@@ -7,7 +7,7 @@ import cp from 'node:child_process'
 import fs, { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 const repo = {
   name: 'my-cli',

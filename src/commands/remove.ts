@@ -5,7 +5,7 @@ import { NotFoundError } from '@/utils/errors'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
 import { existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function removeCommand(params: string[]): Promise<void> {
   let items: string[] = []

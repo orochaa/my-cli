@@ -1,7 +1,7 @@
 import { App } from '@/main/app'
 import { InvalidParamError } from '@/utils/errors'
 import { verifyPromptResponse } from '@/utils/prompt'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 const specials = '!@#$%&_?.'
 const lowercase = 'abcdefghijklmnopqrstuvwxyz'

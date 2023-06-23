@@ -49,16 +49,13 @@ export class App {
         this.log(`  flags: ${flags}\n`)
       }
       this.log(`  description: ${command.description}\n`)
-      this.log(`  example: ${command.example}\n`)
-      this.log('\n')
+      this.log(`  example: ${command.example}\n\n`)
     }
   }
 
   public errorHandler(error: Error): never {
     if (!isSilent()) {
-      this.log(`${error.name}: `)
-      this.log(error.message)
-      this.log('\n')
+      this.log(`${error.name}: ${error.message}\n`)
     }
     process.exit(0)
   }
@@ -68,19 +65,12 @@ export class App {
   }
 
   private getCommand(name: string): App.Command | null {
-    let command: App.Command | null = null
-
-    for (const _command of this.commands) {
-      if (_command.name === name) {
-        command = _command
-        break
-      } else if (_command.alias && _command.alias === name) {
-        command = _command
-        break
+    for (const command of this.commands) {
+      if (command.name === name || (command.alias && command.alias === name)) {
+        return command
       }
     }
-
-    return command
+    return null
   }
 }
 

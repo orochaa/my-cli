@@ -1,7 +1,7 @@
 import { App } from '@/main/app'
 import { verifyPromptResponse } from '@/utils/prompt'
 import { createApi } from '@mist3rbru/create-ts-api'
-import * as p from '@clack/prompts'
+import p from '@clack/prompts'
 
 async function apiCommand(params: string[]): Promise<void> {
   let apiName: string

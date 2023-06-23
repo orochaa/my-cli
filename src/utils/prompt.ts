@@ -32,8 +32,7 @@ export function verifyPromptResponse<TResponse extends PromptResponse>(
 }
 
 function verifySymbol<T>(data: T | symbol): asserts data is T {
-  const dataType = typeof data
-  if (dataType === 'undefined' || dataType === 'symbol') {
+  if (typeof data === 'symbol') {
     process.exit(0)
   }
 }

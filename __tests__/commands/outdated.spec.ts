@@ -1,7 +1,7 @@
 import { makeSut } from '@/tests/mocks/make-sut'
+import { clearParams } from '@/tests/mocks/mock-params'
 import cp from 'node:child_process'
 import p from '@clack/prompts'
-import { clearParams } from '../mocks/mock-params'
 
 const startSpy = jest.fn()
 const stopSpy = jest.fn()
@@ -15,8 +15,8 @@ jest.mock('@clack/prompts', () => ({
   }))
 }))
 
-describe('upgrade', () => {
-  const sut = makeSut('upgrade')
+describe('outdated', () => {
+  const sut = makeSut('outdated')
 
   beforeAll(() => {
     clearParams()
@@ -81,8 +81,9 @@ describe('upgrade', () => {
     expect(stopSpy).toHaveBeenCalledWith('🔥 You are up to date')
   })
 
-  it('should upgrade package to latest version', async () => {
-    jest.spyOn(cp, 'exec').mockImplementationOnce((cmd, cb) => {
+  it('should print a note if it is not on latest version', async () => {
+    const execSpy = jest.spyOn(cp, 'exec')
+    execSpy.mockImplementationOnce((cmd, cb) => {
       ;(cb as any)(
         null,
         '{"@mist3rbru/my-cli":{"current":"0.0.1","latest":"0.0.2"}}',
@@ -90,16 +91,20 @@ describe('upgrade', () => {
       )
       return cp as any
     })
-    const execSpy = jest.spyOn(cp, 'execSync')
-    execSpy.mockImplementationOnce(() => ({} as any))
 
     await sut.exec()
 
-    expect(execSpy).toHaveBeenCalledTimes(1)
-    expect(execSpy).toHaveBeenCalledWith(
-      'npm install -g @mist3rbru/my-cli@latest',
-      expect.anything()
-    )
+    expect(stopSpy).toHaveBeenCalledTimes(1)
     expect(p.note).toHaveBeenCalledTimes(1)
+  })
+
+  it('should throw on error', async () => {
+    const execSpy = jest.spyOn(cp, 'exec')
+    execSpy.mockImplementationOnce((cmd, cb) => {
+      ;(cb as any)(null, '', 'error')
+      return cp as any
+    })
+
+    expect(sut.exec()).rejects.toBe('error')
   })
 })
