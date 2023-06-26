@@ -8,12 +8,12 @@ import { join } from 'node:path'
 import p from '@clack/prompts'
 
 async function removeCommand(params: string[]): Promise<void> {
-  let items: string[] = []
+  let items: string[]
 
   if (params.length) {
-    items = params
-    const error = verifyItems(items)
+    const error = verifyItems(params)
     if (error) throw error
+    items = params
   } else {
     items = await removePrompt()
   }

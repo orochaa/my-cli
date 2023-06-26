@@ -101,10 +101,10 @@ describe('outdated', () => {
   it('should throw on error', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
     execSpy.mockImplementationOnce((cmd, cb) => {
-      ;(cb as any)(null, '', 'error')
+      ;(cb as any)(new Error('error'), '', 'error')
       return cp as any
     })
 
-    expect(sut.exec()).rejects.toBe('error')
+    expect(sut.exec()).rejects.toThrow('error')
   })
 })
