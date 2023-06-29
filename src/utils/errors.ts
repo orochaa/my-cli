@@ -1,5 +1,5 @@
 function emphasize(str: string): string {
-  return str.split(' ').length > 1 ? str : `'${str}'`
+  return str.split(' ').length > 1 ? str : `\`${str}\``
 }
 
 export class NotFoundError extends Error {

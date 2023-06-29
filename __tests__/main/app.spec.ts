@@ -10,7 +10,7 @@ describe('App', () => {
     const sut = makeSut()
     const errorHandlerSpy = jest
       .spyOn(sut, 'errorHandler')
-      .mockImplementation((() => {}) as any)
+      .mockImplementation()
 
     await sut.exec('foo')
 

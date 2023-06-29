@@ -8,13 +8,34 @@ type Command = CommandKey extends `${infer TCommand}Record` ? TCommand : never
 
 export function makeSut(command: Command) {
   const sut = new App()
+  let isSilent = true
+
   for (const [key, record] of objectEntries(commands)) {
     if (key.startsWith(command)) {
       record(sut)
       break
     }
   }
+
   return {
-    exec: () => sut.exec(command)
+    exec: (...params: string[]): Promise<void> => {
+      process.argv = [
+        'node',
+        'index.[tj]s',
+        'command',
+        ...params.map(p => p.split(' ')).flat()
+      ]
+
+      if (isSilent) {
+        process.argv.push('--silent')
+      } else {
+        isSilent = true
+      }
+
+      return sut.exec(command)
+    },
+    enableLogs: (): void => {
+      isSilent = false
+    }
   }
 }
