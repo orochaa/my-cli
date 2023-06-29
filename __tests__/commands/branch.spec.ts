@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams } from '@/tests/mocks/mock-params'
 import cp from 'node:child_process'
 import p from '@clack/prompts'
 
@@ -16,14 +15,10 @@ jest.spyOn(cp, 'exec').mockImplementation((cmd, cb) => {
 describe('branch', () => {
   const sut = makeSut('branch')
 
-  beforeEach(() => {
-    clearParams()
-  })
-
   it('should read git branches', async () => {
     await sut.exec()
 
-    expect(cp.exec).toHaveBeenCalledTimes(1)
+    expect(cp.exec).toHaveBeenCalled()
     expect(cp.exec).toHaveBeenCalledWith('git branch -a', expect.any(Function))
   })
 

@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { InvalidParamError } from '@/utils/errors'
 import p from '@clack/prompts'
 
@@ -11,10 +10,6 @@ jest.mock('@clack/prompts', () => ({
 describe('password', () => {
   const sut = makeSut('password')
 
-  beforeEach(() => {
-    clearParams()
-  })
-
   it('should generate a password with prompt length', async () => {
     await sut.exec()
 
@@ -22,9 +17,7 @@ describe('password', () => {
   })
 
   it('should generate a password with params length', async () => {
-    mockParams('15')
-
-    await sut.exec()
+    await sut.exec('15')
 
     expect((p.outro as jest.Mock).mock.calls[0][0]).toHaveLength(15)
   })
@@ -34,8 +27,8 @@ describe('password', () => {
     const edges = ['7', '101', 'NaN']
 
     for (const edge of edges) {
-      mockParams(edge)
-      expect(sut.exec()).rejects.toThrowError(InvalidParamError)
+      const promise = sut.exec(edge)
+      expect(promise).rejects.toThrowError(InvalidParamError)
     }
   })
 })

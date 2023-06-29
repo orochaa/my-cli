@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { InvalidParamError } from '@/utils/errors'
 import cp from 'node:child_process'
 
@@ -23,10 +22,6 @@ jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
 describe('play', () => {
   const sut = makeSut('play')
 
-  beforeEach(() => {
-    clearParams()
-  })
-
   it('should open prompt selected player', async () => {
     await sut.exec()
 
@@ -42,8 +37,7 @@ describe('play', () => {
 
     for (const { aliases, url } of players) {
       for (const alias of aliases) {
-        mockParams(alias)
-        await sut.exec()
+        await sut.exec(alias)
         expect(cp.execSync).toHaveBeenCalledWith(
           `start ${url}`,
           expect.anything()
@@ -53,8 +47,7 @@ describe('play', () => {
   })
 
   it('should not open invalid players', async () => {
-    mockParams('invalid-player')
-
-    expect(sut.exec()).rejects.toThrowError(InvalidParamError)
+    const promise = sut.exec('invalid-player')
+    expect(promise).rejects.toThrowError(InvalidParamError)
   })
 })

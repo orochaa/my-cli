@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
 import { writeLockfile } from '@/utils/file-system'
 import cp, { exec } from 'node:child_process'
@@ -36,7 +35,6 @@ describe('open', () => {
   const sut = makeSut('open')
 
   beforeEach(() => {
-    clearParams()
     writeLockfile({ projects: [cwd] })
   })
 
@@ -49,8 +47,7 @@ describe('open', () => {
   it('should not open invalid projects', async () => {
     mockReaddir(['project'])
 
-    mockParams('not-a-project', 'neither-a-project')
-    await sut.exec()
+    await sut.exec('not-a-project', 'neither-a-project')
 
     expect(cp.execSync).toHaveBeenCalledTimes(0)
   })
@@ -59,8 +56,7 @@ describe('open', () => {
     const projects = ['any-project', 'other-project']
     mockReaddir(projects)
 
-    mockParams(...projects)
-    await sut.exec()
+    await sut.exec(...projects)
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -77,8 +73,7 @@ describe('open', () => {
     writeLockfile({ projects: [join(cwd, '/root1'), join(cwd, '/root2')] })
     mockReaddir(['project'])
 
-    mockParams('project', 'root2/project')
-    await sut.exec()
+    await sut.exec('project', 'root2/project')
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -95,8 +90,7 @@ describe('open', () => {
     const projects = ['any-project', 'other-project']
     mockReaddir(projects)
 
-    mockParams(...projects, '-w')
-    await sut.exec()
+    await sut.exec(...projects, '-w')
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -109,8 +103,7 @@ describe('open', () => {
     const project = 'any-project'
     mockReaddir([project])
 
-    mockParams(project, '-r')
-    await sut.exec()
+    await sut.exec(project, '-r')
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -123,16 +116,14 @@ describe('open', () => {
     const projects = ['any-project', 'other-project']
     mockReaddir(projects)
 
-    mockParams(...projects, '-w', '-r')
-    await sut.exec()
+    await sut.exec(...projects, '-w', '-r')
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
       expect.anything()
     )
 
-    mockParams(...projects, '-r')
-    await sut.exec()
+    await sut.exec(...projects, '-r')
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
@@ -209,7 +200,6 @@ describe('open', () => {
     writeLockfile({ projects: [join(cwd, '/root')] })
     mockReaddir(['.ignore_config', 'project'])
 
-    clearParams()
     await sut.exec()
 
     expect(p.multiselect).toHaveBeenCalledWith({
@@ -226,7 +216,6 @@ describe('open', () => {
   it('should not prompt workspace on single project selection', async () => {
     ;(p.multiselect as jest.Mock).mockResolvedValueOnce([join(cwd, '/root')])
 
-    clearParams()
     await sut.exec()
 
     expect(p.confirm).toHaveBeenCalledTimes(0)
