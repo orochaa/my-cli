@@ -58,6 +58,6 @@ describe('remove', () => {
   it('should verify param item', async () => {
     rmSync(mockPath)
     const promise = sut.exec(mock)
-    expect(promise).rejects.toThrowError(NotFoundError)
+    expect(promise).rejects.toThrow(NotFoundError)
   })
 })

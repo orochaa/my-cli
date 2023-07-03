@@ -1,8 +1,9 @@
 import { App } from '@/main/app'
-import { exec } from '@/utils/cmd'
 import { InvalidParamError } from '@/utils/errors'
 import { objectEntries, objectValues } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
+import open from 'open'
+import color from 'picocolors'
 import p from '@clack/prompts'
 
 const players = {
@@ -34,7 +35,8 @@ async function playCommand(params: string[]): Promise<void> {
     player = await playPrompt()
   }
 
-  exec(`start ${player}`)
+  p.outro(`Opening ${color.blue(player)}`)
+  await open(player)
 }
 
 async function playPrompt(): Promise<string> {

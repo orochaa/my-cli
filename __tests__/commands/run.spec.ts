@@ -20,7 +20,7 @@ describe('run', () => {
 
       const promise = sut.exec('lint')
 
-      expect(promise).rejects.toThrowError(NotFoundError)
+      expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should verify if script exists in package.json', async () => {
@@ -30,7 +30,7 @@ describe('run', () => {
 
       const promise = sut.exec('lint')
 
-      expect(promise).rejects.toThrowError(NotFoundError)
+      expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should run scripts', async () => {
@@ -97,13 +97,13 @@ describe('run', () => {
     it('should verify package.json', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
 
-      expect(sut.exec()).rejects.toThrowError(NotFoundError)
+      expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
 
-      expect(sut.exec()).rejects.toThrowError(NotFoundError)
+      expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it("should run prompt's selected scripts", async () => {

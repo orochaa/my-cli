@@ -57,7 +57,7 @@ describe('clone', () => {
   it('should throw on invalid repository name', async () => {
     const promise = sut.exec('your-cli')
 
-    expect(promise).rejects.toThrowError(NotFoundError)
+    expect(promise).rejects.toThrow(NotFoundError)
   })
 
   it('should clone on valid repository', async () => {

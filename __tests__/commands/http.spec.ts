@@ -21,7 +21,7 @@ describe('http', () => {
   it('should throw on missing params', async () => {
     const promise = sut.exec()
 
-    expect(promise).rejects.toThrowError(MissingParamError)
+    expect(promise).rejects.toThrow(MissingParamError)
   })
 
   it('should complete host and port', async () => {
@@ -51,7 +51,7 @@ describe('http', () => {
   it('should throw on invalid url', async () => {
     const promise = sut.exec('foo')
 
-    expect(promise).rejects.toThrowError(InvalidParamError)
+    expect(promise).rejects.toThrow(InvalidParamError)
   })
 
   it('should parse nested body', async () => {

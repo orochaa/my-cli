@@ -1,3 +1,4 @@
+/** @type {import('jest').Config} */
 module.exports = {
   bail: true,
   roots: ['<rootDir>/__tests__'],
@@ -8,11 +9,12 @@ module.exports = {
   coverageDirectory: 'coverage',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.(t|j)sx?$': '@swc/jest'
+    '^.+\\.(t|j)s$': '@swc/jest'
   },
   moduleNameMapper: {
     '@/tests/(.*)': '<rootDir>/__tests__/$1',
     '@/(.*)': '<rootDir>/src/$1'
   },
-  testRegex: ['__tests__/.+(spec|test).ts']
+  testRegex: ['__tests__/.+.spec.ts'],
+  setupFiles: ['<rootDir>/__tests__/pre-test.ts']
 }
