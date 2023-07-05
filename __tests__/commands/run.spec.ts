@@ -9,7 +9,7 @@ jest.mock('@clack/prompts', () => ({
   multiselect: jest.fn(async () => ['lint', 'build'])
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
+jest.spyOn(cp, 'execSync').mockImplementation()
 
 describe('run', () => {
   const sut = makeSut('run')

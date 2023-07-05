@@ -9,7 +9,7 @@ import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const exitSpy = jest.spyOn(global.process, 'exit')
-exitSpy.mockImplementation(() => ({} as never))
+exitSpy.mockImplementation()
 
 describe('file-system', () => {
   afterAll(() => {

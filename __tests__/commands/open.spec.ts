@@ -12,7 +12,7 @@ const mockDirent = (folders: string[]): Dirent[] => {
       ({
         name: folder,
         isDirectory: () => true
-      } as Dirent)
+      }) as Dirent
   )
 }
 
@@ -29,7 +29,7 @@ jest.mock('@clack/prompts', () => ({
   confirm: jest.fn(async () => false)
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
+jest.spyOn(cp, 'execSync').mockImplementation()
 
 describe('open', () => {
   const sut = makeSut('open')

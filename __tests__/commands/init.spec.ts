@@ -6,7 +6,7 @@ describe('init', () => {
 
   it('should init project by cmd commands', async () => {
     const execSpy = jest.spyOn(cp, 'execSync')
-    execSpy.mockImplementation(() => ({} as any))
+    execSpy.mockImplementation()
 
     await sut.exec()
 

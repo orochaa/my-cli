@@ -86,7 +86,7 @@ describe('upgrade', () => {
       return cp as any
     })
     const execSpy = jest.spyOn(cp, 'execSync')
-    execSpy.mockImplementationOnce(() => ({} as any))
+    execSpy.mockImplementation()
 
     await sut.exec()
 
