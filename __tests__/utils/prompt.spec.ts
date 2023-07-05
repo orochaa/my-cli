@@ -1,5 +1,9 @@
 import { verifyPromptResponse } from '@/utils/prompt'
 
+jest.mock('@clack/prompts', () => ({
+  cancel: jest.fn()
+}))
+
 const exitSpy = jest.spyOn(global.process, 'exit').mockImplementation()
 
 describe('prompt', () => {
