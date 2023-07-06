@@ -1,5 +1,12 @@
 # @mist3rbru/my-cli
 
+## 0.2.6
+
+### Patch Changes
+
+- e360417: fix(play): support multi platforms
+- 6c3c756: feat(global): feedback message from prompt cancellation
+
 ## 0.2.5
 
 ### Patch Changes
