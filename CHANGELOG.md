@@ -1,5 +1,11 @@
 # @mist3rbru/my-cli
 
+## 0.2.7
+
+### Patch Changes
+
+- 3004b7b: fix(play): change open import to dynamic import
+
 ## 0.2.6
 
 ### Patch Changes
