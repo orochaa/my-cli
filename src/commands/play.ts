@@ -2,7 +2,6 @@ import { App } from '@/main/app'
 import { InvalidParamError } from '@/utils/errors'
 import { objectEntries, objectValues } from '@/utils/mappers'
 import { verifyPromptResponse } from '@/utils/prompt'
-import open from 'open'
 import color from 'picocolors'
 import p from '@clack/prompts'
 
@@ -34,6 +33,7 @@ async function playCommand(params: string[]): Promise<void> {
   } else {
     player = await playPrompt()
   }
+  const open = (await import('open')).default
 
   p.outro(`Opening ${color.blue(player)}`)
   await open(player)

@@ -3,6 +3,7 @@ module.exports = {
   bail: true,
   clearMocks: true,
   collectCoverage: false,
+  maxWorkers: 1,
   roots: ['<rootDir>/__tests__'],
   collectCoverageFrom: ['src/**/*.ts'],
   coverageDirectory: 'coverage',
