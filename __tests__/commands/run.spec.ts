@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import cp from 'node:child_process'
@@ -10,30 +9,28 @@ jest.mock('@clack/prompts', () => ({
   multiselect: jest.fn(async () => ['lint', 'build'])
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation(() => ({} as any))
+jest.spyOn(cp, 'execSync').mockImplementation()
 
 describe('run', () => {
   const sut = makeSut('run')
 
-  beforeEach(() => {
-    clearParams()
-  })
-
   describe('shallowRun', () => {
     it('should verify package.json scripts', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
-      mockParams('lint')
 
-      expect(sut.exec()).rejects.toThrowError(NotFoundError)
+      const promise = sut.exec('lint')
+
+      expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should verify if script exists in package.json', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({
         scripts: {}
       })
-      mockParams('lint')
 
-      expect(sut.exec()).rejects.toThrowError(NotFoundError)
+      const promise = sut.exec('lint')
+
+      expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should run scripts', async () => {
@@ -44,8 +41,7 @@ describe('run', () => {
         }
       })
 
-      mockParams('lint', 'build')
-      await sut.exec()
+      await sut.exec('lint', 'build')
 
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
@@ -82,8 +78,7 @@ describe('run', () => {
     })
 
     it('should run scripts of each package.json', async () => {
-      mockParams('lint', 'build', 'test', '-d')
-      await sut.exec()
+      await sut.exec('lint', 'build', 'test', '-d')
 
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
@@ -102,13 +97,13 @@ describe('run', () => {
     it('should verify package.json', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
 
-      expect(sut.exec()).rejects.toThrowError(NotFoundError)
+      expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
 
-      expect(sut.exec()).rejects.toThrowError(NotFoundError)
+      expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it("should run prompt's selected scripts", async () => {

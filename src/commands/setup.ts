@@ -108,7 +108,7 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
       message: 'Do you want to add another root?',
       initialValue: false
     })
-    verifyPromptResponse(repeat)
+    verifyPromptResponse(response)
     repeat = response
   }
 

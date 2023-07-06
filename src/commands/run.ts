@@ -42,7 +42,9 @@ function shallowRun(scripts: string[]): void {
 }
 
 function deepRun(scripts: string[]): void {
-  const localFolders = readdirSync(cwd).filter(d => !/\./.test(d))
+  const localFolders = readdirSync(cwd, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name)
   for (const folder of localFolders) {
     const packageJson = getPackageJson(join(cwd, folder, 'package.json'))
     if (packageJson?.scripts) {

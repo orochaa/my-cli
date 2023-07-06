@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd, lockfilePath } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { writeLockfile } from '@/utils/file-system'
@@ -45,10 +44,6 @@ describe('clone', () => {
     })
   })
 
-  beforeEach(() => {
-    clearParams()
-  })
-
   afterAll(() => {
     rmSync(lockfilePath)
   })
@@ -60,15 +55,13 @@ describe('clone', () => {
   })
 
   it('should throw on invalid repository name', async () => {
-    mockParams('your-cli')
+    const promise = sut.exec('your-cli')
 
-    expect(sut.exec()).rejects.toThrowError(NotFoundError)
+    expect(promise).rejects.toThrow(NotFoundError)
   })
 
   it('should clone on valid repository', async () => {
-    mockParams('my-cli')
-
-    await sut.exec()
+    await sut.exec('my-cli')
 
     expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(

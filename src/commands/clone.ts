@@ -32,15 +32,15 @@ async function cloneCommand(params: string[]): Promise<void> {
     repository = await clonePrompt(repositories)
   }
 
-  const isNotCloned = !existsSync(join(cwd, repository.name))
-  if (isNotCloned) {
+  const isCloned = existsSync(join(cwd, repository.name))
+  if (isCloned) {
+    logCommand(`cd ${repository.name}\n`)
+    process.chdir(repository.name)
+  } else {
     exec(`git clone ${repository.clone_url} ${repository.name}`)
     logCommand(`cd ${repository.name}\n`)
     process.chdir(repository.name)
     exec('git remote rename origin o')
-  } else {
-    logCommand(`cd ${repository.name}\n`)
-    process.chdir(repository.name)
   }
 
   const isNodeProject = existsSync(join(process.cwd(), 'package.json'))
@@ -73,6 +73,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
       ]
       return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
     })
+    // TODO: implement maxItems on https://github.com/natemoo-re/clack/pull/129 merge
     .slice(0, 10)
 
   const response = await p.select({

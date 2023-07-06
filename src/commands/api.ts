@@ -20,7 +20,9 @@ async function apiPrompt(): Promise<string> {
     message: 'What is your api name?',
     placeholder: 'my-api',
     validate: res => {
-      if (res.length === 0) return 'type a name for your api'
+      if (res.length === 0) {
+        return 'type a name for your api'
+      }
     }
   })
   verifyPromptResponse(response)

@@ -14,10 +14,8 @@ async function passwordCommand(params: string[]): Promise<void> {
 
   if (params.length) {
     const length = Number(params[0])
-
     const error = verifyPasswordLength(length)
     if (error) throw error
-
     passwordLength = length
   } else {
     passwordLength = await passwordPrompt()

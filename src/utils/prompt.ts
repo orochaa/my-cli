@@ -1,6 +1,7 @@
 import { objectKeys } from '@/utils/mappers'
 import { stdin, stdout } from 'node:process'
 import readline from 'node:readline'
+import p from '@clack/prompts'
 
 export type PromptOption<TValue, TLabel extends string = string> = {
   value: TValue
@@ -33,6 +34,7 @@ export function verifyPromptResponse<TResponse extends PromptResponse>(
 
 function verifySymbol<T>(data: T | symbol): asserts data is T {
   if (typeof data === 'symbol') {
+    p.cancel('command cancelled.')
     process.exit(0)
   }
 }

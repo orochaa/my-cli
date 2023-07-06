@@ -37,16 +37,10 @@ export class App {
         this.log(`  alias: ${command.alias}\n`)
       }
       if (command.params?.length) {
-        const params = command.params
-          .map(p => colors.magenta(`'${p}'`))
-          .join(' | ')
-        this.log(`  params: ${params}\n`)
+        this.log(`  params: ${this.mapHighlight(command.params)}\n`)
       }
       if (command.flags?.length) {
-        const flags = command.flags
-          .map(p => colors.magenta(`'${p}'`))
-          .join(' | ')
-        this.log(`  flags: ${flags}\n`)
+        this.log(`  flags: ${this.mapHighlight(command.flags)}\n`)
       }
       this.log(`  description: ${command.description}\n`)
       this.log(`  example: ${command.example}\n\n`)
@@ -62,6 +56,10 @@ export class App {
 
   private log(msg: string): void {
     process.stdout.write(msg)
+  }
+
+  private mapHighlight(items: string[]): string {
+    return items.map(item => colors.magenta(`\`${item}\``)).join(' | ')
   }
 
   private getCommand(name: string): App.Command | null {

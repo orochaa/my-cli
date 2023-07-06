@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams, mockParams } from '@/tests/mocks/mock-params'
 import { cwd } from '@/utils/constants'
 import { NotFoundError } from '@/utils/errors'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
@@ -23,7 +22,6 @@ describe('remove', () => {
 
   beforeEach(() => {
     writeFileSync(mockPath, '')
-    clearParams()
   })
 
   afterAll(() => {
@@ -51,9 +49,7 @@ describe('remove', () => {
   })
 
   it('should delete params item', async () => {
-    mockParams(mock)
-
-    await sut.exec()
+    await sut.exec(mock)
 
     expect(verifyMock()).toBeTruthy()
     expect(p.outro).toHaveBeenCalledWith(`Removed: ${mockPath}`)
@@ -61,8 +57,7 @@ describe('remove', () => {
 
   it('should verify param item', async () => {
     rmSync(mockPath)
-    mockParams(mock)
-
-    expect(sut.exec()).rejects.toThrowError(NotFoundError)
+    const promise = sut.exec(mock)
+    expect(promise).rejects.toThrow(NotFoundError)
   })
 })

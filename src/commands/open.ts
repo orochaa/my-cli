@@ -27,10 +27,12 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
   }
 
   const isReuseWindow = hasFlag(['-r', '--reuse-window'], flags)
+  const openFlags = [isReuseWindow && '--reuse-window']
+
   const isWorkspace =
     hasFlag(['-w', '--workspace'], flags) ||
     (isReuseWindow && openProjectList.length > 1)
-  const openFlags = [isReuseWindow && '--reuse-window']
+
   if (isWorkspace) {
     const workspace = openProjectList.join(' ')
     exec(code(workspace, openFlags))

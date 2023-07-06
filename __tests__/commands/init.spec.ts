@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams } from '@/tests/mocks/mock-params'
 import cp from 'node:child_process'
 
 describe('init', () => {
@@ -7,9 +6,8 @@ describe('init', () => {
 
   it('should init project by cmd commands', async () => {
     const execSpy = jest.spyOn(cp, 'execSync')
-    execSpy.mockImplementation(() => ({} as any))
+    execSpy.mockImplementation()
 
-    clearParams()
     await sut.exec()
 
     expect(execSpy).toHaveBeenCalledTimes(8)

@@ -8,9 +8,7 @@ const makeSut = () => {
 describe('App', () => {
   it('should not exec unknown command', async () => {
     const sut = makeSut()
-    const errorHandlerSpy = jest
-      .spyOn(sut, 'errorHandler')
-      .mockImplementation((() => {}) as any)
+    const errorHandlerSpy = jest.spyOn(sut, 'errorHandler').mockImplementation()
 
     await sut.exec('foo')
 

@@ -1,5 +1,4 @@
 import { makeSut } from '@/tests/mocks/make-sut'
-import { clearParams } from '@/tests/mocks/mock-params'
 import cp from 'node:child_process'
 import p from '@clack/prompts'
 
@@ -17,10 +16,6 @@ jest.mock('@clack/prompts', () => ({
 
 describe('outdated', () => {
   const sut = makeSut('outdated')
-
-  beforeAll(() => {
-    clearParams()
-  })
 
   it('should start spinner', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
@@ -101,10 +96,10 @@ describe('outdated', () => {
   it('should throw on error', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
     execSpy.mockImplementationOnce((cmd, cb) => {
-      ;(cb as any)(null, '', 'error')
+      ;(cb as any)(new Error('error'), '', 'error')
       return cp as any
     })
 
-    expect(sut.exec()).rejects.toBe('error')
+    expect(sut.exec()).rejects.toThrow('error')
   })
 })

@@ -1,7 +1,6 @@
 import { makeSut } from '@/tests/mocks/make-sut'
 import cp from 'node:child_process'
 import p from '@clack/prompts'
-import { clearParams } from '../mocks/mock-params'
 
 const startSpy = jest.fn()
 const stopSpy = jest.fn()
@@ -17,10 +16,6 @@ jest.mock('@clack/prompts', () => ({
 
 describe('upgrade', () => {
   const sut = makeSut('upgrade')
-
-  beforeAll(() => {
-    clearParams()
-  })
 
   it('should start spinner', async () => {
     const execSpy = jest.spyOn(cp, 'exec')
@@ -91,7 +86,7 @@ describe('upgrade', () => {
       return cp as any
     })
     const execSpy = jest.spyOn(cp, 'execSync')
-    execSpy.mockImplementationOnce(() => ({} as any))
+    execSpy.mockImplementation()
 
     await sut.exec()
 
