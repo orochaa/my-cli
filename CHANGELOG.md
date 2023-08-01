@@ -1,5 +1,11 @@
 # @mist3rbru/my-cli
 
+## 0.2.8
+
+### Patch Changes
+
+- 828f9d5: feat(run): custom scripts
+
 ## 0.2.7
 
 ### Patch Changes
