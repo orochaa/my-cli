@@ -21,10 +21,10 @@ A compilation of my CLI snippets.
   - params: `<project>...`
   - flags: `--workspace` | `-w` | `--reuse-window` | `-r`
   - example: my open my-cli my-app my-api
-- `run`: Run scripts from project's package.json in sequence
+- `run`: Run scripts in sequence
   - params: `<script>...`
-  - flags: `--deep` | `-d`
-  - example: my run lint build test
+  - flags: `--deep` | `-d` | `--partial` | `-p`
+  - example: my run lint build "vitest --run"
 - `clone`: Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode
   - params: `<repository>`
   - example: my clone my-cli

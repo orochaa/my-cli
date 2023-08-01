@@ -4,9 +4,13 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 export type PackageJson = Partial<{
   version: string
   scripts: Record<string, string>
+  dependencies: Record<string, string>
+  devDependencies: Record<string, string>
 }>
 
-export function getPackageJson(path = packageJsonPath): PackageJson | null {
+export function getPackageJson(
+  path: string = packageJsonPath
+): PackageJson | null {
   if (!existsSync(path)) {
     return null
   }

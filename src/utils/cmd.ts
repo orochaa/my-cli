@@ -49,11 +49,14 @@ export async function execAsync(cmd: string): Promise<string> {
   })
 }
 
-export function hasFlag(target: string | string[], flags: string[]): boolean {
+export function hasFlag(
+  flags: string | string[],
+  target: string[] = process.argv
+): boolean {
   let result = false
 
-  if (typeof target === 'string') {
-    target = [target]
+  if (typeof flags === 'string') {
+    flags = [flags]
   }
 
   flagLoop: for (const flag of flags) {
@@ -69,7 +72,7 @@ export function hasFlag(target: string | string[], flags: string[]): boolean {
 }
 
 export function isSilent(): boolean {
-  return hasFlag('--silent', process.argv)
+  return hasFlag('--silent')
 }
 
 type Version = {

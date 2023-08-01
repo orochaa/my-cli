@@ -9,8 +9,10 @@ import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import p from '@clack/prompts'
 
+type Runner = 'npm' | 'npx'
+
 async function runCommand(scripts: string[], flags: string[]): Promise<void> {
-  const hasScripts = scripts.length
+  const hasScripts = !!scripts.length
   const isDeep = hasFlag(['--deep', '-d'], flags)
 
   if (hasScripts && isDeep) {
@@ -22,43 +24,29 @@ async function runCommand(scripts: string[], flags: string[]): Promise<void> {
   }
 }
 
-function run(scripts: string[]): void {
-  for (const script of scripts) {
-    exec(`npm run ${script}`, { log: false })
-  }
-}
-
 function shallowRun(scripts: string[]): void {
   const packageJson = getPackageJson()
-  if (!packageJson?.scripts) {
-    throw new NotFoundError('packageJson.scripts')
-  }
-  for (const script of scripts) {
-    if (!packageJson.scripts[script]) {
-      throw new NotFoundError(script)
-    }
-  }
-  run(scripts)
+  verifyScripts(packageJson)
+  run(filterScripts(scripts, packageJson))
 }
 
 function deepRun(scripts: string[]): void {
   const localFolders = readdirSync(cwd, { withFileTypes: true })
     .filter(d => d.isDirectory())
     .map(d => d.name)
+
   for (const folder of localFolders) {
     const packageJson = getPackageJson(join(cwd, folder, 'package.json'))
     if (packageJson?.scripts) {
       process.chdir(join(cwd, folder))
-      run(verifyScripts(scripts, packageJson))
+      run(filterScripts(scripts, packageJson))
     }
   }
 }
 
 async function runPrompt(): Promise<void> {
   const packageJson = getPackageJson()
-  if (!packageJson?.scripts) {
-    throw new NotFoundError('packageJson.scripts')
-  }
+  verifyScripts(packageJson)
 
   const scripts = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select some scripts to run in sequence: ',
@@ -70,17 +58,46 @@ async function runPrompt(): Promise<void> {
   })
   verifyPromptResponse(scripts)
 
-  run(scripts)
+  run(mapScripts(scripts, packageJson))
 }
 
-function verifyScripts(scripts: string[], packageJson: PackageJson): string[] {
-  const result: string[] = []
-  for (const script of scripts) {
-    if (packageJson?.scripts?.[script]) {
-      result.push(script)
-    }
+function run(data: [string, Runner][]): void {
+  for (const [script, runner] of data) {
+    const command = runner === 'npm' ? `npm run ${script}` : `npx ${script}`
+    exec(command, { log: false })
   }
-  return result
+}
+
+function verifyScripts(
+  packageJson: PackageJson | null
+): asserts packageJson is { scripts: Record<string, string> } {
+  if (!packageJson) {
+    throw new NotFoundError('package.json')
+  } else if (!packageJson.scripts) {
+    throw new NotFoundError('packageJson.scripts')
+  }
+}
+
+function mapScripts(
+  scripts: string[],
+  packageJson: PackageJson
+): [string, Runner][] {
+  return scripts.map(script => {
+    const isNpm = !!packageJson?.scripts?.[script]
+    return isNpm ? [script, 'npm'] : [script, 'npx']
+  })
+}
+
+function filterScripts(
+  scripts: string[],
+  packageJson: PackageJson
+): [string, Runner][] {
+  const isPartial = hasFlag(['--partial', '-p'])
+  const mappedScripts = mapScripts(scripts, packageJson)
+
+  return isPartial
+    ? mappedScripts.filter(([_, runner]) => runner === 'npm')
+    : mappedScripts
 }
 
 export function runRecord(app: App): void {
@@ -88,9 +105,9 @@ export function runRecord(app: App): void {
     name: 'run',
     alias: null,
     params: ['<script>...'],
-    flags: ['--deep', '-d'],
-    description: "Run scripts from project's package.json in sequence",
-    example: 'my run lint build test',
+    flags: ['--deep', '-d', '--partial', '-p'],
+    description: 'Run scripts in sequence',
+    example: 'my run lint build "vitest --run"',
     action: runCommand
   })
 }
