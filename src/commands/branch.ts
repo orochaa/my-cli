@@ -40,7 +40,8 @@ async function branchPrompt(branches: string[]): Promise<string> {
       label: branch,
       value: branch
     })),
-    initialValue: branches.find(branch => /^\*/.test(branch))
+    initialValue: branches.find(branch => /^\*/.test(branch)),
+    maxItems: 8
   })
   verifyPromptResponse(response)
   return response

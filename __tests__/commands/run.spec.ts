@@ -38,7 +38,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx test',
+        'npx test\n',
         expect.anything()
       )
     })
@@ -66,7 +66,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx vitest --run',
+        'npx vitest --run\n',
         expect.anything()
       )
     })
@@ -148,7 +148,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx test',
+        'npx test\n',
         expect.anything()
       )
     })

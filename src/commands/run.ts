@@ -63,8 +63,9 @@ async function runPrompt(): Promise<void> {
 
 function run(data: [string, Runner][]): void {
   for (const [script, runner] of data) {
-    const command = runner === 'npm' ? `npm run ${script}` : `npx ${script}`
-    exec(command, { log: false })
+    runner === 'npm'
+      ? exec(`npm run ${script}`, { log: false })
+      : exec(`npx ${script}\n`, { log: true })
   }
 }
 
