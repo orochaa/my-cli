@@ -73,8 +73,6 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
       ]
       return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
     })
-    // TODO: implement maxItems on https://github.com/natemoo-re/clack/pull/129 merge
-    .slice(0, 10)
 
   const response = await p.select({
     message: 'Select one of your repositories:',
@@ -82,7 +80,8 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
       label: repository.name,
       value: repository
     })),
-    initialValue: sortedRepositories[0]
+    initialValue: sortedRepositories[0],
+    maxItems: 10
   })
   verifyPromptResponse(response)
   return response
