@@ -1,4 +1,4 @@
-import { setupApp } from '@/main/setup-app'
+import { setupApp } from '@/main/setup-app.js'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { cwd } from 'node:process'

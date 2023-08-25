@@ -1,6 +1,6 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { InvalidParamError } from '@/utils/errors'
-import { objectValues } from '@/utils/mappers'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { InvalidParamError } from '@/utils/errors.js'
+import { objectValues } from '@/utils/mappers.js'
 import open from 'open'
 
 const players = {

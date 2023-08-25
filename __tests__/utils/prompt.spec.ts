@@ -1,4 +1,4 @@
-import { verifyPromptResponse } from '@/utils/prompt'
+import { verifyPromptResponse } from '@/utils/prompt.js'
 
 jest.mock('@clack/prompts', () => ({
   cancel: jest.fn()

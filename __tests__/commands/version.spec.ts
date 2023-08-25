@@ -1,12 +1,12 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { getPackageJson } from '@/utils/file-system'
-import p from '@clack/prompts'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { getPackageJson } from '@/utils/file-system.js'
+import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   outro: jest.fn()
 }))
 
-jest.mock('@/utils/file-system', () => ({
+jest.mock('@/utils/file-system.js', () => ({
   getPackageJson: jest.fn(() => ({
     version: '1.0.0'
   }))

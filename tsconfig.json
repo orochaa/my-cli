@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "outDir": "dist",
-    "module": "NodeNext",
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "esModuleInterop": true,
     "strict": true,
     "noEmit": true,
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false,
+    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
       "@/tests/*": ["__tests__/*"],

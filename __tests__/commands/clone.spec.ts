@@ -1,12 +1,12 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { cwd, lockfilePath } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
-import { writeLockfile } from '@/utils/file-system'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { cwd, lockfilePath } from '@/utils/constants.js'
+import { NotFoundError } from '@/utils/errors.js'
+import { writeLockfile } from '@/utils/file-system.js'
 import cp from 'node:child_process'
 import fs, { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 const repo = {
   name: 'my-cli',

@@ -1,6 +1,6 @@
-import { App } from '@/main/app'
-import * as commands from '@/commands'
-import { objectEntries } from '@/utils/mappers'
+import { App } from '@/main/app.js'
+import * as commands from '@/commands/index.js'
+import { objectEntries } from '@/utils/mappers.js'
 
 type CommandKey = keyof typeof commands
 

@@ -1,5 +1,5 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { InvalidParamError, MissingParamError } from '@/utils/errors'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import axios from 'axios'
 
 jest.mock('axios', () => {

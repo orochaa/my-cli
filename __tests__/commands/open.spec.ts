@@ -1,10 +1,10 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { cwd, lockfilePath } from '@/utils/constants'
-import { writeLockfile } from '@/utils/file-system'
-import cp, { exec } from 'node:child_process'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { cwd, lockfilePath } from '@/utils/constants.js'
+import { writeLockfile } from '@/utils/file-system.js'
+import cp from 'node:child_process'
 import fs, { Dirent } from 'node:fs'
 import { join } from 'node:path'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 const mockDirent = (folders: string[]): Dirent[] => {
   return folders.map(

@@ -1,13 +1,13 @@
-import { App } from '@/main/app'
-import { exec, logCommand } from '@/utils/cmd'
-import { cwd } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
-import { readLockfile } from '@/utils/file-system'
-import { verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { exec, logCommand } from '@/utils/cmd.js'
+import { cwd } from '@/utils/constants.js'
+import { NotFoundError } from '@/utils/errors.js'
+import { readLockfile } from '@/utils/file-system.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import axios from 'axios'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 type Repository = {
   name: string
@@ -65,14 +65,13 @@ async function getUserRepositories(): Promise<Repository[]> {
 }
 
 async function clonePrompt(repositories: Repository[]): Promise<Repository> {
-  const sortedRepositories = repositories
-    .sort((a, b) => {
-      const date = [
-        new Date(a.updated_at).getTime(),
-        new Date(b.updated_at).getTime()
-      ]
-      return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
-    })
+  const sortedRepositories = repositories.sort((a, b) => {
+    const date = [
+      new Date(a.updated_at).getTime(),
+      new Date(b.updated_at).getTime()
+    ]
+    return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
+  })
 
   const response = await p.select({
     message: 'Select one of your repositories:',

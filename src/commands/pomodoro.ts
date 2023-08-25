@@ -1,8 +1,8 @@
-import { App } from '@/main/app'
-import { InvalidParamError } from '@/utils/errors'
-import { block, verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { InvalidParamError } from '@/utils/errors.js'
+import { block, verifyPromptResponse } from '@/utils/prompt.js'
 import colors from 'picocolors'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 type PomodoroPeriod = 'work' | 'rest'
 

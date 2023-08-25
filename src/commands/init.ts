@@ -1,5 +1,5 @@
-import { App } from '@/main/app'
-import { exec } from '@/utils/cmd'
+import { App } from '@/main/app.js'
+import { exec } from '@/utils/cmd.js'
 
 async function initCommand() {
   exec('git init')

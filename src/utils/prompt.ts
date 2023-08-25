@@ -1,7 +1,7 @@
-import { objectKeys } from '@/utils/mappers'
+import { objectKeys } from '@/utils/mappers.js'
 import { stdin, stdout } from 'node:process'
 import readline from 'node:readline'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 export type PromptOption<TValue, TLabel extends string = string> = {
   value: TValue

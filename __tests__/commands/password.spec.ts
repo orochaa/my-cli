@@ -1,6 +1,6 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { InvalidParamError } from '@/utils/errors'
-import p from '@clack/prompts'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { InvalidParamError } from '@/utils/errors.js'
+import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => '20'),

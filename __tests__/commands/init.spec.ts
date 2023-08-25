@@ -1,4 +1,4 @@
-import { makeSut } from '@/tests/mocks/make-sut'
+import { makeSut } from '@/tests/mocks/make-sut.js'
 import cp from 'node:child_process'
 
 describe('init', () => {

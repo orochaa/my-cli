@@ -1,6 +1,6 @@
-import { makeSut } from '@/tests/mocks/make-sut'
+import { makeSut } from '@/tests/mocks/make-sut.js'
 import cp from 'node:child_process'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => 'master')

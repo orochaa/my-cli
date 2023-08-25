@@ -1,4 +1,4 @@
-import { lockfilePath, packageJsonPath } from '@/utils/constants'
+import { lockfilePath, packageJsonPath } from '@/utils/constants.js'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
 export type PackageJson = Partial<{

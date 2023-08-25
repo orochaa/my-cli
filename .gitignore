@@ -1,6 +1,6 @@
 node_modules/
 coverage/
-dist/
+bin/
 
 src/utils/store-lock.json
 package-lock.json

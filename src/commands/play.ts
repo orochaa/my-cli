@@ -1,9 +1,9 @@
-import { App } from '@/main/app'
-import { InvalidParamError } from '@/utils/errors'
-import { objectEntries, objectValues } from '@/utils/mappers'
-import { verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { InvalidParamError } from '@/utils/errors.js'
+import { objectEntries, objectValues } from '@/utils/mappers.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
 import color from 'picocolors'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 const players = {
   youtube: {

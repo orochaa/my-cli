@@ -1,6 +1,6 @@
-import { makeSut } from '@/tests/mocks/make-sut'
+import { makeSut } from '@/tests/mocks/make-sut.js'
 import { createApi } from '@mist3rbru/create-ts-api'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => 'my-api')

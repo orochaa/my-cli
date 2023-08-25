@@ -1,7 +1,7 @@
-import { App } from '@/main/app'
-import { exec, execAsync } from '@/utils/cmd'
-import { verifyPromptResponse } from '@/utils/prompt'
-import p from '@clack/prompts'
+import { App } from '@/main/app.js'
+import { exec, execAsync } from '@/utils/cmd.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
+import * as p from '@clack/prompts'
 
 async function branchCommand(): Promise<void> {
   const branchesData = await execAsync('git branch -a')
