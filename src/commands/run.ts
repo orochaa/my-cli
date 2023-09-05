@@ -3,7 +3,7 @@ import { exec, hasFlag } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import { PackageJson, getPackageJson } from '@/utils/file-system.js'
-import { objectKeys } from '@/utils/mappers.js'
+import { objectEntries } from '@/utils/mappers.js'
 import { PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
@@ -50,9 +50,10 @@ async function runPrompt(): Promise<void> {
 
   const scripts = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select some scripts to run in sequence: ',
-    options: objectKeys(packageJson.scripts).map(script => ({
+    options: objectEntries(packageJson.scripts).map(([script, cmd]) => ({
       label: script,
-      value: script
+      value: script,
+      hint: cmd
     })),
     required: true
   })
