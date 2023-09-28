@@ -10,6 +10,6 @@ describe('init', () => {
 
     await sut.exec()
 
-    expect(execSpy).toHaveBeenCalledTimes(8)
+    expect(execSpy).toHaveBeenCalledTimes(10)
   })
 })
