@@ -4,9 +4,11 @@ import { NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import { rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  multiselect: jest.fn(async () => ['lint', 'build'])
+  multiselect: jest.fn(async () => ['lint', 'build']),
+  outro: jest.fn()
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation()
@@ -179,6 +181,11 @@ describe('run', () => {
     it('should verify package.json scripts', async () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
       expect(sut.exec()).rejects.toThrow(NotFoundError)
+    })
+
+    it('should print `run` command', async () => {
+      await sut.exec()
+      expect(p.outro).toHaveBeenCalledWith('my run lint build')
     })
 
     it("should run prompt's selected scripts", async () => {

@@ -27,7 +27,8 @@ async function runCommand(scripts: string[], flags: string[]): Promise<void> {
 function shallowRun(scripts: string[]): void {
   const packageJson = getPackageJson()
   verifyScripts(packageJson)
-  run(filterScripts(scripts, packageJson))
+  const runList = filterScripts(scripts, packageJson)
+  run(runList)
 }
 
 function deepRun(scripts: string[]): void {
@@ -59,7 +60,9 @@ async function runPrompt(): Promise<void> {
   })
   verifyPromptResponse(scripts)
 
-  run(mapScripts(scripts, packageJson))
+  const runList = mapScripts(scripts, packageJson)
+  p.outro(`my run ${runList.map(([s]) => s).join(' ')}`)
+  run(runList)
 }
 
 function run(data: [string, Runner][]): void {
