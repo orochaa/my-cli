@@ -1,5 +1,5 @@
-import { isSilent } from '@/utils/cmd'
-import { InvalidParamError } from '@/utils/errors'
+import { isSilent } from '@/utils/cmd.js'
+import { InvalidParamError } from '@/utils/errors.js'
 import colors from 'picocolors'
 
 export class App {

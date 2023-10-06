@@ -1,17 +1,17 @@
-import { App } from '@/main/app'
-import { cwd } from '@/utils/constants'
-import { InvalidParamError, NotFoundError } from '@/utils/errors'
+import { App } from '@/main/app.js'
+import { cwd } from '@/utils/constants.js'
+import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import {
   Lockfile,
   readLockfile,
   verifyLockfile,
   writeLockfile
-} from '@/utils/file-system'
-import { mergeObjects } from '@/utils/mappers'
-import { verifyPromptResponse } from '@/utils/prompt'
+} from '@/utils/file-system.js'
+import { mergeObjects } from '@/utils/mappers.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
 import { statSync } from 'node:fs'
 import axios from 'axios'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 async function setupCommand(): Promise<void> {
   const lockfile: Lockfile = verifyLockfile()

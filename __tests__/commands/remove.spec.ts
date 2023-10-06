@@ -1,9 +1,9 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { cwd } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { cwd } from '@/utils/constants.js'
+import { NotFoundError } from '@/utils/errors.js'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 const mock = 'test-delete.mock'
 const mockPath = join(cwd, mock)

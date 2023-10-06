@@ -1,10 +1,10 @@
-import { App } from '@/main/app'
-import { exec, hasFlag } from '@/utils/cmd'
-import { readLockfile } from '@/utils/file-system'
-import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { exec, hasFlag } from '@/utils/cmd.js'
+import { readLockfile } from '@/utils/file-system.js'
+import { PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 type Controller = [projectsRoot: string, projects: string[]][]
 

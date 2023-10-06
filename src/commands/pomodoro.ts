@@ -1,8 +1,9 @@
-import { App } from '@/main/app'
-import { InvalidParamError } from '@/utils/errors'
-import { block, verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { InvalidParamError } from '@/utils/errors.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
 import colors from 'picocolors'
-import p from '@clack/prompts'
+import { block } from '@clack/core'
+import * as p from '@clack/prompts'
 
 type PomodoroPeriod = 'work' | 'rest'
 
@@ -91,6 +92,12 @@ async function timer(period: PomodoroPeriod, min: number): Promise<void> {
     let seg = 0
     const unblock = block()
 
+    const exitCb = () => {
+      unblock()
+    }
+
+    process.once('exit', exitCb)
+
     const intervalId = setInterval(() => {
       const date = new Date()
       const currentTime = concatTime(date.getHours(), date.getMinutes())
@@ -101,6 +108,7 @@ async function timer(period: PomodoroPeriod, min: number): Promise<void> {
 
       if (min === 0 && seg === 0) {
         clearInterval(intervalId)
+        process.removeListener('exit', exitCb)
         process.stdout.write('\n')
         unblock()
         return resolve()

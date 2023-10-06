@@ -1,5 +1,5 @@
-import { setupApp } from '@/main/setup-app'
-import * as commands from '@/commands'
+import { setupApp } from '@/main/setup-app.js'
+import * as commands from '@/commands/index.js'
 
 describe('setup', () => {
   it('should register all commands', async () => {

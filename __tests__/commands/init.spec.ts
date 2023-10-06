@@ -1,4 +1,4 @@
-import { makeSut } from '@/tests/mocks/make-sut'
+import { makeSut } from '@/tests/mocks/make-sut.js'
 import cp from 'node:child_process'
 
 describe('init', () => {
@@ -10,6 +10,6 @@ describe('init', () => {
 
     await sut.exec()
 
-    expect(execSpy).toHaveBeenCalledTimes(8)
+    expect(execSpy).toHaveBeenCalledTimes(10)
   })
 })

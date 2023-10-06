@@ -1,4 +1,4 @@
-import { App } from '@/main/app'
+import { App } from '@/main/app.js'
 import colors from 'picocolors'
 
 const makeSut = () => {

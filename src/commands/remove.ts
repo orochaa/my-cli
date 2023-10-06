@@ -1,11 +1,11 @@
-import { App } from '@/main/app'
-import { remove } from '@/utils/cmd'
-import { cwd } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
-import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { remove } from '@/utils/cmd.js'
+import { cwd } from '@/utils/constants.js'
+import { NotFoundError } from '@/utils/errors.js'
+import { PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 async function removeCommand(params: string[]): Promise<void> {
   let items: string[]

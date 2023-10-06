@@ -5,7 +5,7 @@ import {
   objectKeys,
   objectValues,
   parseValue
-} from '@/utils/mappers'
+} from '@/utils/mappers.js'
 
 describe('mappers', () => {
   describe('objectEntries()', () => {

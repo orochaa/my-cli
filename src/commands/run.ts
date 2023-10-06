@@ -1,13 +1,13 @@
-import { App } from '@/main/app'
-import { exec, hasFlag } from '@/utils/cmd'
-import { cwd } from '@/utils/constants'
-import { NotFoundError } from '@/utils/errors'
-import { PackageJson, getPackageJson } from '@/utils/file-system'
-import { objectKeys } from '@/utils/mappers'
-import { PromptOption, verifyPromptResponse } from '@/utils/prompt'
+import { App } from '@/main/app.js'
+import { exec, hasFlag } from '@/utils/cmd.js'
+import { cwd } from '@/utils/constants.js'
+import { NotFoundError } from '@/utils/errors.js'
+import { PackageJson, getPackageJson } from '@/utils/file-system.js'
+import { objectEntries } from '@/utils/mappers.js'
+import { PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 type Runner = 'npm' | 'npx'
 
@@ -27,7 +27,8 @@ async function runCommand(scripts: string[], flags: string[]): Promise<void> {
 function shallowRun(scripts: string[]): void {
   const packageJson = getPackageJson()
   verifyScripts(packageJson)
-  run(filterScripts(scripts, packageJson))
+  const runList = filterScripts(scripts, packageJson)
+  run(runList)
 }
 
 function deepRun(scripts: string[]): void {
@@ -50,15 +51,18 @@ async function runPrompt(): Promise<void> {
 
   const scripts = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select some scripts to run in sequence: ',
-    options: objectKeys(packageJson.scripts).map(script => ({
+    options: objectEntries(packageJson.scripts).map(([script, cmd]) => ({
       label: script,
-      value: script
+      value: script,
+      hint: cmd
     })),
     required: true
   })
   verifyPromptResponse(scripts)
 
-  run(mapScripts(scripts, packageJson))
+  const runList = mapScripts(scripts, packageJson)
+  p.outro(`my run ${runList.map(([s]) => s).join(' ')}`)
+  run(runList)
 }
 
 function run(data: [string, Runner][]): void {

@@ -16,8 +16,9 @@ export default defineBuildConfig({
   },
   hooks: {
     'build:done': () => {
-      rmSync(resolve('dist/index.mjs'))
+      rmSync(resolve('bin/index.mjs'))
     }
   },
-  clean: true
+  clean: true,
+  outDir: 'bin'
 })

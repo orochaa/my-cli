@@ -1,7 +1,7 @@
-import { App } from '@/main/app'
-import { isSilent } from '@/utils/cmd'
-import { InvalidParamError, MissingParamError } from '@/utils/errors'
-import { convertToJSON } from '@/utils/mappers'
+import { App } from '@/main/app.js'
+import { isSilent } from '@/utils/cmd.js'
+import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
+import { convertToJSON } from '@/utils/mappers.js'
 import axios from 'axios'
 
 type Method = 'get' | 'post' | 'put' | 'delete'

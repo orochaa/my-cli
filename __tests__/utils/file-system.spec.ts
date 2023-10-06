@@ -1,10 +1,10 @@
-import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants'
+import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants.js'
 import {
   getPackageJson,
   readLockfile,
   verifyLockfile,
   writeLockfile
-} from '@/utils/file-system'
+} from '@/utils/file-system.js'
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 

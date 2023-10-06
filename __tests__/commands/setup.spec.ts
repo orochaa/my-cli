@@ -1,9 +1,9 @@
-import { makeSut } from '@/tests/mocks/make-sut'
-import { lockfilePath } from '@/utils/constants'
-import { readLockfile, writeLockfile } from '@/utils/file-system'
+import { makeSut } from '@/tests/mocks/make-sut.js'
+import { lockfilePath } from '@/utils/constants.js'
+import { readLockfile, writeLockfile } from '@/utils/file-system.js'
 import axios from 'axios'
 import { existsSync, rmSync } from 'fs'
-import p from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 const mock = {
   git: 'any',

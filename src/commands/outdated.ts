@@ -1,6 +1,6 @@
-import { App } from '@/main/app'
-import { execOutdated } from '@/utils/cmd'
-import p from '@clack/prompts'
+import { App } from '@/main/app.js'
+import { execOutdated } from '@/utils/cmd.js'
+import * as p from '@clack/prompts'
 
 async function outdatedCommand(): Promise<void> {
   const spinner = p.spinner()

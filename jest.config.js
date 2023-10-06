@@ -1,5 +1,5 @@
 /** @type {import('jest').Config} */
-module.exports = {
+export default {
   bail: true,
   clearMocks: true,
   collectCoverage: false,
@@ -9,12 +9,12 @@ module.exports = {
   coverageDirectory: 'coverage',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts$': '@swc/jest'
+    '^.+\\.[tj]s$': '@swc/jest'
   },
   moduleNameMapper: {
-    '@/tests/(.*)': '<rootDir>/__tests__/$1',
-    '@/(.*)': '<rootDir>/src/$1'
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+    '^@/tests/(.*).js$': '<rootDir>/__tests__/$1',
+    '^@/(.*).js$': '<rootDir>/src/$1'
   },
-  testRegex: ['__tests__/.+.spec.ts'],
-  setupFiles: ['<rootDir>/__tests__/pre-test.ts']
+  testRegex: ['__tests__/.+.spec.ts']
 }
