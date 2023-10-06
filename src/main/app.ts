@@ -12,7 +12,7 @@ export class App {
   public async exec(name: string): Promise<void> {
     const command = this.getCommand(name)
     if (!command) {
-      return this.errorHandler(new InvalidParamError(name))
+      return this.handleError(new InvalidParamError(name))
     }
 
     const args = process.argv.slice(3)
@@ -29,25 +29,38 @@ export class App {
     return command.action(params, flags)
   }
 
-  public displayCommands(): void {
+  public getCommand(name: string): App.Command | null {
+    for (const command of this.commands) {
+      if (command.name === name || (command.alias && command.alias === name)) {
+        return command
+      }
+    }
+    return null
+  }
+
+  public displayCommand(command: App.Command): void {
+    this.log(`${colors.magenta('-')} command: ${colors.cyan(command.name)}\n`)
+    if (command.alias) {
+      this.log(`  alias: ${command.alias}\n`)
+    }
+    if (command.params?.length) {
+      this.log(`  params: ${this.mapHighlight(command.params)}\n`)
+    }
+    if (command.flags?.length) {
+      this.log(`  flags: ${this.mapHighlight(command.flags)}\n`)
+    }
+    this.log(`  description: ${command.description}\n`)
+    this.log(`  example: ${command.example}\n\n`)
+  }
+
+  public displayAllCommands(): void {
     this.log('# List of Commands\n')
     for (const command of this.commands) {
-      this.log(`${colors.magenta('-')} command: ${colors.cyan(command.name)}\n`)
-      if (command.alias) {
-        this.log(`  alias: ${command.alias}\n`)
-      }
-      if (command.params?.length) {
-        this.log(`  params: ${this.mapHighlight(command.params)}\n`)
-      }
-      if (command.flags?.length) {
-        this.log(`  flags: ${this.mapHighlight(command.flags)}\n`)
-      }
-      this.log(`  description: ${command.description}\n`)
-      this.log(`  example: ${command.example}\n\n`)
+      this.displayCommand(command)
     }
   }
 
-  public errorHandler(error: Error): never {
+  public handleError(error: Error): never {
     if (!isSilent()) {
       this.log(`${error.name}: ${error.message}\n`)
     }
@@ -60,15 +73,6 @@ export class App {
 
   private mapHighlight(items: string[]): string {
     return items.map(item => colors.magenta(`\`${item}\``)).join(' | ')
-  }
-
-  private getCommand(name: string): App.Command | null {
-    for (const command of this.commands) {
-      if (command.name === name || (command.alias && command.alias === name)) {
-        return command
-      }
-    }
-    return null
   }
 }
 

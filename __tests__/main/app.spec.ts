@@ -8,11 +8,11 @@ const makeSut = () => {
 describe('App', () => {
   it('should not exec unknown command', async () => {
     const sut = makeSut()
-    const errorHandlerSpy = jest.spyOn(sut, 'errorHandler').mockImplementation()
+    const handleErrorSpy = jest.spyOn(sut, 'handleError').mockImplementation()
 
     await sut.exec('foo')
 
-    expect(errorHandlerSpy).toHaveBeenCalledTimes(1)
+    expect(handleErrorSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should exec known command', async () => {
@@ -67,6 +67,36 @@ describe('App', () => {
     expect(sut.exec('foo')).rejects.toThrow()
   })
 
+  it('should display command', async () => {
+    const sut = makeSut()
+    const log = jest
+      .spyOn(process.stdout, 'write')
+      .mockImplementation((() => {}) as any)
+
+    sut.displayCommand({
+      name: 'foo',
+      action: async () => {},
+      alias: 'f',
+      description: 'foo description',
+      example: 'my foo',
+      params: ['p1', 'p2'],
+      flags: ['f1', 'f2']
+    })
+
+    expect(log).toHaveBeenCalledWith(
+      `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`
+    )
+    expect(log).toHaveBeenCalledWith(`  alias: f\n`)
+    expect(log).toHaveBeenCalledWith(
+      `  params: ${colors.magenta('`p1`')} | ${colors.magenta('`p2`')}\n`
+    )
+    expect(log).toHaveBeenCalledWith(
+      `  flags: ${colors.magenta('`f1`')} | ${colors.magenta('`f2`')}\n`
+    )
+    expect(log).toHaveBeenCalledWith(`  description: foo description\n`)
+    expect(log).toHaveBeenCalledWith(`  example: my foo\n\n`)
+  })
+
   it('should display all known commands', async () => {
     const sut = makeSut()
     const log = jest
@@ -100,7 +130,7 @@ describe('App', () => {
       params: [' '],
       flags: [' ']
     })
-    sut.displayCommands()
+    sut.displayAllCommands()
 
     expect(log).toHaveBeenCalledWith(
       `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`
@@ -111,5 +141,28 @@ describe('App', () => {
     expect(log).toHaveBeenCalledWith(
       `${colors.magenta('-')} command: ${colors.cyan('baz')}\n`
     )
+  })
+
+  it('should log error', async () => {
+    const sut = makeSut()
+    const log = jest.spyOn(process.stdout, 'write').mockImplementation()
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
+
+    sut.handleError(new Error('test error'))
+
+    expect(exitSpy).toHaveBeenCalled()
+    expect(log).toHaveBeenCalledWith(`Error: test error\n`)
+  })
+
+  it('should not log error', async () => {
+    const sut = makeSut()
+    const log = jest.spyOn(process.stdout, 'write').mockImplementation()
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
+
+    process.argv = ['--silent']
+    sut.handleError(new Error('test error'))
+
+    expect(exitSpy).toHaveBeenCalled()
+    expect(log).not.toHaveBeenCalled()
   })
 })

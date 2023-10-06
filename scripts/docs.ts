@@ -40,6 +40,7 @@ function run(): void {
   newReadmeContent.push('')
   newReadmeContent.push('- `--silent`: ignores cmd outputs')
   newReadmeContent.push('- `--force`: ignores previous `setup`')
+  newReadmeContent.push('- `--help`: displays command details')
   newReadmeContent.push('')
 
   writeFileSync(readmePath, newReadmeContent.join('\n'), { encoding: 'utf8' })

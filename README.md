@@ -61,3 +61,4 @@ A compilation of my CLI snippets.
 
 - `--silent`: ignores cmd outputs
 - `--force`: ignores previous `setup`
+- `--help`: displays command details
