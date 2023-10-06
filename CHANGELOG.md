@@ -1,5 +1,12 @@
 # @mist3rbru/my-cli
 
+## 0.2.10
+
+### Patch Changes
+
+- 54bd370: feat(run): print run command on prompt
+- be5c32f: fix: restore cursor on pomodoro exit
+
 ## 0.2.9
 
 ### Patch Changes
