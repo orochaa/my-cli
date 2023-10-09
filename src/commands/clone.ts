@@ -6,6 +6,7 @@ import { readLockfile } from '@/utils/file-system.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { detect, parseNi, runCli } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -34,18 +35,20 @@ async function cloneCommand(params: string[]): Promise<void> {
 
   const isCloned = existsSync(join(cwd, repository.name))
   if (isCloned) {
-    logCommand(`cd ${repository.name}\n`)
+    logCommand(`cd ${repository.name}`)
     process.chdir(repository.name)
   } else {
     exec(`git clone ${repository.clone_url} ${repository.name}`)
-    logCommand(`cd ${repository.name}\n`)
+    logCommand(`cd ${repository.name}`)
     process.chdir(repository.name)
     exec('git remote rename origin o')
   }
 
   const isNodeProject = existsSync(join(process.cwd(), 'package.json'))
   if (isNodeProject) {
-    exec('pnpm install')
+    const pm = await detect()
+    logCommand(`${pm} install`)
+    await runCli(parseNi)
   }
 
   exec('code .')
