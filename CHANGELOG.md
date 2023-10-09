@@ -1,5 +1,19 @@
 # @mist3rbru/my-cli
 
+## 0.2.10
+
+### Patch Changes
+
+- 54bd370: feat(run): print run command on prompt
+- be5c32f: fix: restore cursor on pomodoro exit
+
+## 0.2.9
+
+### Patch Changes
+
+- f36a5ba: feat(branch,clone): scroll on select prompt
+- 3c67e13: fix(run): print 'npx' command
+
 ## 0.2.8
 
 ### Patch Changes
