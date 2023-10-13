@@ -17,19 +17,28 @@ type Repository = {
 }
 
 async function cloneCommand(params: string[]): Promise<void> {
-  const repositories = await getUserRepositories()
-  const repositoryName = params[0]
   let repository: Repository
 
   if (params.length) {
-    const foundRepository = repositories.find(
-      repository => repository.name === repositoryName
-    )
-    if (!foundRepository) {
-      throw new NotFoundError(repositoryName)
+    const repositoryName = params[0]
+    if (/github\.com.+\.git$/.test(repositoryName)) {
+      repository = {
+        clone_url: repositoryName,
+        name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
+        updated_at: ''
+      }
+    } else {
+      const repositories = await getUserRepositories()
+      const foundRepository = repositories.find(
+        repository => repository.name === repositoryName
+      )
+      if (!foundRepository) {
+        throw new NotFoundError(repositoryName)
+      }
+      repository = foundRepository
     }
-    repository = foundRepository
   } else {
+    const repositories = await getUserRepositories()
     repository = await clonePrompt(repositories)
   }
 
@@ -48,7 +57,7 @@ async function cloneCommand(params: string[]): Promise<void> {
   if (isNodeProject) {
     const pm = await detect()
     logCommand(`${pm} install`)
-    await runCli(parseNi)
+    await runCli(parseNi, { args: [] })
   }
 
   exec('code .')
