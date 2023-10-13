@@ -1,5 +1,9 @@
-import { lockfilePath, packageJsonPath } from '@/utils/constants.js'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import {
+  lockfileDir,
+  lockfilePath,
+  packageJsonPath
+} from '@/utils/constants.js'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 
 export type PackageJson = Partial<{
   version: string
@@ -32,5 +36,8 @@ export function readLockfile(): Lockfile {
 }
 
 export function writeLockfile(content: Record<string, unknown>): void {
+  if (!existsSync(lockfileDir)) {
+    mkdirSync(lockfileDir, { recursive: true })
+  }
   writeFileSync(lockfilePath, JSON.stringify(content))
 }

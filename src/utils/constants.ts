@@ -1,3 +1,4 @@
+import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -6,7 +7,8 @@ export const cwd = process.cwd()
 
 export const packageJsonPath = join(cwd, 'package.json')
 
-export const lockfilePath = join(dirname, 'store-lock.json')
+export const lockfileDir = join(tmpdir(), 'my-cli')
+export const lockfilePath = join(lockfileDir, 'setup-lock.json')
 
 export const root =
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test'
