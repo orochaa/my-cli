@@ -1,5 +1,14 @@
 # @mist3rbru/my-cli
 
+## 0.2.11
+
+### Patch Changes
+
+- 119e565: feat(clone): install deps with right package manager
+- 119e565: feat(clone): accept http repository
+- 119e565: feat: --help flag
+- 119e565: refactor: move setup-lock.json to os temp folder
+
 ## 0.2.10
 
 ### Patch Changes
