@@ -5,6 +5,7 @@ import { writeLockfile } from '@/utils/file-system.js'
 import cp from 'node:child_process'
 import fs, { existsSync, mkdirSync, rmSync, rmdirSync } from 'node:fs'
 import { join } from 'node:path'
+import { runCli as ni } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -29,6 +30,12 @@ jest.mock('axios', () => ({
       repo
     ]
   }))
+}))
+
+jest.mock('@antfu/ni', () => ({
+  detect: jest.fn(() => 'pnpm'),
+  parseNi: jest.fn(),
+  runCli: jest.fn()
 }))
 
 jest.spyOn(process, 'chdir').mockImplementation()
@@ -63,7 +70,7 @@ describe('clone', () => {
   it('should clone on valid repository', async () => {
     await sut.exec('my-cli')
 
-    expect(cp.execSync).toHaveBeenCalledTimes(4)
+    expect(cp.execSync).toHaveBeenCalledTimes(3)
     expect(cp.execSync).toHaveBeenCalledWith(
       `git clone ${repo.clone_url} ${repo.name}`,
       expect.anything()
@@ -73,7 +80,24 @@ describe('clone', () => {
       'git remote rename origin o',
       expect.anything()
     )
-    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
+    expect(ni).toHaveBeenCalled()
+    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
+  })
+
+  it('should clone http repository', async () => {
+    await sut.exec(repo.clone_url)
+
+    expect(cp.execSync).toHaveBeenCalledTimes(3)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `git clone ${repo.clone_url} ${repo.name}`,
+      expect.anything()
+    )
+    expect(process.chdir).toHaveBeenCalledWith(repo.name)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'git remote rename origin o',
+      expect.anything()
+    )
+    expect(ni).toHaveBeenCalled()
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
@@ -82,9 +106,9 @@ describe('clone', () => {
 
     await sut.exec()
 
-    expect(cp.execSync).toHaveBeenCalledTimes(2)
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(process.chdir).toHaveBeenCalledWith(repo.name)
-    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
+    expect(ni).toHaveBeenCalled()
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
     rmdirSync(repositoryPath)
   })

@@ -12,22 +12,24 @@ async function main(): Promise<void> {
     const isNotSetupCommand = cmdCommand !== 'setup'
     const hasNotRanSetup = !(lockfile.git && lockfile.projects)
     const isForced = process.argv.includes('--force')
+    const isHelp = process.argv.includes('--help')
 
-    if (isForced) {
-      process.argv = process.argv.filter(param => param !== '--force')
-    }
-
-    if (isNotSetupCommand && hasNotRanSetup && !isForced) {
-      await app.exec('setup')
-    }
-
-    if (cmdCommand) {
-      await app.exec(cmdCommand)
+    if (isHelp || !cmdCommand) {
+      const command = app.getCommand(cmdCommand)
+      command ? app.displayCommand(command) : app.displayAllCommands()
     } else {
-      app.displayCommands()
+      if (isForced) {
+        process.argv = process.argv.filter(param => param !== '--force')
+      }
+
+      if (isNotSetupCommand && hasNotRanSetup && !isForced) {
+        await app.exec('setup')
+      }
+
+      await app.exec(cmdCommand)
     }
   } catch (error) {
-    app.errorHandler(error)
+    app.handleError(error)
   }
 }
 

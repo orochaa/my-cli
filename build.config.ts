@@ -4,6 +4,8 @@ import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
   entries: ['src/index'],
+  outDir: 'bin',
+  clean: true,
   rollup: {
     inlineDependencies: true,
     emitCJS: true,
@@ -18,7 +20,5 @@ export default defineBuildConfig({
     'build:done': () => {
       rmSync(resolve('bin/index.mjs'))
     }
-  },
-  clean: true,
-  outDir: 'bin'
+  }
 })

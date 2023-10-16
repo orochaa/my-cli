@@ -6,6 +6,7 @@ import { readLockfile } from '@/utils/file-system.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { detect, parseNi, runCli } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -16,36 +17,47 @@ type Repository = {
 }
 
 async function cloneCommand(params: string[]): Promise<void> {
-  const repositories = await getUserRepositories()
-  const repositoryName = params[0]
   let repository: Repository
 
   if (params.length) {
-    const foundRepository = repositories.find(
-      repository => repository.name === repositoryName
-    )
-    if (!foundRepository) {
-      throw new NotFoundError(repositoryName)
+    const repositoryName = params[0]
+    if (/github\.com.+\.git$/.test(repositoryName)) {
+      repository = {
+        clone_url: repositoryName,
+        name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
+        updated_at: ''
+      }
+    } else {
+      const repositories = await getUserRepositories()
+      const foundRepository = repositories.find(
+        repository => repository.name === repositoryName
+      )
+      if (!foundRepository) {
+        throw new NotFoundError(repositoryName)
+      }
+      repository = foundRepository
     }
-    repository = foundRepository
   } else {
+    const repositories = await getUserRepositories()
     repository = await clonePrompt(repositories)
   }
 
   const isCloned = existsSync(join(cwd, repository.name))
   if (isCloned) {
-    logCommand(`cd ${repository.name}\n`)
+    logCommand(`cd ${repository.name}`)
     process.chdir(repository.name)
   } else {
     exec(`git clone ${repository.clone_url} ${repository.name}`)
-    logCommand(`cd ${repository.name}\n`)
+    logCommand(`cd ${repository.name}`)
     process.chdir(repository.name)
     exec('git remote rename origin o')
   }
 
   const isNodeProject = existsSync(join(process.cwd(), 'package.json'))
   if (isNodeProject) {
-    exec('pnpm install')
+    const pm = await detect()
+    logCommand(`${pm} install`)
+    await runCli(parseNi, { args: [] })
   }
 
   exec('code .')
