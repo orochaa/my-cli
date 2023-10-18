@@ -11,7 +11,7 @@ type Http = Record<
   (
     url: string,
     headers: Record<string, string>,
-    body: string
+    body: Record<string, unknown>
   ) => Promise<unknown>
 >
 
@@ -59,11 +59,11 @@ function getUrl(params: string[]): [string, string[]] {
   return [url, rest]
 }
 
-function getBody(bodyParams: string[]): string {
+function getBody(bodyParams: string[]): Record<string, unknown> {
   if (!bodyParams[0]) {
-    return '{}'
+    return {}
   }
-  return JSON.stringify(convertToJSON(bodyParams))
+  return convertToJSON(bodyParams)
 }
 
 function getHeaders(params: string[]): Record<string, string> {

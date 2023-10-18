@@ -61,7 +61,7 @@ describe('http', () => {
 
     expect(axios.post).toHaveBeenCalledWith(
       'http://localhost:3000/user',
-      JSON.stringify({
+      {
         key1: 1,
         key2: {
           subset1: true,
@@ -73,7 +73,7 @@ describe('http', () => {
             subset2: 3.14
           }
         }
-      }),
+      },
       {
         headers: {}
       }
@@ -85,7 +85,7 @@ describe('http', () => {
 
     expect(axios.post).toHaveBeenCalledWith(
       'http://localhost:3000/user',
-      '{}',
+      {},
       {
         headers: { foo: 'bar', bar: 'baz' }
       }
