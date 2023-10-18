@@ -1,4 +1,4 @@
-import { tmpdir } from 'node:os'
+import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -7,7 +7,7 @@ export const cwd = process.cwd()
 
 export const packageJsonPath = join(cwd, 'package.json')
 
-export const lockfileDir = join(tmpdir(), 'my-cli')
+export const lockfileDir = join(homedir(), 'my-cli')
 export const lockfilePath = join(lockfileDir, 'setup-lock.json')
 
 export const root =
