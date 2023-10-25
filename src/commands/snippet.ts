@@ -2,8 +2,13 @@ import { App } from '@/main/app.js'
 import { hasFlag } from '@/utils/cmd.js'
 import { cwd, root } from '@/utils/constants.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs'
-import { copyFileSync } from 'node:fs'
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs'
 import { resolve } from 'node:path'
 import * as p from '@clack/prompts'
 
@@ -11,12 +16,12 @@ const _snippetsFolder = resolve(root, 'public/snippets')
 const _vscodeFolder = resolve(cwd, '.vscode')
 const _extension = '.code-snippets'
 const _snippets = readdirSync(_snippetsFolder).map(file =>
-  file.replace(_extension, '')
+  file.replace(_extension, ''),
 )
 
 async function snippetCommand(
   params: string[],
-  flags: string[]
+  flags: string[],
 ): Promise<void> {
   let snippets: string[]
 
@@ -50,8 +55,12 @@ function createProjectSnippet(): void {
   const projectName = cwd.replace(/^.+\/(.+)/, '$1')
   const fileName = projectName + _extension
   const dest = resolve(_vscodeFolder, fileName)
-  writeFileSync(dest, '{}\n')
-  log(dest)
+  if (!existsSync(dest)) {
+    writeFileSync(dest, '{}\n')
+    log(dest)
+  } else {
+    p.log.warn(`Project's snippet already exists: ${dest}`)
+  }
 }
 
 function copySnippet(snippet: string): void {
@@ -66,7 +75,7 @@ async function snippetPrompt(): Promise<string[]> {
   const response = (await p.multiselect({
     message: 'Pick your snippets:',
     options: _snippets.map(snippet => ({ value: snippet })),
-    required: true
+    required: true,
   })) as string[] | symbol
   verifyPromptResponse(response)
   return response
@@ -80,6 +89,6 @@ export function snippetRecord(app: App): void {
     flags: ['--create'],
     description: 'Create snippet collections on local project',
     example: 'my snippet nest nest-test',
-    action: snippetCommand
+    action: snippetCommand,
   })
 }

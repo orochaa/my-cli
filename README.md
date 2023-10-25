@@ -51,6 +51,10 @@ A compilation of my CLI snippets.
   - params: `<script>...`
   - flags: `--deep` | `-d` | `--partial` | `-p`
   - example: my run lint build "vitest --run"
+- `snippet`: Create snippet collections on local project
+  - params: `api` | `api-test` | `esm` | `nest` | `typescript`
+  - flags: `--create`
+  - example: my snippet nest nest-test
 - `upgrade`: Update package to latest version
   - alias: `up`
   - example: my up
