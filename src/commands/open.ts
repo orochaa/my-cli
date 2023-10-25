@@ -78,10 +78,10 @@ async function openPrompt(controller: Controller): Promise<string[]> {
         const rootEnd = getPathEnd(root)
         return folders.map(folder => ({
           label: `${rootEnd}/${folder}`,
-          value: join(root, folder)
+          value: join(root, folder),
         }))
       })
-      .flat()
+      .flat(),
   })
   verifyPromptResponse(projects)
 
@@ -89,7 +89,7 @@ async function openPrompt(controller: Controller): Promise<string[]> {
   if (projects.length > 1) {
     isWorkspace = await p.confirm({
       message: 'Open on workspace?',
-      initialValue: false
+      initialValue: false,
     })
     verifyPromptResponse(isWorkspace)
   }
@@ -115,6 +115,6 @@ export function openRecord(app: App): void {
     description:
       'Open a project on vscode, the projects available are based on `setup`',
     example: 'my open my-cli my-app my-api',
-    action: openCommand
+    action: openCommand,
   })
 }

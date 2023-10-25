@@ -12,13 +12,13 @@ import * as p from '@clack/prompts'
 const repo = {
   name: 'my-cli',
   clone_url: 'https://github.com/Mist3rBru/my-cli.git',
-  updated_at: new Date()
+  updated_at: new Date(),
 }
 
 const repositoryPath = join(cwd, 'my-cli')
 
 jest.mock('@clack/prompts', () => ({
-  select: jest.fn(async () => repo)
+  select: jest.fn(async () => repo),
 }))
 
 jest.mock('axios', () => ({
@@ -27,15 +27,15 @@ jest.mock('axios', () => ({
       { updated_at: new Date().setDate(-1) },
       { updated_at: new Date().setDate(1) },
       { updated_at: new Date().setDate(-1) },
-      repo
-    ]
-  }))
+      repo,
+    ],
+  })),
 }))
 
 jest.mock('@antfu/ni', () => ({
   detect: jest.fn(() => 'pnpm'),
   parseNi: jest.fn(),
-  runCli: jest.fn()
+  runCli: jest.fn(),
 }))
 
 jest.spyOn(process, 'chdir').mockImplementation()
@@ -47,7 +47,7 @@ describe('clone', () => {
 
   beforeAll(() => {
     writeLockfile({
-      git: 'any-git'
+      git: 'any-git',
     })
   })
 
@@ -73,12 +73,12 @@ describe('clone', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(3)
     expect(cp.execSync).toHaveBeenCalledWith(
       `git clone ${repo.clone_url} ${repo.name}`,
-      expect.anything()
+      expect.anything(),
     )
     expect(process.chdir).toHaveBeenCalledWith(repo.name)
     expect(cp.execSync).toHaveBeenCalledWith(
       'git remote rename origin o',
-      expect.anything()
+      expect.anything(),
     )
     expect(ni).toHaveBeenCalled()
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
@@ -90,12 +90,12 @@ describe('clone', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(3)
     expect(cp.execSync).toHaveBeenCalledWith(
       `git clone ${repo.clone_url} ${repo.name}`,
-      expect.anything()
+      expect.anything(),
     )
     expect(process.chdir).toHaveBeenCalledWith(repo.name)
     expect(cp.execSync).toHaveBeenCalledWith(
       'git remote rename origin o',
-      expect.anything()
+      expect.anything(),
     )
     expect(ni).toHaveBeenCalled()
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
@@ -123,7 +123,7 @@ describe('clone', () => {
 
     expect(existsSpy).not.toHaveBeenCalledWith(
       'pnpm install',
-      expect.anything()
+      expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })

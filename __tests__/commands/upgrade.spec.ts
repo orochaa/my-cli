@@ -10,8 +10,8 @@ jest.mock('@clack/prompts', () => ({
   outro: jest.fn(async () => ({})),
   spinner: jest.fn(() => ({
     start: startSpy,
-    stop: stopSpy
-  }))
+    stop: stopSpy,
+  })),
 }))
 
 describe('upgrade', () => {
@@ -42,7 +42,7 @@ describe('upgrade', () => {
     expect(execSpy).toHaveBeenCalledTimes(1)
     expect(execSpy).toHaveBeenCalledWith(
       'npm outdated @mist3rbru/my-cli --global --json',
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -65,7 +65,7 @@ describe('upgrade', () => {
       ;(cb as any)(
         null,
         '{"@mist3rbru/my-cli":{"current":"0.0.1","latest":"0.0.1"}}',
-        ''
+        '',
       )
       return cp as any
     })
@@ -81,7 +81,7 @@ describe('upgrade', () => {
       ;(cb as any)(
         null,
         '{"@mist3rbru/my-cli":{"current":"0.0.1","latest":"0.0.2"}}',
-        ''
+        '',
       )
       return cp as any
     })
@@ -93,7 +93,7 @@ describe('upgrade', () => {
     expect(execSpy).toHaveBeenCalledTimes(1)
     expect(execSpy).toHaveBeenCalledWith(
       'npm install -g @mist3rbru/my-cli@latest',
-      expect.anything()
+      expect.anything(),
     )
     expect(p.note).toHaveBeenCalledTimes(1)
   })

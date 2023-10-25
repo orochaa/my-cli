@@ -3,13 +3,13 @@ import { getPackageJson } from '@/utils/file-system.js'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  outro: jest.fn()
+  outro: jest.fn(),
 }))
 
 jest.mock('@/utils/file-system.js', () => ({
   getPackageJson: jest.fn(() => ({
-    version: '1.0.0'
-  }))
+    version: '1.0.0',
+  })),
 }))
 
 describe('version', () => {

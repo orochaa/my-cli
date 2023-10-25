@@ -11,8 +11,8 @@ const mockDirent = (folders: string[]): Dirent[] => {
     folder =>
       ({
         name: folder,
-        isDirectory: () => true
-      }) as Dirent
+        isDirectory: () => true,
+      }) as Dirent,
   )
 }
 
@@ -26,7 +26,7 @@ const mockReaddir = (paths: string[] | Dirent[]): void => {
 
 jest.mock('@clack/prompts', () => ({
   multiselect: jest.fn(async () => [cwd]),
-  confirm: jest.fn(async () => false)
+  confirm: jest.fn(async () => false),
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation()
@@ -61,11 +61,11 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[0])}`,
-      expect.anything()
+      expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[1])}`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -78,11 +78,11 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, '/root1/project')}`,
-      expect.anything()
+      expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, '/root2/project')}`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -95,7 +95,7 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[0])} ${join(cwd, projects[1])}`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -108,7 +108,7 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, project)} --reuse-window`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -120,14 +120,14 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
-      expect.anything()
+      expect.anything(),
     )
 
     await sut.exec(...projects, '-r')
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -140,8 +140,8 @@ describe('open', () => {
         '~\\root\\sub4',
         'C:\\root\\sub5',
         '\\root\\sub6',
-        '\\root'
-      ]
+        '\\root',
+      ],
     })
     mockReaddir(['project'])
 
@@ -156,15 +156,15 @@ describe('open', () => {
         { label: 'sub4/project', value: '~\\root\\sub4/project' },
         { label: 'sub5/project', value: 'C:\\root\\sub5/project' },
         { label: 'sub6/project', value: '\\root\\sub6/project' },
-        { label: 'root/project', value: '\\root/project' }
-      ]
+        { label: 'root/project', value: '\\root/project' },
+      ],
     })
   })
 
   it('should open all prompt selected options', async () => {
     ;(p.multiselect as jest.Mock).mockReturnValueOnce([
       join(cwd, '/root1'),
-      join(cwd, '/root2')
+      join(cwd, '/root2'),
     ])
 
     await sut.exec()
@@ -172,18 +172,18 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, '/root1')}`,
-      expect.anything()
+      expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, '/root2')}`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
   it('should open all prompt selected options on workspace', async () => {
     ;(p.multiselect as jest.Mock).mockResolvedValueOnce([
       join(cwd, '/root1'),
-      join(cwd, '/root2')
+      join(cwd, '/root2'),
     ])
     ;(p.confirm as jest.Mock).mockResolvedValueOnce(true)
 
@@ -192,7 +192,7 @@ describe('open', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
       `code ${join(cwd, '/root1')} ${join(cwd, '/root2')}`,
-      expect.anything()
+      expect.anything(),
     )
   })
 
@@ -207,9 +207,9 @@ describe('open', () => {
       options: [
         {
           label: 'root/project',
-          value: join(cwd, '/root/project')
-        }
-      ]
+          value: join(cwd, '/root/project'),
+        },
+      ],
     })
   })
 

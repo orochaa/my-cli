@@ -10,15 +10,15 @@ export default defineBuildConfig({
     inlineDependencies: true,
     emitCJS: true,
     esbuild: {
-      minify: true
-    }
+      minify: true,
+    },
   },
   alias: {
-    '@': resolve('src')
+    '@': resolve('src'),
   },
   hooks: {
     'build:done': () => {
       rmSync(resolve('bin/index.mjs'))
-    }
-  }
+    },
+  },
 })

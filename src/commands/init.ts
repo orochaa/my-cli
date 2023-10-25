@@ -21,6 +21,6 @@ export function initRecord(app: App): void {
     params: null,
     description: 'Initialize a default project with git and typescript',
     example: 'my init',
-    action: initCommand
+    action: initCommand,
   })
 }

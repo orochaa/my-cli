@@ -23,14 +23,14 @@ describe('App', () => {
       name: 'foo',
       action: async (params, flags) => {
         data = { params, flags }
-      }
+      },
     } as App.Command)
     process.argv = ['node', 'index.js', 'foo', 'bar', '--baz']
     await sut.exec('foo')
 
     expect(data).toStrictEqual({
       params: ['bar'],
-      flags: ['--baz']
+      flags: ['--baz'],
     })
   })
 
@@ -43,14 +43,14 @@ describe('App', () => {
       alias: 'f',
       action: async (params, flags) => {
         data = { params, flags }
-      }
+      },
     } as App.Command)
     process.argv = ['node', 'index.js', 'f', 'bar', '--baz']
     await sut.exec('f')
 
     expect(data).toStrictEqual({
       params: ['bar'],
-      flags: ['--baz']
+      flags: ['--baz'],
     })
   })
 
@@ -61,7 +61,7 @@ describe('App', () => {
       name: 'foo',
       action: async (params, flags): Promise<void> => {
         throw new Error('')
-      }
+      },
     } as App.Command)
 
     expect(sut.exec('foo')).rejects.toThrow()
@@ -80,18 +80,18 @@ describe('App', () => {
       description: 'foo description',
       example: 'my foo',
       params: ['p1', 'p2'],
-      flags: ['f1', 'f2']
+      flags: ['f1', 'f2'],
     })
 
     expect(log).toHaveBeenCalledWith(
-      `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`,
     )
     expect(log).toHaveBeenCalledWith(`  alias: f\n`)
     expect(log).toHaveBeenCalledWith(
-      `  params: ${colors.magenta('`p1`')} | ${colors.magenta('`p2`')}\n`
+      `  params: ${colors.magenta('`p1`')} | ${colors.magenta('`p2`')}\n`,
     )
     expect(log).toHaveBeenCalledWith(
-      `  flags: ${colors.magenta('`f1`')} | ${colors.magenta('`f2`')}\n`
+      `  flags: ${colors.magenta('`f1`')} | ${colors.magenta('`f2`')}\n`,
     )
     expect(log).toHaveBeenCalledWith(`  description: foo description\n`)
     expect(log).toHaveBeenCalledWith(`  example: my foo\n\n`)
@@ -110,7 +110,7 @@ describe('App', () => {
       description: ' ',
       example: 'my ',
       params: [' '],
-      flags: [' ']
+      flags: [' '],
     })
     sut.register({
       name: 'bar',
@@ -119,7 +119,7 @@ describe('App', () => {
       description: ' ',
       example: 'my ',
       params: [' '],
-      flags: [' ']
+      flags: [' '],
     })
     sut.register({
       name: 'baz',
@@ -128,18 +128,18 @@ describe('App', () => {
       description: ' ',
       example: 'my ',
       params: [' '],
-      flags: [' ']
+      flags: [' '],
     })
     sut.displayAllCommands()
 
     expect(log).toHaveBeenCalledWith(
-      `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`,
     )
     expect(log).toHaveBeenCalledWith(
-      `${colors.magenta('-')} command: ${colors.cyan('bar')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('bar')}\n`,
     )
     expect(log).toHaveBeenCalledWith(
-      `${colors.magenta('-')} command: ${colors.cyan('baz')}\n`
+      `${colors.magenta('-')} command: ${colors.cyan('baz')}\n`,
     )
   })
 

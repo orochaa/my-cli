@@ -3,7 +3,7 @@ import {
   getPackageJson,
   readLockfile,
   verifyLockfile,
-  writeLockfile
+  writeLockfile,
 } from '@/utils/file-system.js'
 import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -20,7 +20,7 @@ describe('file-system', () => {
     it('should return parsed package.json', () => {
       const result = getPackageJson()
       const expected = JSON.parse(
-        readFileSync(join(cwd, 'package.json')).toString()
+        readFileSync(join(cwd, 'package.json')).toString(),
       )
       expect(result).toStrictEqual(expected)
     })

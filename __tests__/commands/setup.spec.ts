@@ -7,7 +7,7 @@ import * as p from '@clack/prompts'
 
 const mock = {
   git: 'any',
-  projects: ['any']
+  projects: ['any'],
 }
 
 const startSpy = jest.fn()
@@ -18,18 +18,18 @@ jest.mock('@clack/prompts', () => ({
   confirm: jest.fn(async options => options.initialValue),
   spinner: jest.fn(() => ({
     start: startSpy,
-    stop: stopSpy
+    stop: stopSpy,
   })),
-  outro: jest.fn()
+  outro: jest.fn(),
 }))
 
 jest.mock('axios', () => ({
   get: jest.fn(async () => ({
     data: {
       login: '',
-      name: ''
-    }
-  }))
+      name: '',
+    },
+  })),
 }))
 
 describe('setup', () => {
@@ -53,7 +53,7 @@ describe('setup', () => {
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
       message: expect.any(String),
-      initialValue: ''
+      initialValue: '',
     })
   })
 
@@ -65,14 +65,14 @@ describe('setup', () => {
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
       message: expect.any(String),
-      initialValue: mock.git
+      initialValue: mock.git,
     })
   })
 
   it('should validate git user', async () => {
     const data = {
       login: 'user-login',
-      name: 'user-name'
+      name: 'user-name',
     }
     ;(axios.get as jest.Mock).mockResolvedValueOnce({ data })
 
@@ -80,7 +80,7 @@ describe('setup', () => {
 
     expect(startSpy).toHaveBeenCalledWith('Validating user')
     expect(axios.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${mock.git}`
+      `https://api.github.com/users/${mock.git}`,
     )
     expect(stopSpy).toHaveBeenCalledWith(`User: ${data.login} | ${data.name}`)
   })

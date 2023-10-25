@@ -25,12 +25,12 @@ async function cloneCommand(params: string[]): Promise<void> {
       repository = {
         clone_url: repositoryName,
         name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
-        updated_at: ''
+        updated_at: '',
       }
     } else {
       const repositories = await getUserRepositories()
       const foundRepository = repositories.find(
-        repository => repository.name === repositoryName
+        repository => repository.name === repositoryName,
       )
       if (!foundRepository) {
         throw new NotFoundError(repositoryName)
@@ -69,9 +69,9 @@ async function getUserRepositories(): Promise<Repository[]> {
     `https://api.github.com/users/${username}/repos`,
     {
       data: {
-        username
-      }
-    }
+        username,
+      },
+    },
   )
   return repositories
 }
@@ -80,7 +80,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
   const sortedRepositories = repositories.sort((a, b) => {
     const date = [
       new Date(a.updated_at).getTime(),
-      new Date(b.updated_at).getTime()
+      new Date(b.updated_at).getTime(),
     ]
     return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
   })
@@ -89,10 +89,10 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
     message: 'Select one of your repositories:',
     options: sortedRepositories.map(repository => ({
       label: repository.name,
-      value: repository
+      value: repository,
     })),
     initialValue: sortedRepositories[0],
-    maxItems: 10
+    maxItems: 10,
   })
   verifyPromptResponse(response)
   return response
@@ -106,6 +106,6 @@ export function cloneRecord(app: App): void {
     description:
       "Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode",
     example: 'my clone my-cli',
-    action: cloneCommand
+    action: cloneCommand,
   })
 }

@@ -3,7 +3,7 @@ import cp from 'node:child_process'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  select: jest.fn(async () => 'master')
+  select: jest.fn(async () => 'master'),
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation()
@@ -30,13 +30,13 @@ describe('branch', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
       'git checkout master',
-      expect.anything()
+      expect.anything(),
     )
   })
 
   it('should pull selected remote branch', async () => {
     ;(p.select as jest.Mock).mockResolvedValueOnce(
-      '   remotes/origin/pull_request/test'
+      '   remotes/origin/pull_request/test',
     )
 
     await sut.exec()
@@ -44,11 +44,11 @@ describe('branch', () => {
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
       'git checkout -b pull_request/test',
-      expect.anything()
+      expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
       'git pull origin pull_request/test',
-      expect.anything()
+      expect.anything(),
     )
   })
 })

@@ -6,17 +6,17 @@ import open from 'open'
 const players = {
   youtube: {
     aliases: ['y', 'yt', 'youtube'],
-    url: 'https://music.youtube.com'
+    url: 'https://music.youtube.com',
   },
   spotify: {
     aliases: ['s', 'spot', 'spotify'],
-    url: 'https://open.spotify.com'
-  }
+    url: 'https://open.spotify.com',
+  },
 }
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => players.youtube.url),
-  outro: jest.fn()
+  outro: jest.fn(),
 }))
 
 jest.mock('open', () => jest.fn())

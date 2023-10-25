@@ -15,7 +15,7 @@ async function pomodoroCommand(params: string[]): Promise<void> {
   const controller: PomodoroController = {
     work: 25,
     rest: 5,
-    period: 'work'
+    period: 'work',
   }
 
   if (params[0] !== 'd') {
@@ -53,7 +53,7 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
         validate: res => {
           const error = verifyPeriod(Number(res))
           if (error) return error.message
-        }
+        },
       }),
     rest: () =>
       p.text({
@@ -62,8 +62,8 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
         validate: res => {
           const error = verifyPeriod(Number(res))
           if (error) return error.message
-        }
-      })
+        },
+      }),
   })
   verifyPromptResponse(response)
   return [response.work, response.rest].map(Number) as [number, number]
@@ -72,7 +72,7 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
 async function togglePeriodPrompt(period: PomodoroPeriod): Promise<boolean> {
   const response = await p.confirm({
     message: `Are you ready to start your ${period} period?`,
-    initialValue: true
+    initialValue: true,
   })
   verifyPromptResponse(response)
   return response
@@ -143,6 +143,6 @@ export function pomodoroRecord(app: App): void {
     params: ['d', '<work> <rest>'],
     description: 'Start a pomodoro timer',
     example: 'my pomo d',
-    action: pomodoroCommand
+    action: pomodoroCommand,
   })
 }

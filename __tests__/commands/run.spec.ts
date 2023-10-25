@@ -8,7 +8,7 @@ import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   multiselect: jest.fn(async () => ['lint', 'build']),
-  outro: jest.fn()
+  outro: jest.fn(),
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation()
@@ -21,8 +21,8 @@ describe('run', () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({
         scripts: {
           lint: ' ',
-          build: ' '
-        }
+          build: ' ',
+        },
       })
 
       await sut.exec('lint build test')
@@ -31,17 +31,17 @@ describe('run', () => {
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
         'npm run lint',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         2,
         'npm run build',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
         'npx test\n',
-        expect.anything()
+        expect.anything(),
       )
     })
 
@@ -49,8 +49,8 @@ describe('run', () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({
         scripts: {
           lint: ' ',
-          build: ' '
-        }
+          build: ' ',
+        },
       })
 
       await sut.execRaw('lint', 'build', 'vitest --run')
@@ -59,17 +59,17 @@ describe('run', () => {
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
         'npm run lint',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         2,
         'npm run build',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
         'npx vitest --run\n',
-        expect.anything()
+        expect.anything(),
       )
     })
 
@@ -77,8 +77,8 @@ describe('run', () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({
         scripts: {
           lint: ' ',
-          build: ' '
-        }
+          build: ' ',
+        },
       })
 
       await sut.exec('lint build test -p')
@@ -87,12 +87,12 @@ describe('run', () => {
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
         'npm run lint',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         2,
         'npm run build',
-        expect.anything()
+        expect.anything(),
       )
     })
 
@@ -120,9 +120,9 @@ describe('run', () => {
         JSON.stringify({
           scripts: {
             lint: ' ',
-            build: ' '
-          }
-        })
+            build: ' ',
+          },
+        }),
       )
     })
 
@@ -141,17 +141,17 @@ describe('run', () => {
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
         'npm run lint',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         2,
         'npm run build',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
         'npx test\n',
-        expect.anything()
+        expect.anything(),
       )
     })
 
@@ -162,12 +162,12 @@ describe('run', () => {
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
         'npm run lint',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         2,
         'npm run build',
-        expect.anything()
+        expect.anything(),
       )
     })
   })
@@ -192,8 +192,8 @@ describe('run', () => {
       jest.spyOn(JSON, 'parse').mockReturnValueOnce({
         scripts: {
           lint: ' ',
-          build: ' '
-        }
+          build: ' ',
+        },
       })
 
       await sut.exec()
@@ -202,12 +202,12 @@ describe('run', () => {
       expect(cp.execSync).toHaveBeenNthCalledWith(
         1,
         'npm run lint',
-        expect.anything()
+        expect.anything(),
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         2,
         'npm run build',
-        expect.anything()
+        expect.anything(),
       )
     })
   })

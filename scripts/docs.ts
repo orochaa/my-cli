@@ -11,7 +11,7 @@ function run(): void {
 
   const readmeContent = readFileSync(readmePath).toString().split(/\r?\n/g)
   const commandsIndex = readmeContent.findIndex(line =>
-    /^[#\s]+commands/i.test(line)
+    /^[#\s]+commands/i.test(line),
   )
   if (commandsIndex === -1) {
     throw new Error('Commands section not found')
@@ -22,7 +22,7 @@ function run(): void {
 
   for (const command of app.commands) {
     newReadmeContent.push(
-      `- ${highlight(command.name)}: ${command.description}`
+      `- ${highlight(command.name)}: ${command.description}`,
     )
     if (command.alias)
       newReadmeContent.push(`  - alias: ${highlight(command.alias)}`)

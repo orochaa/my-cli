@@ -28,12 +28,12 @@ export function exec(
     stdio?: 'inherit' | 'ignore'
     /** @default true */
     log?: boolean
-  }
+  },
 ): Buffer {
   options = {
     stdio: isSilent() ? 'ignore' : 'inherit',
     log: true,
-    ...options
+    ...options,
   }
   if (options.log) {
     logCommand(cmd)
@@ -51,7 +51,7 @@ export async function execAsync(cmd: string): Promise<string> {
 
 export function hasFlag(
   flags: string | string[],
-  target: string[] = process.argv
+  target: string[] = process.argv,
 ): boolean {
   let result = false
 

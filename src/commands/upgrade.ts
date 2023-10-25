@@ -12,7 +12,7 @@ async function upgradeCommand(): Promise<void> {
     spinner.stop(`Upgrading to v${version.latest}...`)
     exec('npm install -g @mist3rbru/my-cli@latest', {
       stdio: 'ignore',
-      log: false
+      log: false,
     })
     p.note(`🚀 Upgraded from v${version.current} to v${version.latest}`)
   } else {
@@ -27,6 +27,6 @@ export function upgradeRecord(app: App): void {
     params: null,
     description: 'Update package to latest version',
     example: 'my up',
-    action: upgradeCommand
+    action: upgradeCommand,
   })
 }
