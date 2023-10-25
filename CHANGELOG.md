@@ -1,5 +1,16 @@
 # @mist3rbru/my-cli
 
+## 0.2.12
+
+### Patch Changes
+
+- 6634cf5: feat(clone): install deps with right package manager
+- 3ec63a3: feat(clone): accept http repository
+- 3258de4: feat: --help flag
+- 06ec1b5: refactor: move setup-lock.json to os temp folder
+- 2668524: fix(global): store setup config on home dir
+- 4435440: fix(http): convert body to JSON object
+
 ## 0.2.11
 
 ### Patch Changes
