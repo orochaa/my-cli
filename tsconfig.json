@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "esModuleInterop": true,
     "strict": true,
     "noEmit": true,
@@ -14,5 +14,6 @@
       "@/tests/*": ["__tests__/*"],
       "@/*": ["src/*"]
     }
-  }
+  },
+  "include": ["src", "__tests__"]
 }

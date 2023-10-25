@@ -1,4 +1,4 @@
-import { App } from '@/main/app'
+import { App } from '@/main/app.js'
 import { cwd } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import {
