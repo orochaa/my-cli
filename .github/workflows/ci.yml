@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - '**'
-env:
-  NODE_ENV: ci
 
 jobs:
   build:
