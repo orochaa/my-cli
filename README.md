@@ -20,6 +20,7 @@ A compilation of my CLI snippets.
   - example: my b
 - `clone`: Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode
   - params: `<repository>`
+  - flags: `--root`
   - example: my clone my-cli
 - `http`: Make an http request
   - params: `<method?> <url> <body?> <headers?>`

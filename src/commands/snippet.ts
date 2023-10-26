@@ -15,9 +15,6 @@ import * as p from '@clack/prompts'
 const _snippetsFolder = resolve(root, 'public/snippets')
 const _vscodeFolder = resolve(cwd, '.vscode')
 const _extension = '.code-snippets'
-const _snippets = readdirSync(_snippetsFolder).map(file =>
-  file.replace(_extension, ''),
-)
 
 async function snippetCommand(
   params: string[],
@@ -31,9 +28,10 @@ async function snippetCommand(
     return
   }
 
+  const snippetOptions = mapSnippets()
   snippets = params.length
-    ? params.filter(param => _snippets.includes(param))
-    : await snippetPrompt()
+    ? params.filter(param => snippetOptions.includes(param))
+    : await snippetPrompt(snippetOptions)
 
   createVsCodeFolder()
   for (const snippet of snippets) {
@@ -71,10 +69,14 @@ function copySnippet(snippet: string): void {
   log(dest)
 }
 
-async function snippetPrompt(): Promise<string[]> {
+function mapSnippets(): string[] {
+  return readdirSync(_snippetsFolder).map(file => file.replace(_extension, ''))
+}
+
+async function snippetPrompt(snippetOptions: string[]): Promise<string[]> {
   const response = (await p.multiselect({
     message: 'Pick your snippets:',
-    options: _snippets.map(snippet => ({ value: snippet })),
+    options: snippetOptions.map(snippet => ({ value: snippet })),
     required: true,
   })) as string[] | symbol
   verifyPromptResponse(response)
@@ -85,7 +87,7 @@ export function snippetRecord(app: App): void {
   app.register({
     name: 'snippet',
     alias: null,
-    params: _snippets.sort(),
+    params: mapSnippets().sort(),
     flags: ['--create'],
     description: 'Create snippet collections on local project',
     example: 'my snippet nest nest-test',
