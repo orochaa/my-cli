@@ -41,6 +41,6 @@ export function makeSut(command: Command) {
     },
     enableLogs: (): void => {
       isSilent = false
-    }
+    },
   }
 }

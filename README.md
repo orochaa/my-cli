@@ -20,6 +20,7 @@ A compilation of my CLI snippets.
   - example: my b
 - `clone`: Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode
   - params: `<repository>`
+  - flags: `--root`
   - example: my clone my-cli
 - `http`: Make an http request
   - params: `<method?> <url> <body?> <headers?>`
@@ -51,6 +52,10 @@ A compilation of my CLI snippets.
   - params: `<script>...`
   - flags: `--deep` | `-d` | `--partial` | `-p`
   - example: my run lint build "vitest --run"
+- `snippet`: Create snippet collections on local project
+  - params: `api` | `api-test` | `esm` | `nest` | `react` | `react-native` | `react-test` | `typescript`
+  - flags: `--create`
+  - example: my snippet nest nest-test
 - `upgrade`: Update package to latest version
   - alias: `up`
   - example: my up

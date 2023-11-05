@@ -54,9 +54,9 @@ async function runPrompt(): Promise<void> {
     options: objectEntries(packageJson.scripts).map(([script, cmd]) => ({
       label: script,
       value: script,
-      hint: cmd
+      hint: cmd,
     })),
-    required: true
+    required: true,
   })
   verifyPromptResponse(scripts)
 
@@ -74,7 +74,7 @@ function run(data: [string, Runner][]): void {
 }
 
 function verifyScripts(
-  packageJson: PackageJson | null
+  packageJson: PackageJson | null,
 ): asserts packageJson is { scripts: Record<string, string> } {
   if (!packageJson) {
     throw new NotFoundError('package.json')
@@ -85,7 +85,7 @@ function verifyScripts(
 
 function mapScripts(
   scripts: string[],
-  packageJson: PackageJson
+  packageJson: PackageJson,
 ): [string, Runner][] {
   return scripts.map(script => {
     const isNpm = !!packageJson?.scripts?.[script]
@@ -95,7 +95,7 @@ function mapScripts(
 
 function filterScripts(
   scripts: string[],
-  packageJson: PackageJson
+  packageJson: PackageJson,
 ): [string, Runner][] {
   const isPartial = hasFlag(['--partial', '-p'])
   const mappedScripts = mapScripts(scripts, packageJson)
@@ -113,6 +113,6 @@ export function runRecord(app: App): void {
     flags: ['--deep', '-d', '--partial', '-p'],
     description: 'Run scripts in sequence',
     example: 'my run lint build "vitest --run"',
-    action: runCommand
+    action: runCommand,
   })
 }

@@ -4,7 +4,7 @@ import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => '20'),
-  outro: jest.fn()
+  outro: jest.fn(),
 }))
 
 describe('password', () => {

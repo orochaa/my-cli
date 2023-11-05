@@ -38,7 +38,7 @@ async function passwordPrompt(): Promise<number> {
     validate: res => {
       const error = verifyPasswordLength(Number(res))
       if (error) return error.message
-    }
+    },
   })
   verifyPromptResponse(response)
   return Number(response)
@@ -89,6 +89,6 @@ export function passwordRecord(app: App): void {
     params: ['<length>'],
     description: 'Generate a random and safe password with the given length',
     example: 'my pass 30',
-    action: passwordCommand
+    action: passwordCommand,
   })
 }

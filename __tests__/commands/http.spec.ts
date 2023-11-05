@@ -28,7 +28,7 @@ describe('http', () => {
     await sut.exec('/user')
 
     expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/user', {
-      headers: {}
+      headers: {},
     })
   })
 
@@ -36,7 +36,7 @@ describe('http', () => {
     await sut.exec(':3030/user')
 
     expect(axios.get).toHaveBeenCalledWith('http://localhost:3030/user', {
-      headers: {}
+      headers: {},
     })
   })
 
@@ -44,7 +44,7 @@ describe('http', () => {
     await sut.exec('http://localhost:3000/user')
 
     expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/user', {
-      headers: {}
+      headers: {},
     })
   })
 
@@ -56,7 +56,7 @@ describe('http', () => {
 
   it('should parse nested body', async () => {
     await sut.exec(
-      'post /user key1=1 key2.subset1=true key2.subset2=false key3=Hello+World key4.subset1.subset2=3.14'
+      'post /user key1=1 key2.subset1=true key2.subset2=false key3=Hello+World key4.subset1.subset2=3.14',
     )
 
     expect(axios.post).toHaveBeenCalledWith(
@@ -65,18 +65,18 @@ describe('http', () => {
         key1: 1,
         key2: {
           subset1: true,
-          subset2: false
+          subset2: false,
         },
         key3: 'Hello World',
         key4: {
           subset1: {
-            subset2: 3.14
-          }
-        }
+            subset2: 3.14,
+          },
+        },
       },
       {
-        headers: {}
-      }
+        headers: {},
+      },
     )
   })
 
@@ -87,8 +87,8 @@ describe('http', () => {
       'http://localhost:3000/user',
       {},
       {
-        headers: { foo: 'bar', bar: 'baz' }
-      }
+        headers: { foo: 'bar', bar: 'baz' },
+      },
     )
   })
 
@@ -98,9 +98,9 @@ describe('http', () => {
       data: {
         user: {
           id: 1,
-          name: 'John'
-        }
-      }
+          name: 'John',
+        },
+      },
     }
     ;(axios.get as jest.Mock).mockResolvedValueOnce(result)
 

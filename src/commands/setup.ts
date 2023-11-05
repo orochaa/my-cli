@@ -1,11 +1,11 @@
-import { App } from '@/main/app'
+import { App } from '@/main/app.js'
 import { cwd } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import {
   Lockfile,
   readLockfile,
   verifyLockfile,
-  writeLockfile
+  writeLockfile,
 } from '@/utils/file-system.js'
 import { mergeObjects } from '@/utils/mappers.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
@@ -44,7 +44,7 @@ async function gitPrompt(lastGit: string): Promise<string> {
   do {
     response = await p.text({
       message: 'What is your GitHub username?',
-      initialValue: git
+      initialValue: git,
     })
     verifyPromptResponse(response)
     git = response
@@ -52,13 +52,13 @@ async function gitPrompt(lastGit: string): Promise<string> {
     try {
       spinner.start('Validating user')
       const { data: user } = await axios.get<GitUser>(
-        `https://api.github.com/users/${git}`
+        `https://api.github.com/users/${git}`,
       )
       spinner.stop(`User: ${user.login} | ${user.name}`)
 
       response = await p.confirm({
         message: 'Is that your user?',
-        initialValue: true
+        initialValue: true,
       })
       verifyPromptResponse(response)
       repeat = !response
@@ -86,7 +86,7 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
           if (projects.includes(res)) {
             return new InvalidParamError(
               'path',
-              'this path is already registered'
+              'this path is already registered',
             ).message
           }
           try {
@@ -99,14 +99,14 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
             return new NotFoundError('path').message
           }
         }
-      }
+      },
     })
     verifyPromptResponse(response)
     projects.push(response)
 
     response = await p.confirm({
       message: 'Do you want to add another root?',
-      initialValue: false
+      initialValue: false,
     })
     verifyPromptResponse(response)
     repeat = response
@@ -122,6 +122,6 @@ export function setupRecord(app: App): void {
     params: null,
     description: 'Prepare the required setup',
     example: 'my setup',
-    action: setupCommand
+    action: setupCommand,
   })
 }

@@ -1,0 +1,53 @@
+{
+  "reactComponent": {
+    "scope": "typescriptreact",
+    "prefix": ["comp", "component"],
+    "body": [
+      "import { ${2:View} } from 'react-native'",
+      "",
+      "${3:export} interface ${1:Component}Props {",
+      "  ",
+      "}",
+      "",
+      "${3:export} function ${1:Component} (props: ${1:Component}Props): JSX.Element {",
+      "  return (",
+      "    <${2:View}>",
+      "      $0",
+      "    </${2:View}>",
+      "  )",
+      "}",
+      ""
+    ]
+  },
+  "reactPage": {
+    "scope": "typescriptreact",
+    "prefix": ["page"],
+    "body": [
+      "import { ${2:View} } from 'react-native'",
+      "",
+      "export default function $1Page (): JSX.Element {",
+      "  return (",
+      "    <${2:View} className=\"mx-auto w-11/12\">",
+      "      $0",
+      "    </${2:View}>",
+      "  )",
+      "}",
+      ""
+    ]
+  },
+  "reactState": {
+    "scope": "typescript,typescriptreact",
+    "prefix": ["stt", "state"],
+    "body": ["const [$1, set$2] = useState<$3>($4)", "$0"]
+  },
+  "reactHook": {
+    "scope": "typescript,typescriptreact",
+    "prefix": ["hook", "use"],
+    "body": ["export function use$1($2) {", "  $0", "}", ""]
+  },
+  "interface": {
+    "scope": "typescript,typescriptreact",
+    "prefix": ["interface"],
+    "body": ["export interface I$1 {", "  $0", "}", ""]
+  }
+}

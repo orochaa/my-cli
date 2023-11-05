@@ -20,7 +20,7 @@ type ResponseMapper<T> = T extends Primitive
     }
 
 export function verifyPromptResponse<TResponse extends PromptResponse>(
-  response: TResponse | symbol
+  response: TResponse | symbol,
 ): asserts response is TResponse & ResponseMapper<TResponse> {
   verifySymbol(response)
   if (typeof response === 'object') {

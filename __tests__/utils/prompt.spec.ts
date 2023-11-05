@@ -1,7 +1,7 @@
 import { verifyPromptResponse } from '@/utils/prompt.js'
 
 jest.mock('@clack/prompts', () => ({
-  cancel: jest.fn()
+  cancel: jest.fn(),
 }))
 
 const exitSpy = jest.spyOn(global.process, 'exit').mockImplementation()
@@ -23,7 +23,7 @@ describe('prompt', () => {
     it('should not end process on primitive response', () => {
       const responses = new Array().concat(
         ['', 0, 1, { test: '' }, { test: 0 }],
-        [[''], [0, 1], [{ test: '' }], [{ test: 0 }]]
+        [[''], [0, 1], [{ test: '' }], [{ test: 0 }]],
       )
 
       expect.assertions(responses.length)

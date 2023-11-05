@@ -38,10 +38,10 @@ async function branchPrompt(branches: string[]): Promise<string> {
     message: 'Select a branch:',
     options: branches.map(branch => ({
       label: branch,
-      value: branch
+      value: branch,
     })),
     initialValue: branches.find(branch => /^\*/.test(branch)),
-    maxItems: 10
+    maxItems: 10,
   })
   verifyPromptResponse(response)
   return response
@@ -55,6 +55,6 @@ export function branchRecord(app: App): void {
     description:
       'List all local and remote branches, to select and checkout to it',
     example: 'my b',
-    action: branchCommand
+    action: branchCommand,
   })
 }

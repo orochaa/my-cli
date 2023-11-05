@@ -11,7 +11,7 @@ type Http = Record<
   (
     url: string,
     headers: Record<string, string>,
-    body: Record<string, unknown>
+    body: Record<string, unknown>,
   ) => Promise<unknown>
 >
 
@@ -91,7 +91,7 @@ function splitBodyAndHeaderParams(params: string[]): [string[], string[]] {
 
 function createHttp(): Http {
   const a = axios.create({
-    validateStatus: () => true
+    validateStatus: () => true,
   })
 
   return {
@@ -110,7 +110,7 @@ function createHttp(): Http {
     async delete(url, headers) {
       const { data } = await a.delete(url, { headers })
       return data
-    }
+    },
   }
 }
 
@@ -122,6 +122,6 @@ export function httpRecord(app: App): void {
     description: 'Make an http request',
     example:
       'my http post /user key1=1 key2.subset1=true key2.subset2=3.14 key3=Hello+World h.authorization=token',
-    action: httpCommand
+    action: httpCommand,
   })
 }

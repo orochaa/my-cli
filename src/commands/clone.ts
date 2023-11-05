@@ -1,12 +1,12 @@
 import { App } from '@/main/app.js'
-import { exec, logCommand } from '@/utils/cmd.js'
+import { exec, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
-import { join } from 'node:path'
-import { detect, parseNi, runCli } from '@antfu/ni'
+import { resolve } from 'node:path'
+import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -16,7 +16,9 @@ type Repository = {
   updated_at: string
 }
 
-async function cloneCommand(params: string[]): Promise<void> {
+type PackageManager = 'npm' | 'yarn' | 'pnpm'
+
+async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   let repository: Repository
 
   if (params.length) {
@@ -25,12 +27,12 @@ async function cloneCommand(params: string[]): Promise<void> {
       repository = {
         clone_url: repositoryName,
         name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
-        updated_at: ''
+        updated_at: '',
       }
     } else {
       const repositories = await getUserRepositories()
       const foundRepository = repositories.find(
-        repository => repository.name === repositoryName
+        repository => repository.name === repositoryName,
       )
       if (!foundRepository) {
         throw new NotFoundError(repositoryName)
@@ -42,22 +44,22 @@ async function cloneCommand(params: string[]): Promise<void> {
     repository = await clonePrompt(repositories)
   }
 
-  const isCloned = existsSync(join(cwd, repository.name))
+  const projectPath = formatProjectPath(repository.name)
+  const isCloned = existsSync(projectPath)
   if (isCloned) {
-    logCommand(`cd ${repository.name}`)
-    process.chdir(repository.name)
+    logCommand(`cd ${projectPath}`)
+    process.chdir(projectPath)
   } else {
-    exec(`git clone ${repository.clone_url} ${repository.name}`)
-    logCommand(`cd ${repository.name}`)
-    process.chdir(repository.name)
+    exec(`git clone ${repository.clone_url} ${projectPath}`)
+    logCommand(`cd ${projectPath}`)
+    process.chdir(projectPath)
     exec('git remote rename origin o')
   }
 
-  const isNodeProject = existsSync(join(process.cwd(), 'package.json'))
+  const isNodeProject = existsSync(resolve(process.cwd(), 'package.json'))
   if (isNodeProject) {
-    const pm = await detect()
-    logCommand(`${pm} install`)
-    await runCli(parseNi, { args: [] })
+    const pm = (await detect()) || (await packageManagerPrompt())
+    exec(`${pm} install`)
   }
 
   exec('code .')
@@ -69,18 +71,24 @@ async function getUserRepositories(): Promise<Repository[]> {
     `https://api.github.com/users/${username}/repos`,
     {
       data: {
-        username
-      }
-    }
+        username,
+      },
+    },
   )
   return repositories
+}
+
+function formatProjectPath(repositoryName: string): string {
+  return hasFlag('--root')
+    ? resolve(readLockfile().projects[0], repositoryName)
+    : resolve(cwd, repositoryName)
 }
 
 async function clonePrompt(repositories: Repository[]): Promise<Repository> {
   const sortedRepositories = repositories.sort((a, b) => {
     const date = [
       new Date(a.updated_at).getTime(),
-      new Date(b.updated_at).getTime()
+      new Date(b.updated_at).getTime(),
     ]
     return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
   })
@@ -89,10 +97,21 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
     message: 'Select one of your repositories:',
     options: sortedRepositories.map(repository => ({
       label: repository.name,
-      value: repository
+      value: repository,
     })),
     initialValue: sortedRepositories[0],
-    maxItems: 10
+    maxItems: 10,
+  })
+  verifyPromptResponse(response)
+  return response
+}
+
+async function packageManagerPrompt(): Promise<PackageManager> {
+  const options: PackageManager[] = ['pnpm', 'yarn', 'npm']
+  const response = await p.select({
+    message: 'Select your package manager:',
+    options: options.map(pm => ({ value: pm })),
+    initialValue: options[0],
   })
   verifyPromptResponse(response)
   return response
@@ -103,9 +122,10 @@ export function cloneRecord(app: App): void {
     name: 'clone',
     alias: null,
     params: ['<repository>'],
+    flags: ['--root'],
     description:
       "Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode",
     example: 'my clone my-cli',
-    action: cloneCommand
+    action: cloneCommand,
   })
 }

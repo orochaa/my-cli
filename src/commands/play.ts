@@ -8,12 +8,12 @@ import * as p from '@clack/prompts'
 const players = {
   youtube: {
     aliases: ['y', 'yt', 'youtube'],
-    url: 'https://music.youtube.com'
+    url: 'https://music.youtube.com',
   },
   spotify: {
     aliases: ['s', 'spot', 'spotify'],
-    url: 'https://open.spotify.com'
-  }
+    url: 'https://open.spotify.com',
+  },
 }
 
 async function playCommand(params: string[]): Promise<void> {
@@ -44,9 +44,9 @@ async function playPrompt(): Promise<string> {
     message: 'Select a player:',
     options: objectEntries(players).map(([player, { url }]) => ({
       label: player,
-      value: url
+      value: url,
     })),
-    initialValue: players.youtube.url
+    initialValue: players.youtube.url,
   })
   verifyPromptResponse(response)
   return response
@@ -61,6 +61,6 @@ export function playRecord(app: App): void {
       .flat(),
     description: 'Open a music player on your default browser',
     example: 'my play yt',
-    action: playCommand
+    action: playCommand,
   })
 }

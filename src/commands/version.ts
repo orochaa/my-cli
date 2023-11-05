@@ -20,6 +20,6 @@ export function versionRecord(app: App): void {
     params: null,
     description: 'Display current package version',
     example: 'my version',
-    action: versionCommand
+    action: versionCommand,
   })
 }

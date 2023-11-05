@@ -1,7 +1,7 @@
 import {
   lockfileDir,
   lockfilePath,
-  packageJsonPath
+  packageJsonPath,
 } from '@/utils/constants.js'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 
@@ -13,7 +13,7 @@ export type PackageJson = Partial<{
 }>
 
 export function getPackageJson(
-  path: string = packageJsonPath
+  path: string = packageJsonPath,
 ): PackageJson | null {
   if (!existsSync(path)) {
     return null

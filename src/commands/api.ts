@@ -23,7 +23,7 @@ async function apiPrompt(): Promise<string> {
       if (res.length === 0) {
         return 'type a name for your api'
       }
-    }
+    },
   })
   verifyPromptResponse(response)
   return response
@@ -37,6 +37,6 @@ export function apiRecord(app: App): void {
     description:
       'Create an api with typescript, prettier, eslint and jest with opined configuration',
     example: 'my api ts-api',
-    action: apiCommand
+    action: apiCommand,
   })
 }

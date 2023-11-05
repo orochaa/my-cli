@@ -31,7 +31,7 @@ async function removePrompt(): Promise<string[]> {
     message: 'How do you want to input the paths?',
     active: 'Select',
     inactive: 'Type',
-    initialValue: true
+    initialValue: true,
   })
   verifyPromptResponse(isSelectOption)
 
@@ -41,8 +41,8 @@ async function removePrompt(): Promise<string[]> {
       message: 'What do you want to delete?',
       options: options.map(path => ({
         label: path.replace(/.+[\\/](\w+)/i, '$1'),
-        value: path
-      }))
+        value: path,
+      })),
     })
     verifyPromptResponse(response)
     paths = response
@@ -53,7 +53,7 @@ async function removePrompt(): Promise<string[]> {
       validate: res => {
         const error = verifyItems(res.split(' '))
         if (error) return error.message
-      }
+      },
     })
     verifyPromptResponse(response)
     paths = response.split(' ')
@@ -79,6 +79,6 @@ export function removeRecord(app: App): void {
     description:
       'Remove recursively a folder or file on the relative given path',
     example: 'my rm dist coverage',
-    action: removeCommand
+    action: removeCommand,
   })
 }

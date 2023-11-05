@@ -12,7 +12,7 @@ jest.mock('@clack/prompts', () => ({
   text: jest.fn(async () => mock),
   confirm: jest.fn(async () => true),
   multiselect: jest.fn(async () => [mock]),
-  outro: jest.fn()
+  outro: jest.fn(),
 }))
 
 const verifyMock = () => !existsSync(mockPath)

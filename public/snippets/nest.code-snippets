@@ -1,0 +1,258 @@
+{
+  "createControllerClass": {
+    "scope": "typescript",
+    "prefix": "controller",
+    "body": [
+      "import { I$1 } from '#domain/usecases'",
+      "import { Controller, ${2:Get} } from '@nestjs/common';",
+      "",
+      "@Controller()",
+      "export class $1Controller {",
+      "  constructor(private readonly $1: I$1) {}",
+      "",
+      "  @${2:Get}('$3')",
+      "  async handle () {",
+      "    const ${4:data} = await this.$1.$5()",
+      "    $0",
+      "  }",
+      "}",
+      ""
+    ]
+  },
+
+  "createServiceClass": {
+    "scope": "typescript",
+    "prefix": "service",
+    "body": [
+      "import { I$1 } from '#domain/usecases'",
+      "import { Injectable } from '@nestjs/common'",
+      "",
+      "@Injectable()",
+      "export class $1 implements I$1 {",
+      "  constructor (",
+      "    private readonly $2: I$2,",
+      "  ) {}",
+      "",
+      "  $0",
+      "}",
+      ""
+    ]
+  },
+
+  "createRepositoryClass": {
+    "scope": "typescript",
+    "prefix": ["repo", "repository"],
+    "body": [
+      "import { $1Mapper } from '#domain/mappers'",
+      "import { $1 } from '#domain/entities'",
+      "import { Injectable } from '@nestjs/common'",
+      "import { PrismaService } from './prisma.service'",
+      "",
+      "interface I$1Repository {}",
+      "",
+      "@Injectable()",
+      "export class $1Repository implements I$1Repository {",
+      "  constructor(private readonly db: PrismaService) {}",
+      "",
+      "  async create(data: $1) {",
+      "    await this.db.$2.create({",
+      "      data: new $1Mapper(data).toPrisma()",
+      "    })",
+      "  }",
+      "",
+      "  async list() {",
+      "    const data = await this.db.$2.findMany()",
+      "    return data.map(d => new $1(d))",
+      "  }",
+      "",
+      "async findById(id: string) {",
+      "  const data = await this.db.$2.findUnique({",
+      "    where: {",
+      "      id,",
+      "    },",
+      "  })",
+      "  if (!data) {",
+      "    return null",
+      "  }",
+      "  return new $1(data)",
+      "}",
+      "",
+      "  async update(data: $1) {",
+      "    await this.db.$2.update({",
+      "      data: new $1Mapper(data).toPrisma(),",
+      "      where: {",
+      "        id: data.id,",
+      "      },",
+      "    })",
+      "  }",
+      "",
+      "  async delete(id: string) {",
+      "    await this.db.$2.delete({",
+      "      where: {",
+      "        id,",
+      "      },",
+      "    })",
+      "  }",
+      "}",
+      ""
+    ]
+  },
+
+  "createInterface": {
+    "scope": "typescript",
+    "prefix": "interface",
+    "body": [
+      "export abstract class I$1 {",
+      "  abstract $2(data: I$1.Params): Promise<I$1.Result>",
+      "}",
+      "",
+      "export namespace I$1 {",
+      "  export interface Params {",
+      "    ",
+      "  }",
+      "",
+      "  export interface Result {",
+      "  ",
+      "  }",
+      "}",
+      ""
+    ]
+  },
+
+  "createEntity": {
+    "scope": "typescript",
+    "prefix": "entity",
+    "body": [
+      "export class $1 {",
+      "  private readonly props: $1.Props",
+      "",
+      "  constructor(params: $1.Params) {",
+      "    this.props = {",
+      "      ...params",
+      "    }",
+      "  }",
+      "",
+      "  static create(params: $1.Params): $1 {",
+      "    return new $1(params)",
+      "  }",
+      "}",
+      "",
+      "export namespace $1 {",
+      "  export interface Props {",
+      "    ",
+      "  }",
+      "",
+      "  export interface Params {",
+      "    ",
+      "  }",
+      "}",
+      ""
+    ]
+  },
+
+  "createMapper": {
+    "scope": "typescript",
+    "prefix": "mapper",
+    "body": [
+      "import { $1 } from '#domain/entities'",
+      "import { $1 as Prisma$1 } from '@prisma/client'",
+      "",
+      "export class $1Mapper {",
+      "  constructor(private readonly props: $1) {}",
+      "",
+      "  public toPrisma(): Prisma$1 {",
+      "    return {",
+      "      $0",
+      "    }",
+      "  }",
+      "",
+      "  public toHttp() {",
+      "    return {",
+      "      ",
+      "    }",
+      "  }",
+      "}",
+      ""
+    ]
+  },
+
+  "createModule": {
+    "scope": "typescript",
+    "prefix": ["module"],
+    "body": [
+      "import { Module } from '@nestjs/common'",
+      "",
+      "@Module({",
+      "  imports: [],",
+      "  controllers: [],",
+      "  providers: [",
+      "    {",
+      "      provide: I$2,",
+      "      useClass: $2",
+      "    },",
+      "  ]",
+      "})",
+      "export class $1Module {}",
+      ""
+    ]
+  },
+
+  "createGuard": {
+    "scope": "typescript",
+    "prefix": ["guard"],
+    "body": [
+      "import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'",
+      "import { Observable } from 'rxjs'",
+      "",
+      "@Injectable()",
+      "export class $1Guard implements CanActivate {",
+      "  constructor() {}",
+      "",
+      "  canActivate(",
+      "    context: ExecutionContext,",
+      "  ): boolean | Promise<boolean> | Observable<boolean> {",
+      "    const request = context.switchToHttp().getRequest()",
+      "    $0",
+      "    return true",
+      "  }",
+      "}",
+      ""
+    ]
+  },
+
+  "createDecorator": {
+    "scope": "typescript",
+    "prefix": ["decorator"],
+    "body": [
+      "import { applyDecorators } from '@nestjs/common'",
+      "",
+      "export function $1(): MethodDecorator {",
+      "  return applyDecorators(",
+      "    $0,",
+      "  )",
+      "}",
+      ""
+    ]
+  },
+
+  "createParamDecorator": {
+    "scope": "typescript",
+    "prefix": ["paramDecorator"],
+    "body": [
+      "import {",
+      "  ExecutionContext,",
+      "  createParamDecorator,",
+      "} from '@nestjs/common'",
+      "import { Request } from 'express'",
+      "",
+      "export const $1 = createParamDecorator(",
+      "  (data: ${2:unknown}, ctx: ExecutionContext) => {",
+      "    const request = ctx.switchToHttp().getRequest<Request>()",
+      "    const $0",
+      "    return ",
+      "  },",
+      ")",
+      ""
+    ]
+  }
+}
