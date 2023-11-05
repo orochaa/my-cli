@@ -1,5 +1,12 @@
 # @mist3rbru/my-cli
 
+## 0.2.13
+
+### Patch Changes
+
+- c066170: feat: snippet command
+- 4da8541: feat(clone): --root flag
+
 ## 0.2.12
 
 ### Patch Changes
