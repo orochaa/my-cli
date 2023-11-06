@@ -18,7 +18,8 @@
     "my": "./bin/index.cjs"
   },
   "files": [
-    "bin"
+    "bin",
+    "public"
   ],
   "keywords": [
     "cli",
