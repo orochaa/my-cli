@@ -1,5 +1,11 @@
 # @mist3rbru/my-cli
 
+## 0.2.14
+
+### Patch Changes
+
+- 62a7d73: fix(global): bundle package with public folder
+
 ## 0.2.13
 
 ### Patch Changes
