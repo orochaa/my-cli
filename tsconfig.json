@@ -6,9 +6,10 @@
     "esModuleInterop": true,
     "strict": true,
     "noEmit": true,
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false,
-    "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
       "@/tests/*": ["__tests__/*"],

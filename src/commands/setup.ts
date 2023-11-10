@@ -2,7 +2,7 @@ import { App } from '@/main/app.js'
 import { cwd } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import {
-  Lockfile,
+  type Lockfile,
   readLockfile,
   verifyLockfile,
   writeLockfile,

@@ -1,7 +1,7 @@
 import { App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { readLockfile } from '@/utils/file-system.js'
-import { PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
+import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
