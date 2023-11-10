@@ -1,5 +1,18 @@
 # @mist3rbru/my-cli
 
+## 0.2.14
+
+### Patch Changes
+
+- 62a7d73: fix(global): bundle package with public folder
+
+## 0.2.13
+
+### Patch Changes
+
+- c066170: feat: snippet command
+- 4da8541: feat(clone): --root flag
+
 ## 0.2.12
 
 ### Patch Changes

@@ -53,7 +53,7 @@ A compilation of my CLI snippets.
   - flags: `--deep` | `-d` | `--partial` | `-p`
   - example: my run lint build "vitest --run"
 - `snippet`: Create snippet collections on local project
-  - params: `api` | `api-test` | `esm` | `nest` | `typescript`
+  - params: `api` | `api-test` | `esm` | `nest` | `react` | `react-native` | `react-test` | `typescript`
   - flags: `--create`
   - example: my snippet nest nest-test
 - `upgrade`: Update package to latest version
