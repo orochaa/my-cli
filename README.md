@@ -29,7 +29,7 @@ A compilation of my CLI snippets.
   - example: my init
 - `open`: Open a project on vscode, the projects available are based on `setup`
   - params: `<project>...`
-  - flags: `--workspace` | `-w` | `--reuse-window` | `-r`
+  - flags: `--workspace` | `-w` | `--reuse-window` | `-r` | `--filter` | `-f`
   - example: my open my-cli my-app my-api
 - `outdated`: Check if package is on latest version
   - example: my outdated
