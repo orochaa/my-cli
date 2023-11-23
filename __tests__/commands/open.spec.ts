@@ -2,24 +2,24 @@ import { makeSut } from '@/tests/mocks/make-sut.js'
 import { cwd, lockfilePath } from '@/utils/constants.js'
 import { writeLockfile } from '@/utils/file-system.js'
 import cp from 'node:child_process'
-import fs, { Dirent } from 'node:fs'
+import fs from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
-const mockDirent = (folders: string[]): Dirent[] => {
+const mockDirent = (folders: string[]): fs.Dirent[] => {
   return folders.map(
     folder =>
       ({
         name: folder,
         isDirectory: () => true,
-      }) as Dirent,
+      }) as fs.Dirent,
   )
 }
 
-const mockReaddir = (paths: string[] | Dirent[]): void => {
-  const result: Dirent[] =
-    paths[0] instanceof Dirent
-      ? (paths as Dirent[])
+const mockReaddir = (paths: string[] | fs.Dirent[]): void => {
+  const result: fs.Dirent[] =
+    paths[0] instanceof fs.Dirent
+      ? (paths as fs.Dirent[])
       : mockDirent(paths as string[])
   jest.spyOn(fs, 'readdirSync').mockImplementation(() => result)
 }
@@ -219,5 +219,63 @@ describe('open', () => {
     await sut.exec()
 
     expect(p.confirm).toHaveBeenCalledTimes(0)
+  })
+
+  it('should open prompt with single filtered options', async () => {
+    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockReaddir(['foo', 'bar', 'baz'])
+
+    await sut.exec('-f ba')
+
+    expect(p.multiselect).toHaveBeenCalledTimes(1)
+    expect(p.multiselect).toHaveBeenCalledWith({
+      message: 'Select a project to open:',
+      options: [
+        {
+          label: 'root/bar',
+          value: join(cwd, '/root/bar'),
+        },
+        {
+          label: 'root/baz',
+          value: join(cwd, '/root/baz'),
+        },
+      ],
+    })
+  })
+
+  it('should open prompt with multi filtered options', async () => {
+    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockReaddir(['foo', 'bar', 'baz'])
+
+    await sut.exec('-f f r')
+
+    expect(p.multiselect).toHaveBeenCalledTimes(1)
+    expect(p.multiselect).toHaveBeenCalledWith({
+      message: 'Select a project to open:',
+      options: [
+        {
+          label: 'root/foo',
+          value: join(cwd, '/root/foo'),
+        },
+        {
+          label: 'root/bar',
+          value: join(cwd, '/root/bar'),
+        },
+      ],
+    })
+  })
+
+  it('should not open prompt with a single filtered option', async () => {
+    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockReaddir(['foo', 'bar', 'baz'])
+
+    await sut.exec('-f f')
+
+    expect(p.multiselect).toHaveBeenCalledTimes(0)
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `code ${join(cwd, '/root/foo')}`,
+      expect.anything(),
+    )
   })
 })

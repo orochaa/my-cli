@@ -9,28 +9,36 @@ async function branchCommand(): Promise<void> {
 
   const selectedBranch = await branchPrompt(branches)
 
-  const isRemote = /^\s*remote/.test(selectedBranch)
-  if (isRemote) {
-    const remoteBrach = formatRemoteBranch(selectedBranch)
+  if (isRemoteBranch(selectedBranch)) {
+    const remoteBranch = formatRemoteBranch(selectedBranch)
     const remoteOrigin = formatRemoteOrigin(selectedBranch)
-    exec(`git checkout -b ${remoteBrach}`)
-    exec(`git pull ${remoteOrigin} ${remoteBrach}`)
+    exec(`git checkout -b ${remoteBranch}`)
+    exec(`git pull ${remoteOrigin} ${remoteBranch}`)
   } else {
+    const originsData = await execAsync('git remote')
+    const originsList = originsData.split(/\n/g)
+    const origin =
+      originsList.find(origin => origin.startsWith('o')) ?? originsList[0]
     const branch = formatBranch(selectedBranch)
     exec(`git checkout ${branch}`)
+    exec(`git pull ${origin} ${branch}`)
   }
 }
 
-function formatBranch(response: string): string {
-  return response.replace(/.*?([^\s]+)$/, '$1')
+function isRemoteBranch(branch: string): boolean {
+  return /^\s*remote/.test(branch)
 }
 
-function formatRemoteBranch(response: string): string {
-  return response.replace(/^\s*\w+\/\w+\/(HEAD.+?\/)?(.+)/, '$2')
+function formatBranch(branch: string): string {
+  return branch.replace(/.*?([^\s]+)$/, '$1')
 }
 
-function formatRemoteOrigin(response: string): string {
-  return response.replace(/^\s*\w+\/(\w+).+/, '$1')
+function formatRemoteBranch(branch: string): string {
+  return branch.replace(/^\s*(?:\w+\/){2}(?:HEAD.+?\/)?(.+)/, '$1')
+}
+
+function formatRemoteOrigin(origin: string): string {
+  return origin.replace(/^\s*\w+\/(\w+).+/, '$1')
 }
 
 async function branchPrompt(branches: string[]): Promise<string> {

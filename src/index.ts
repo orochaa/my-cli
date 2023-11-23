@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 import { setupApp } from '@/main/setup-app.js'
-import { Lockfile, readLockfile, verifyLockfile } from '@/utils/file-system.js'
+import {
+  type Lockfile,
+  readLockfile,
+  verifyLockfile,
+} from '@/utils/file-system.js'
 
 async function main(): Promise<void> {
   const app = setupApp()

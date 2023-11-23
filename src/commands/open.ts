@@ -1,7 +1,7 @@
 import { App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { readLockfile } from '@/utils/file-system.js'
-import { PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
+import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -20,7 +20,17 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
     controller.push([projectsRoot, projects])
   }
 
-  if (params.length) {
+  if (params.length && hasFlag(['--filter', '-f'], flags)) {
+    const filterRegex = new RegExp(params.join('|'), 'i')
+    const filteredController = controller.map(([projectsRoot, projects]) => [
+      projectsRoot,
+      projects.filter(project => filterRegex.test(project)),
+    ]) satisfies Controller
+    openProjectList =
+      filteredController.length === 1 && filteredController[0][1].length === 1
+        ? [join(filteredController[0][0], filteredController[0][1][0])]
+        : await openPrompt(filteredController)
+  } else if (params.length) {
     openProjectList = getParamProjects(params, controller)
   } else {
     openProjectList = await openPrompt(controller)
@@ -101,9 +111,8 @@ function getPathEnd(path: string): string {
   return path.replace(/.*[/\\](.+)$/i, '$1')
 }
 
-function code(project: string, flags?: unknown[]): string {
-  const _flags = (flags ?? []).filter(Boolean)
-  return ['code', project, ..._flags].join(' ')
+function code(project: string, flags: unknown[]): string {
+  return ['code', project, ...flags.filter(Boolean)].join(' ')
 }
 
 export function openRecord(app: App): void {
@@ -111,7 +120,7 @@ export function openRecord(app: App): void {
     name: 'open',
     alias: null,
     params: ['<project>...'],
-    flags: ['--workspace', '-w', '--reuse-window', '-r'],
+    flags: ['--workspace', '-w', '--reuse-window', '-r', '--filter', '-f'],
     description:
       'Open a project on vscode, the projects available are based on `setup`',
     example: 'my open my-cli my-app my-api',
