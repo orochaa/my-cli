@@ -1,5 +1,6 @@
 import { App } from '@/main/app.js'
 import { exec, execAsync } from '@/utils/cmd.js'
+import { maxItems } from '@/utils/constants.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import * as p from '@clack/prompts'
 
@@ -49,7 +50,7 @@ async function branchPrompt(branches: string[]): Promise<string> {
       value: branch,
     })),
     initialValue: branches.find(branch => /^\*/.test(branch)),
-    maxItems: 10,
+    maxItems,
   })
   verifyPromptResponse(response)
   return response

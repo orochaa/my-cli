@@ -1,6 +1,6 @@
 import { App } from '@/main/app.js'
 import { exec, hasFlag, logCommand } from '@/utils/cmd.js'
-import { cwd } from '@/utils/constants.js'
+import { cwd, maxItems } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
@@ -100,7 +100,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
       value: repository,
     })),
     initialValue: sortedRepositories[0],
-    maxItems: 10,
+    maxItems,
   })
   verifyPromptResponse(response)
   return response
