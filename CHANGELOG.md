@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.2.15
+
+### Patch Changes
+
+- 1af6caa: feat(open): --filter flag
+- 9742ed4: feat(init): add opinated config
+- 970fd6d: feat(branch): pull local branch from origin
+
 ## 0.2.14
 
 ### Patch Changes
