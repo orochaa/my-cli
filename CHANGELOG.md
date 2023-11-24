@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.2.16
+
+### Patch Changes
+
+- 766fcb3: feat(global): add relative max items to selects
+- 3201d58: fix(init): remove git checkout
+- 8d79e45: fix(open): auto open on filter a single project
+
 ## 0.2.15
 
 ### Patch Changes
