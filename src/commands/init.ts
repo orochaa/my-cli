@@ -6,33 +6,33 @@ import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
 const tsconfig = `{
-  compilerOptions: {
+  "compilerOptions": {
     /* Build */
-    target: 'ESNext',
-    module: 'NodeNext',
-    moduleResolution: 'NodeNext',
-    noEmit: true,
-    lib: ['es2022'],
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "lib": ["es2022"],
 
     /* Base Options: */
-    esModuleInterop: true,
-    skipLibCheck: true,
-    isolatedModules: true,
-    moduleDetection: 'force',
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
 
     /* Strictness */
-    strict: true,
-    verbatimModuleSyntax: true,
-    forceConsistentCasingInFileNames: true,
-    useUnknownInCatchVariables: false,
+    "strict": true,
+    "verbatimModuleSyntax": true,
+    "forceConsistentCasingInFileNames": true,
+    "useUnknownInCatchVariables": false,
 
     /* Alias */
-    baseUrl: '.',
-    paths: {
-      '@/tests/*': ['__tests__/*'],
-      '@/*': ['src/*'],
-    },
-  },
+    "baseUrl": ".",
+    "paths": {
+      "@/tests/*": ["__tests__/*"],
+      "@/*": ["src/*"]
+    }
+  }
 }`
 
 const prettier = `{
@@ -45,7 +45,7 @@ const prettier = `{
   "tabWidth": 2,
   "printWidth": 80,
   "trailingComma": "es5",
-  "plugins": [],
+  "plugins": []
 }`
 
 async function initCommand() {
