@@ -22,10 +22,12 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
 
   if (params.length && hasFlag(['--filter', '-f'], flags)) {
     const filterRegex = new RegExp(params.join('|'), 'i')
-    const filteredController = controller.map(([projectsRoot, projects]) => [
-      projectsRoot,
-      projects.filter(project => filterRegex.test(project)),
-    ]) satisfies Controller
+    const filteredController = controller
+      .map(([projectsRoot, projects]) => [
+        projectsRoot,
+        projects.filter(project => filterRegex.test(project)),
+      ])
+      .filter(tuple => tuple[1].length) as Controller
     openProjectList =
       filteredController.length === 1 && filteredController[0][1].length === 1
         ? [join(filteredController[0][0], filteredController[0][1][0])]
