@@ -3,7 +3,7 @@ import { execAsync } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
-import { spinner } from '@clack/prompts'
+import * as p from '@clack/prompts'
 
 const tsconfig = `{
   compilerOptions: {
@@ -49,22 +49,22 @@ const prettier = `{
 }`
 
 async function initCommand() {
-  const s = spinner()
+  const s = p.spinner()
+
   s.start('Preparing setup')
 
   await execAsync('pnpm init')
   await execAsync('pnpm add -D typescript @types/node tsx prettier')
   await execAsync('git init')
-  await execAsync('git checkout -b master')
   await writeFile(join(cwd, '.gitignore'), 'node_modules/\ndist/\n\n.env')
   await writeFile(join(cwd, '.gitattributes'), '* text=auto eol=lf')
   await writeFile(join(cwd, 'tsconfig.json'), tsconfig)
-  await writeFile(join(cwd, '.prettierrc.json'), prettier)
+  await writeFile(join(cwd, '.prettierrc'), prettier)
   await writeFile(join(cwd, '.prettierignore'), 'node_modules/\n\n*.yaml')
   await mkdir(join(cwd, 'src'))
   await writeFile(join(cwd, 'src/index.ts'), '')
 
-  s.stop('All set')
+  s.stop("It's all set")
 }
 
 export function initRecord(app: App): void {

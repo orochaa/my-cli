@@ -13,3 +13,5 @@ export const lockfilePath = join(lockfileDir, 'setup-lock.json')
 export const root = ['development', 'test'].includes(process.env.NODE_ENV!)
   ? join(dirname, '..', '..')
   : join(dirname, '..')
+
+export const maxItems = process.stdout.rows - 4

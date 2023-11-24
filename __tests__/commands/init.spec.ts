@@ -22,7 +22,7 @@ describe('init', () => {
 
     await sut.exec()
 
-    expect(execSpy).toHaveBeenCalledTimes(4)
+    expect(execSpy).toHaveBeenCalledTimes(3)
     expect(writeFileSpy).toHaveBeenCalledTimes(6)
     expect(mkdirSpy).toHaveBeenCalledTimes(1)
   })
