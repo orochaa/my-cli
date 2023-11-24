@@ -59,7 +59,7 @@ async function initCommand() {
   await writeFile(join(cwd, '.gitignore'), 'node_modules/\ndist/\n\n.env')
   await writeFile(join(cwd, '.gitattributes'), '* text=auto eol=lf')
   await writeFile(join(cwd, 'tsconfig.json'), tsconfig)
-  await writeFile(join(cwd, '.prettierrc.json'), prettier)
+  await writeFile(join(cwd, '.prettierrc'), prettier)
   await writeFile(join(cwd, '.prettierignore'), 'node_modules/\n\n*.yaml')
   await mkdir(join(cwd, 'src'))
   await writeFile(join(cwd, 'src/index.ts'), '')
