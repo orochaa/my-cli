@@ -1,6 +1,6 @@
 import { App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
-import { cwd } from '@/utils/constants.js'
+import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
@@ -48,7 +48,17 @@ const prettier = `{
   "plugins": []
 }`
 
-async function initCommand() {
+async function initCommand(params: string[]) {
+  let cwd = process.cwd()
+
+  if (params.length) {
+    cwd = join(cwd, params[0])
+    if (!existsSync(cwd)) {
+      await mkdir(cwd)
+    }
+    process.chdir(cwd)
+  }
+
   const s = p.spinner()
 
   s.start('Preparing setup')
@@ -61,8 +71,12 @@ async function initCommand() {
   await writeFile(join(cwd, 'tsconfig.json'), tsconfig)
   await writeFile(join(cwd, '.prettierrc'), prettier)
   await writeFile(join(cwd, '.prettierignore'), 'node_modules/\n\n*.yaml')
-  await mkdir(join(cwd, 'src'))
-  await writeFile(join(cwd, 'src/index.ts'), '')
+
+  const srcPath = join(cwd, 'src')
+  if (!existsSync(join(cwd, 'src'))) {
+    await mkdir(srcPath)
+    await writeFile(join(srcPath, 'index.ts'), '')
+  }
 
   s.stop("It's all set")
 }
