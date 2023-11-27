@@ -112,6 +112,7 @@ async function packageManagerPrompt(): Promise<PackageManager> {
     message: 'Select your package manager:',
     options: options.map(pm => ({ value: pm })),
     initialValue: options[0],
+    maxItems,
   })
   verifyPromptResponse(response)
   return response
