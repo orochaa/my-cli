@@ -1,5 +1,6 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import cp from 'node:child_process'
+import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 
 jest.mock('@clack/prompts', () => ({
@@ -19,6 +20,7 @@ describe('init', () => {
     })
     const writeFileSpy = jest.spyOn(fs, 'writeFile').mockImplementation()
     const mkdirSpy = jest.spyOn(fs, 'mkdir').mockImplementation()
+    jest.spyOn(fsSync, 'existsSync').mockReturnValue(false)
 
     await sut.exec()
 
