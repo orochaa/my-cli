@@ -8,20 +8,21 @@ import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
 async function removeCommand(params: string[]): Promise<void> {
-  let items: string[]
+  const removeList = await getRemoveList(params)
 
-  if (params.length) {
-    const error = verifyItems(params)
-    if (error) throw error
-    items = params
-  } else {
-    items = await removePrompt()
-  }
-
-  for (const item of items) {
+  for (const item of removeList) {
     await remove(cwd, item)
     p.outro(`Removed: ${join(cwd, item)}`)
   }
+}
+
+async function getRemoveList(params: string[]): Promise<string[]> {
+  if (params.length) {
+    const error = verifyItems(params)
+    if (error) throw error
+    return params
+  }
+  return await removePrompt()
 }
 
 async function removePrompt(): Promise<string[]> {

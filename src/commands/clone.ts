@@ -19,30 +19,7 @@ type Repository = {
 type PackageManager = 'npm' | 'yarn' | 'pnpm'
 
 async function cloneCommand(params: string[], flags: string[]): Promise<void> {
-  let repository: Repository
-
-  if (params.length) {
-    const repositoryName = params[0]
-    if (/github\.com.+\.git$/.test(repositoryName)) {
-      repository = {
-        clone_url: repositoryName,
-        name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
-        updated_at: '',
-      }
-    } else {
-      const repositories = await getUserRepositories()
-      const foundRepository = repositories.find(
-        repository => repository.name === repositoryName,
-      )
-      if (!foundRepository) {
-        throw new NotFoundError(repositoryName)
-      }
-      repository = foundRepository
-    }
-  } else {
-    const repositories = await getUserRepositories()
-    repository = await clonePrompt(repositories)
-  }
+  const repository = await getRepository(params)
 
   const projectPath = formatProjectPath(repository.name)
   const isCloned = existsSync(projectPath)
@@ -63,6 +40,30 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   }
 
   exec('code .')
+}
+
+async function getRepository(params: string[]): Promise<Repository> {
+  if (params.length) {
+    const repositoryName = params[0]
+    if (/github\.com.+\.git$/.test(repositoryName)) {
+      return {
+        clone_url: repositoryName,
+        name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
+        updated_at: '',
+      }
+    }
+
+    const repositories = await getUserRepositories()
+    const foundRepository = repositories.find(repository =>
+      repository.name.startsWith(repositoryName),
+    )
+    if (!foundRepository) {
+      throw new NotFoundError(repositoryName)
+    }
+    return foundRepository
+  }
+
+  return getUserRepositories().then(clonePrompt)
 }
 
 async function getUserRepositories(): Promise<Repository[]> {

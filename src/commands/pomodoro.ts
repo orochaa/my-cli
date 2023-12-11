@@ -1,40 +1,18 @@
 import { App } from '@/main/app.js'
-import { InvalidParamError } from '@/utils/errors.js'
+import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import colors from 'picocolors'
 import { block } from '@clack/core'
 import * as p from '@clack/prompts'
 
-type PomodoroPeriod = 'work' | 'rest'
+type Period = 'work' | 'rest'
 
-type PomodoroController = Record<PomodoroPeriod, number> & {
-  period: PomodoroPeriod
+type Controller = Record<Period, number> & {
+  period: Period
 }
 
 async function pomodoroCommand(params: string[]): Promise<void> {
-  const controller: PomodoroController = {
-    work: 25,
-    rest: 5,
-    period: 'work',
-  }
-
-  if (params[0] !== 'd') {
-    if (params.length) {
-      const times = params.map(Number)
-      for (let i = 0; i < 2; i++) {
-        const error = verifyPeriod(times[i])
-        if (error) {
-          throw error
-        }
-      }
-      controller.work = times[0]
-      controller.rest = times[1]
-    } else {
-      const params = await setupPomodoroPrompt()
-      controller.work = params[0]
-      controller.rest = params[1]
-    }
-  }
+  const controller = await getController(params)
 
   let toggle: boolean
   do {
@@ -44,7 +22,35 @@ async function pomodoroCommand(params: string[]): Promise<void> {
   } while (toggle)
 }
 
-async function setupPomodoroPrompt(): Promise<[number, number]> {
+async function getController(params: string[]): Promise<Controller> {
+  const formatController = (work: number, rest: number): Controller => {
+    return { period: 'work', work, rest }
+  }
+
+  const isDefault = params.includes('d')
+
+  if (isDefault) {
+    return formatController(25, 5)
+  } else if (params.length) {
+    const timers = params.map(Number).filter(n => !isNaN(n))
+
+    if (timers.length < 2) {
+      throw new MissingParamError('timers')
+    }
+
+    for (let i = 0; i < 2; i++) {
+      const error = verifyPeriod(timers[i])
+      if (error) throw error
+    }
+
+    return formatController(timers[0], timers[1])
+  } else {
+    const timers = await pomodoroPrompt()
+    return formatController(timers[0], timers[1])
+  }
+}
+
+async function pomodoroPrompt(): Promise<[number, number]> {
   const response = await p.group({
     work: () =>
       p.text({
@@ -69,7 +75,7 @@ async function setupPomodoroPrompt(): Promise<[number, number]> {
   return [response.work, response.rest].map(Number) as [number, number]
 }
 
-async function togglePeriodPrompt(period: PomodoroPeriod): Promise<boolean> {
+async function togglePeriodPrompt(period: Period): Promise<boolean> {
   const response = await p.confirm({
     message: `Are you ready to start your ${period} period?`,
     initialValue: true,
@@ -82,12 +88,12 @@ function verifyPeriod(period: number): Error | null {
   if (isNaN(period) || period < 5) {
     return new InvalidParamError('period', 'must be 5 or higher')
   } else if (period > 90) {
-    return new InvalidParamError('period', 'must 90 or lower')
+    return new InvalidParamError('period', 'must be 90 or lower')
   }
   return null
 }
 
-async function timer(period: PomodoroPeriod, min: number): Promise<void> {
+async function timer(period: Period, min: number): Promise<void> {
   return new Promise(resolve => {
     let seg = 0
     const unblock = block()

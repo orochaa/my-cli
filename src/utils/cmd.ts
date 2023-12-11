@@ -1,6 +1,10 @@
 import { exec as execCb, execSync } from 'node:child_process'
 import { rm } from 'node:fs/promises'
 import { join } from 'node:path'
+import pacote from 'pacote'
+import { myCliPackageJsonPath, packageName } from './constants.js'
+import { NotFoundError } from './errors.js'
+import { getPackageJson } from './file-system.js'
 
 export async function remove(folder: string, item: string): Promise<void> {
   await rm(join(folder, item), { recursive: true })
@@ -77,19 +81,21 @@ export function isSilent(): boolean {
 
 type Version = {
   current: string
-  wanted: string
   latest: string
-  dependent: string
-  location: string
-}
-
-type OutdatedResponse = {
-  '@mist3rbru/my-cli': Version
 }
 
 export async function execOutdated(): Promise<Version | null> {
-  const res = await execAsync('npm outdated @mist3rbru/my-cli --global --json')
-  const json = JSON.parse(res) as OutdatedResponse | null
-  const version = json?.['@mist3rbru/my-cli'] ?? null
-  return version
+  const manifestInfo = await pacote.manifest(packageName, {
+    fullMetadata: true,
+  })
+  const packageJson = getPackageJson(myCliPackageJsonPath)
+
+  if (!packageJson) {
+    throw new NotFoundError(`${packageName}.packageJson`)
+  }
+
+  return {
+    current: packageJson.version!,
+    latest: manifestInfo.version,
+  }
 }

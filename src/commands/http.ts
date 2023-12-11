@@ -45,33 +45,30 @@ function getMethod(params: string[]): [Method, string[]] {
 }
 
 function getUrl(params: string[]): [string, string[]] {
-  let url: string = params[0]
   const rest = params.slice(1)
 
-  if (url.startsWith('/')) {
-    url = `http://localhost:3000${url}`
-  } else if (url.startsWith(':')) {
-    url = `http://localhost${url}`
-  } else if (!/https?:\/\//.test(url)) {
-    throw new InvalidParamError('url')
+  const firstParam = params[0]
+  if (firstParam.startsWith('/')) {
+    return [`http://localhost:3000${firstParam}`, rest]
+  }
+  if (firstParam.startsWith(':')) {
+    return [`http://localhost${firstParam}`, rest]
+  }
+  if (firstParam.startsWith('http')) {
+    return [firstParam, rest]
   }
 
-  return [url, rest]
+  throw new InvalidParamError('url')
 }
 
 function getBody(bodyParams: string[]): Record<string, unknown> {
-  if (!bodyParams[0]) {
-    return {}
-  }
-  return convertToJSON(bodyParams)
+  return bodyParams.length ? convertToJSON(bodyParams) : {}
 }
 
 function getHeaders(params: string[]): Record<string, string> {
-  if (!params[0]) {
-    return {}
-  }
-  const headerParams = params.map(p => p.replace(/^h\./, ''))
-  return convertToJSON(headerParams) as Record<string, string>
+  return (
+    params.length ? convertToJSON(params.map(p => p.replace(/^h\./, ''))) : {}
+  ) as Record<string, string>
 }
 
 function splitBodyAndHeaderParams(params: string[]): [string[], string[]] {
@@ -96,20 +93,16 @@ function createHttp(): Http {
 
   return {
     async get(url, headers) {
-      const { data } = await a.get(url, { headers })
-      return data
+      return a.get(url, { headers }).then(({ data }) => data)
     },
     async post(url, headers, body) {
-      const { data } = await a.post(url, body, { headers })
-      return data
+      return a.post(url, body, { headers }).then(({ data }) => data)
     },
     async put(url, headers, body) {
-      const { data } = await a.put(url, body, { headers })
-      return data
+      return a.put(url, body, { headers }).then(({ data }) => data)
     },
     async delete(url, headers) {
-      const { data } = await a.delete(url, { headers })
-      return data
+      return a.delete(url, { headers }).then(({ data }) => data)
     },
   }
 }

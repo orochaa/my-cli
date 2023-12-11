@@ -49,13 +49,10 @@ const prettier = `{
 }`
 
 async function initCommand(params: string[]) {
-  let cwd = process.cwd()
+  const cwd = params.length ? join(process.cwd(), params[0]) : process.cwd()
 
-  if (params.length) {
-    cwd = join(cwd, params[0])
-    if (!existsSync(cwd)) {
-      await mkdir(cwd)
-    }
+  if (!existsSync(cwd)) {
+    await mkdir(cwd)
     process.chdir(cwd)
   }
 

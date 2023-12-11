@@ -22,9 +22,9 @@ jest.mock('@clack/prompts', () => ({
 jest.mock('axios', () => ({
   get: jest.fn(async () => ({
     data: [
-      { updated_at: new Date().setDate(-1) },
-      { updated_at: new Date().setDate(1) },
-      { updated_at: new Date().setDate(-1) },
+      { name: 'foo', updated_at: new Date().setDate(-1) },
+      { name: 'bar', updated_at: new Date().setDate(1) },
+      { name: 'baz', updated_at: new Date().setDate(-1) },
       repo,
     ],
   })),

@@ -9,41 +9,23 @@ import * as p from '@clack/prompts'
 type Controller = [projectsRoot: string, projects: string[]][]
 
 async function openCommand(params: string[], flags: string[]): Promise<void> {
-  const lockfile = readLockfile()
-  const controller: Controller = []
-  let openProjectList: string[] = []
+  const controller = getController()
+  const isFilter = hasFlag(['--filter', '-f'], flags)
 
-  for (const projectsRoot of lockfile.projects) {
-    const projects = readdirSync(projectsRoot, { withFileTypes: true })
-      .filter(item => item.isDirectory() && !/^\./.test(item.name))
-      .map(project => project.name)
-    controller.push([projectsRoot, projects])
-  }
-
-  if (params.length && hasFlag(['--filter', '-f'], flags)) {
-    const filterRegex = new RegExp(params.join('|'), 'i')
-    const filteredController = controller
-      .map(([projectsRoot, projects]) => [
-        projectsRoot,
-        projects.filter(project => filterRegex.test(project)),
-      ])
-      .filter(tuple => tuple[1].length) as Controller
-    openProjectList =
-      filteredController.length === 1 && filteredController[0][1].length === 1
-        ? [join(filteredController[0][0], filteredController[0][1][0])]
-        : await openPrompt(filteredController)
-  } else if (params.length) {
-    openProjectList = getParamProjects(params, controller)
-  } else {
-    openProjectList = await openPrompt(controller)
-  }
+  const openProjectList = await Promise.resolve(
+    params.length && isFilter
+      ? getFilteredProjects(controller, params)
+      : params.length
+        ? getProjects(controller, params)
+        : openPrompt(controller),
+  )
 
   const isReuseWindow = hasFlag(['-r', '--reuse-window'], flags)
-  const openFlags = [isReuseWindow && '--reuse-window']
-
   const isWorkspace =
     hasFlag(['-w', '--workspace'], flags) ||
     (isReuseWindow && openProjectList.length > 1)
+
+  const openFlags = [isReuseWindow && '--reuse-window']
 
   if (isWorkspace) {
     const workspace = openProjectList.join(' ')
@@ -55,7 +37,33 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
   }
 }
 
-function getParamProjects(params: string[], controller: Controller): string[] {
+function getController(): Controller {
+  const lockfile = readLockfile()
+  const controller: Controller = []
+  for (const projectsRoot of lockfile.projects) {
+    const projects = readdirSync(projectsRoot, { withFileTypes: true })
+      .filter(item => item.isDirectory() && !/^\./.test(item.name))
+      .map(project => project.name)
+    controller.push([projectsRoot, projects])
+  }
+  return controller
+}
+
+async function getFilteredProjects(controller: Controller, params: string[]) {
+  const filterRegex = new RegExp(params.join('|'), 'i')
+  const filteredController = controller
+    .map(([projectsRoot, projects]) => [
+      projectsRoot,
+      projects.filter(project => filterRegex.test(project)),
+    ])
+    .filter(tuple => tuple[1].length) as Controller
+  return filteredController.length === 1 &&
+    filteredController[0][1].length === 1
+    ? [join(filteredController[0][0], filteredController[0][1][0])]
+    : await openPrompt(filteredController)
+}
+
+function getProjects(controller: Controller, params: string[]): string[] {
   const result: string[] = []
 
   for (const param of params) {
