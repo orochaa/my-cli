@@ -1,3 +1,4 @@
+import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import { packageName } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
@@ -46,7 +47,7 @@ describe('outdated', () => {
   })
 
   it('should print if it is on latest version', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({ version: version.latest })
+    mockJsonParse({ version: version.latest })
 
     await sut.exec()
 
@@ -55,7 +56,7 @@ describe('outdated', () => {
   })
 
   it('should print if it is not on latest version', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({ version: version.current })
+    mockJsonParse({ version: version.current })
 
     await sut.exec()
 
@@ -67,7 +68,7 @@ describe('outdated', () => {
   })
 
   it('should throw on error', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
+    mockJsonParse(null)
     expect(sut.exec()).rejects.toThrow(
       new NotFoundError(`${packageName}.packageJson`),
     )

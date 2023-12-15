@@ -1,3 +1,4 @@
+import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants.js'
 import {
   getPackageJson,
@@ -5,32 +6,29 @@ import {
   verifyLockfile,
   writeLockfile,
 } from '@/utils/file-system.js'
-import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import fs from 'node:fs'
 import { join } from 'node:path'
 
-const exitSpy = jest.spyOn(global.process, 'exit')
-exitSpy.mockImplementation()
-
 describe('file-system', () => {
-  afterAll(() => {
-    if (existsSync(lockfilePath)) rmSync(lockfilePath)
+  beforeAll(() => {
+    jest.spyOn(global.process, 'exit').mockImplementation()
   })
 
   describe('getPackageJson()', () => {
     it('should return parsed package.json', () => {
       const result = getPackageJson()
       const expected = JSON.parse(
-        readFileSync(join(cwd, 'package.json')).toString(),
+        fs.readFileSync(join(cwd, 'package.json')).toString(),
       )
       expect(result).toStrictEqual(expected)
     })
 
     it('should return null if there is no package.json', () => {
-      const packageContent = readFileSync(packageJsonPath).toString()
-      rmSync(packageJsonPath)
+      const packageContent = fs.readFileSync(packageJsonPath).toString()
+      fs.rmSync(packageJsonPath)
 
       const result = getPackageJson()
-      writeFileSync(packageJsonPath, packageContent)
+      fs.writeFileSync(packageJsonPath, packageContent)
 
       expect(result).toBeNull()
     })
@@ -38,7 +36,7 @@ describe('file-system', () => {
 
   describe('verifyLockfile()', () => {
     it('should return true if there is a lockfile', () => {
-      if (!existsSync(lockfilePath)) writeLockfile({})
+      jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true)
 
       const result = verifyLockfile()
 
@@ -46,7 +44,7 @@ describe('file-system', () => {
     })
 
     it('should return false if there is not a lockfile', () => {
-      if (existsSync(lockfilePath)) rmSync(lockfilePath)
+      jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
 
       const result = verifyLockfile()
 
@@ -57,7 +55,7 @@ describe('file-system', () => {
   describe('readLockfile()', () => {
     it('should return parsed lockfile', () => {
       const mock = { test: 'foo' }
-      writeLockfile(mock)
+      mockJsonParse(mock)
 
       const result = readLockfile()
 
@@ -67,12 +65,16 @@ describe('file-system', () => {
 
   describe('writeLockfile()', () => {
     it('should write lockfile', () => {
-      if (existsSync(lockfilePath)) rmSync(lockfilePath)
+      jest.spyOn(fs, 'writeFileSync').mockImplementation()
+      jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
 
       const mock = { test: 'foo' }
       writeLockfile(mock)
 
-      expect(readLockfile()).toStrictEqual(mock)
+      expect(fs.writeFileSync).toHaveBeenLastCalledWith(
+        lockfilePath,
+        JSON.stringify(mock),
+      )
     })
   })
 })

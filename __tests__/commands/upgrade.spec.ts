@@ -1,3 +1,4 @@
+import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import { packageName } from '@/utils/constants.js'
 import cp from 'node:child_process'
@@ -49,7 +50,7 @@ describe('upgrade', () => {
   })
 
   it('should print a message if it is on latest version', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({ version: version.latest })
+    mockJsonParse({ version: version.latest })
 
     await sut.exec()
 
@@ -58,7 +59,7 @@ describe('upgrade', () => {
   })
 
   it('should print a message if it is not on latest version', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({ version: version.current })
+    mockJsonParse({ version: version.current })
 
     await sut.exec()
 
@@ -70,7 +71,7 @@ describe('upgrade', () => {
   })
 
   it('should upgrade package to latest version', async () => {
-    jest.spyOn(JSON, 'parse').mockReturnValueOnce({ version: version.current })
+    mockJsonParse({ version: version.current })
     const execSpy = jest.spyOn(cp, 'execSync').mockImplementation()
 
     await sut.exec()

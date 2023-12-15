@@ -1,10 +1,10 @@
+import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { cwd, lockfilePath } from '@/utils/constants.js'
+import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
-import { readLockfile, writeLockfile } from '@/utils/file-system.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
-import { resolve } from 'node:path'
+import { join, resolve } from 'node:path'
 import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
@@ -34,22 +34,17 @@ jest.mock('@antfu/ni', () => ({
   detect: jest.fn(() => 'pnpm'),
 }))
 
-jest.spyOn(process, 'chdir').mockImplementation()
-
-jest.spyOn(cp, 'execSync').mockImplementation()
-
 describe('clone', () => {
   const sut = makeSut('clone')
 
-  beforeAll(() => {
-    writeLockfile({
-      git: 'any-git',
-      projects: ['/root'],
-    })
-  })
+  const projectRoot = join(cwd, 'root')
 
-  afterAll(() => {
-    fs.rmSync(lockfilePath)
+  beforeAll(() => {
+    jest.spyOn(process, 'chdir').mockImplementation()
+
+    jest.spyOn(cp, 'execSync').mockImplementation()
+
+    mockJsonParse({ projects: [projectRoot] })
   })
 
   it('should get github repositories', async () => {
@@ -104,7 +99,7 @@ describe('clone', () => {
     jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
 
     await sut.exec('my-cli --root')
-    const projectPath = resolve(readLockfile().projects[0], repo.name)
+    const projectPath = join(projectRoot, 'my-cli')
 
     expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(

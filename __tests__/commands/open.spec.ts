@@ -1,6 +1,6 @@
+import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { cwd, lockfilePath } from '@/utils/constants.js'
-import { writeLockfile } from '@/utils/file-system.js'
+import { cwd } from '@/utils/constants.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
 import { join } from 'node:path'
@@ -29,19 +29,15 @@ jest.mock('@clack/prompts', () => ({
   confirm: jest.fn(async () => false),
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation()
-
 describe('open', () => {
   const sut = makeSut('open')
 
-  beforeEach(() => {
-    writeLockfile({ projects: [cwd] })
+  beforeAll(() => {
+    jest.spyOn(cp, 'execSync').mockImplementation()
   })
 
-  afterAll(() => {
-    if (fs.existsSync(lockfilePath)) {
-      fs.rmSync(lockfilePath)
-    }
+  beforeEach(() => {
+    mockJsonParse({ projects: [cwd] })
   })
 
   it('should not open invalid projects', async () => {
@@ -70,7 +66,7 @@ describe('open', () => {
   })
 
   it('should differ projects by root', async () => {
-    writeLockfile({ projects: [join(cwd, '/root1'), join(cwd, '/root2')] })
+    mockJsonParse({ projects: [join(cwd, '/root1'), join(cwd, '/root2')] })
     mockReaddir(['project'])
 
     await sut.exec('project', 'root2/project')
@@ -132,7 +128,7 @@ describe('open', () => {
   })
 
   it("should not display path's root on prompt", async () => {
-    writeLockfile({
+    mockJsonParse({
       projects: [
         '~/root/sub1',
         'C:/root/sub2',
@@ -197,7 +193,7 @@ describe('open', () => {
   })
 
   it('should ignore config folders', async () => {
-    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['.ignore_config', 'project'])
 
     await sut.exec()
@@ -222,7 +218,7 @@ describe('open', () => {
   })
 
   it('should open prompt with single filtered options', async () => {
-    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f ba')
@@ -244,7 +240,7 @@ describe('open', () => {
   })
 
   it('should open prompt with multi filtered options', async () => {
-    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f f r')
@@ -266,7 +262,7 @@ describe('open', () => {
   })
 
   it('should not open prompt with a single filtered option', async () => {
-    writeLockfile({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f f')

@@ -1,12 +1,12 @@
+import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { lockfilePath } from '@/utils/constants.js'
-import { readLockfile, writeLockfile } from '@/utils/file-system.js'
+import { readLockfile } from '@/utils/file-system.js'
+import fs from 'node:fs'
 import axios from 'axios'
-import { existsSync, rmSync } from 'fs'
 import * as p from '@clack/prompts'
 
 const mock = {
-  git: 'any',
+  git: 'my-git',
   projects: ['any'],
 }
 
@@ -36,18 +36,16 @@ describe('setup', () => {
   const sut = makeSut('setup')
 
   beforeAll(() => {
-    if (existsSync(lockfilePath)) {
-      rmSync(lockfilePath)
-    }
+    jest.spyOn(fs, 'writeFileSync').mockImplementation()
   })
 
-  afterEach(() => {
-    if (existsSync(lockfilePath)) {
-      rmSync(lockfilePath)
-    }
+  beforeEach(() => {
+    mockJsonParse(mock)
   })
 
   it('should render git prompt with no default value', async () => {
+    mockJsonParse({})
+
     await sut.exec()
 
     expect(p.text).toHaveBeenCalledTimes(2)
@@ -58,7 +56,7 @@ describe('setup', () => {
   })
 
   it('should render git prompt with default value', async () => {
-    writeLockfile(mock)
+    jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true)
 
     await sut.exec()
 

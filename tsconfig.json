@@ -18,6 +18,7 @@
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
     "useUnknownInCatchVariables": false,
+    "noUnusedLocals": true,
 
     /* Alias */
     "baseUrl": ".",

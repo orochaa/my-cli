@@ -64,16 +64,6 @@ function verifyScripts(
   }
 }
 
-function mapScriptsRunner(
-  scripts: string[],
-  packageJson: PackageJson,
-): [Runner, string][] {
-  return scripts.map(script => {
-    const isNpm = !!packageJson?.scripts?.[script]
-    return [isNpm ? 'npm' : 'npx', script]
-  })
-}
-
 function filterScripts(
   scripts: string[],
   packageJson: PackageJson,
@@ -84,6 +74,16 @@ function filterScripts(
   return isPartial
     ? mappedScripts.filter(([runner]) => runner === 'npm')
     : mappedScripts
+}
+
+function mapScriptsRunner(
+  scripts: string[],
+  packageJson: PackageJson,
+): [Runner, string][] {
+  return scripts.map(script => {
+    const isNpm = !!packageJson?.scripts?.[script]
+    return [isNpm ? 'npm' : 'npx', script]
+  })
 }
 
 async function runPrompt(): Promise<void> {
