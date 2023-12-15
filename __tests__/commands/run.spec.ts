@@ -4,11 +4,16 @@ import { NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import { rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { detect } from '@antfu/ni'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  multiselect: jest.fn(async () => ['lint', 'build']),
+  multiselect: jest.fn(() => ['lint', 'build']),
   outro: jest.fn(),
+}))
+
+jest.mock('@antfu/ni', () => ({
+  detect: jest.fn(() => 'yarn'),
 }))
 
 jest.spyOn(cp, 'execSync').mockImplementation()
@@ -40,7 +45,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx test\n',
+        'npx test',
         expect.anything(),
       )
     })
@@ -68,7 +73,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx vitest --run\n',
+        'npx vitest --run',
         expect.anything(),
       )
     })
@@ -111,6 +116,56 @@ describe('run', () => {
 
       expect(promise).rejects.toThrow(NotFoundError)
     })
+
+    it('should run install with the right package manager', async () => {
+      jest
+        .spyOn(JSON, 'parse')
+        .mockReturnValueOnce({ scripts: { install: ' ', lint: ' ' } })
+
+      await sut.exec('install lint')
+
+      expect(detect).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledTimes(2)
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'yarn install',
+        expect.anything(),
+      )
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'npm run lint',
+        expect.anything(),
+      )
+    })
+
+    it('should run install with the right package manager', async () => {
+      jest
+        .spyOn(JSON, 'parse')
+        .mockReturnValueOnce({ scripts: { install: ' ' } })
+
+      await sut.exec('install')
+
+      expect(detect).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'yarn install',
+        expect.anything(),
+      )
+    })
+
+    it('should run install with default package manager', async () => {
+      jest
+        .spyOn(JSON, 'parse')
+        .mockReturnValueOnce({ scripts: { install: ' ' } })
+      ;(detect as jest.Mock).mockReturnValueOnce(null)
+
+      await sut.exec('install')
+
+      expect(detect).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'pnpm install',
+        expect.anything(),
+      )
+    })
   })
 
   describe('deepRun', () => {
@@ -150,7 +205,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx test\n',
+        'npx test',
         expect.anything(),
       )
     })
