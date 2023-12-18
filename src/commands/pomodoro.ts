@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import colors from 'picocolors'
@@ -52,8 +52,8 @@ async function getController(params: string[]): Promise<Controller> {
 
 async function pomodoroPrompt(): Promise<[number, number]> {
   const response = await p.group({
-    work: () =>
-      p.text({
+    work: async () =>
+      await p.text({
         message: 'What is your work period?',
         initialValue: '25',
         validate: res => {
@@ -61,8 +61,8 @@ async function pomodoroPrompt(): Promise<[number, number]> {
           if (error) return error.message
         },
       }),
-    rest: () =>
-      p.text({
+    rest: async () =>
+      await p.text({
         message: 'What is your rest period?',
         initialValue: '5',
         validate: res => {
@@ -94,11 +94,11 @@ function verifyPeriod(period: number): Error | null {
 }
 
 async function timer(period: Period, min: number): Promise<void> {
-  return new Promise(resolve => {
+  await new Promise<void>(resolve => {
     let seg = 0
     const unblock = block()
 
-    const exitCb = () => {
+    const exitCb = (): void => {
       unblock()
     }
 
@@ -117,7 +117,8 @@ async function timer(period: Period, min: number): Promise<void> {
         process.removeListener('exit', exitCb)
         process.stdout.write('\n')
         unblock()
-        return resolve()
+        resolve()
+        return
       }
 
       if (seg-- === 0) {

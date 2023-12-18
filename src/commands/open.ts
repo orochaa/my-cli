@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
@@ -6,7 +6,7 @@ import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
-type Controller = [projectsRoot: string, projects: string[]][]
+type Controller = Array<[projectsRoot: string, projects: string[]]>
 
 async function openCommand(params: string[], flags: string[]): Promise<void> {
   const controller = getController()
@@ -49,7 +49,10 @@ function getController(): Controller {
   return controller
 }
 
-async function getFilteredProjects(controller: Controller, params: string[]) {
+async function getFilteredProjects(
+  controller: Controller,
+  params: string[],
+): Promise<string[]> {
   const filterRegex = new RegExp(params.join('|'), 'i')
   const filteredController = controller
     .map(([projectsRoot, projects]) => [
@@ -91,7 +94,7 @@ function getProjects(controller: Controller, params: string[]): string[] {
 }
 
 async function openPrompt(controller: Controller): Promise<string[]> {
-  const projects = await p.multiselect<PromptOption<string>[], string>({
+  const projects = await p.multiselect<Array<PromptOption<string>>, string>({
     message: 'Select a project to open:',
     options: controller
       .map(([root, folders]) => {

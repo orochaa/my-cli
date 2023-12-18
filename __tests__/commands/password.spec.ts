@@ -28,7 +28,7 @@ describe('password', () => {
 
     for (const edge of edges) {
       const promise = sut.exec(edge)
-      expect(promise).rejects.toThrow(InvalidParamError)
+      await expect(promise).rejects.toThrow(InvalidParamError)
     }
   })
 })

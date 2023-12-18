@@ -36,7 +36,7 @@ describe('play', () => {
 
   it('should not open invalid players', async () => {
     const promise = sut.exec('invalid-player')
-    expect(promise).rejects.toThrow(InvalidParamError)
+    await expect(promise).rejects.toThrow(InvalidParamError)
   })
 
   it('should open prompt selected player', async () => {

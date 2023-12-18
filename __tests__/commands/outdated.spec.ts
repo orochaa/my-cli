@@ -1,5 +1,5 @@
-import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { packageName } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import pacote from 'pacote'
@@ -69,7 +69,7 @@ describe('outdated', () => {
 
   it('should throw on error', async () => {
     mockJsonParse(null)
-    expect(sut.exec()).rejects.toThrow(
+    await expect(sut.exec()).rejects.toThrow(
       new NotFoundError(`${packageName}.packageJson`),
     )
   })

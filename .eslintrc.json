@@ -18,11 +18,26 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/strict-boolean-expressions": "off",
-    "@typescript-eslint/space-before-function-paren": "off",
     "@typescript-eslint/comma-dangle": "off",
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/no-namespace": "off",
-    "@typescript-eslint/method-signature-style": ["error", "method"]
+    "@typescript-eslint/method-signature-style": ["error", "method"],
+    "@typescript-eslint/space-before-function-paren": [
+      "error",
+      { "named": "never" }
+    ],
+    "@typescript-eslint/prefer-nullish-coalescing": [
+      "error",
+      { "ignoreConditionalTests": true }
+    ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "disallowTypeAnnotations": true,
+        "fixStyle": "separate-type-imports"
+      }
+    ]
   },
   "overrides": [
     {

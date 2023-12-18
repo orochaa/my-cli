@@ -1,9 +1,9 @@
 import { objectKeys } from '@/utils/mappers.js'
 import * as p from '@clack/prompts'
 
-export type PromptOption<TValue, TLabel extends string = string> = {
+export interface PromptOption<TValue> {
   value: TValue
-  label: TLabel
+  label?: string
   hint?: string
 }
 
@@ -11,7 +11,11 @@ type Primitive = string | number | boolean | undefined
 
 type PrimitiveArray<T = Primitive> = T extends Primitive ? T[] : never
 
-type PromptResponse = Primitive | PrimitiveArray | Record<string, unknown>
+type PromptResponse =
+  | Primitive
+  | PrimitiveArray
+  | Record<string, unknown>
+  | Array<Record<string, unknown>>
 
 type ResponseMapper<T> = T extends Primitive
   ? T

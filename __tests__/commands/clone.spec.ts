@@ -1,5 +1,5 @@
-import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
@@ -56,7 +56,7 @@ describe('clone', () => {
   it('should throw on invalid repository name', async () => {
     const promise = sut.exec('your-cli')
 
-    expect(promise).rejects.toThrow(NotFoundError)
+    await expect(promise).rejects.toThrow(NotFoundError)
   })
 
   it('should clone on valid repository', async () => {

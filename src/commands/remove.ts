@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { remove } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
@@ -38,7 +38,7 @@ async function removePrompt(): Promise<string[]> {
 
   if (isSelectOption) {
     const options = readdirSync(cwd)
-    const response = await p.multiselect<PromptOption<string>[], string>({
+    const response = await p.multiselect<Array<PromptOption<string>>, string>({
       message: 'What do you want to delete?',
       options: options.map(path => ({
         label: path.replace(/.+[\\/](\w+)/i, '$1'),

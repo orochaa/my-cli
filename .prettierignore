@@ -1,6 +1,7 @@
+.changeset/
+.github/
 node_modules/
 coverage/
 bin/
 
-package-lock.json
-pnpm-lock.yaml
+*.yaml

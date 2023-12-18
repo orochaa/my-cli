@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
@@ -31,7 +31,7 @@ async function shallowRun(scripts: string[]): Promise<void> {
   await run(filterScripts(scripts, packageJson))
 }
 
-async function run(data: [Runner, string][]): Promise<void> {
+async function run(data: Array<[Runner, string]>): Promise<void> {
   const pm = (await detect()) ?? 'pnpm'
   for (const [runner, script] of data) {
     const command =
@@ -67,7 +67,7 @@ function verifyScripts(
 function filterScripts(
   scripts: string[],
   packageJson: PackageJson,
-): [Runner, string][] {
+): Array<[Runner, string]> {
   const isPartial = hasFlag(['--partial', '-p'])
   const mappedScripts = mapScriptsRunner(scripts, packageJson)
 
@@ -79,7 +79,7 @@ function filterScripts(
 function mapScriptsRunner(
   scripts: string[],
   packageJson: PackageJson,
-): [Runner, string][] {
+): Array<[Runner, string]> {
   return scripts.map(script => {
     const isNpm = !!packageJson?.scripts?.[script]
     return [isNpm ? 'npm' : 'npx', script]
@@ -90,7 +90,7 @@ async function runPrompt(): Promise<void> {
   const packageJson = getPackageJson()
   verifyScripts(packageJson)
 
-  const scripts = await p.multiselect<PromptOption<string>[], string>({
+  const scripts = await p.multiselect<Array<PromptOption<string>>, string>({
     message: 'Select some scripts to run in sequence: ',
     options: objectEntries(packageJson.scripts).map(([script, cmd]) => ({
       label: script,

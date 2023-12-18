@@ -1,5 +1,5 @@
-import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { readLockfile } from '@/utils/file-system.js'
 import fs from 'node:fs'
 import axios from 'axios'

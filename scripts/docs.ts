@@ -24,14 +24,17 @@ function run(): void {
     newReadmeContent.push(
       `- ${highlight(command.name)}: ${command.description}`,
     )
-    if (command.alias)
+    if (command.alias) {
       newReadmeContent.push(`  - alias: ${highlight(command.alias)}`)
+    }
 
-    if (command.params)
+    if (command.params) {
       newReadmeContent.push(`  - params: ${highlight(command.params)}`)
+    }
 
-    if (command.flags)
+    if (command.flags) {
       newReadmeContent.push(`  - flags: ${highlight(command.flags)}`)
+    }
 
     newReadmeContent.push(`  - example: ${command.example}`)
   }

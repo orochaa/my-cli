@@ -42,7 +42,7 @@
     "test:w": "jest --watch",
     "test:ci": "jest --coverage --silent",
     "docs": "tsx scripts/docs",
-    "ci": "run-s docs lint build test",
+    "ci": "cross-env NODE_ENV=test run-s docs lint build test",
     "publish": "changeset publish",
     "release": "run-s ci publish"
   },

@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
 import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
@@ -48,7 +48,7 @@ const prettier = `{
   "plugins": []
 }`
 
-async function initCommand(params: string[]) {
+async function initCommand(params: string[]): Promise<void> {
   const cwd = params.length ? join(process.cwd(), params[0]) : process.cwd()
 
   if (!existsSync(cwd)) {

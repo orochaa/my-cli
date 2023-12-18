@@ -46,7 +46,7 @@ export function exec(
 }
 
 export async function execAsync(cmd: string): Promise<string> {
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     execCb(cmd, (error, stdout, stderr) => {
       stderr ? reject(error) : resolve(stdout)
     })
@@ -63,12 +63,19 @@ export function hasFlag(
     flags = [flags]
   }
 
-  flagLoop: for (const flag of flags) {
+  let flagLoopShouldBreak = false
+
+  for (const flag of flags) {
     for (const _target of target) {
       if (flag === _target) {
         result = true
-        break flagLoop
+        flagLoopShouldBreak = true
+        break
       }
+    }
+
+    if (flagLoopShouldBreak) {
+      break
     }
   }
 
@@ -79,7 +86,7 @@ export function isSilent(): boolean {
   return hasFlag('--silent')
 }
 
-type Version = {
+interface Version {
   current: string
   latest: string
 }
@@ -95,6 +102,7 @@ export async function execOutdated(): Promise<Version | null> {
   }
 
   return {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     current: packageJson.version!,
     latest: manifestInfo.version,
   }

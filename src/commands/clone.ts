@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { exec, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
@@ -10,10 +10,11 @@ import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
-type Repository = {
+interface Repository {
   name: string
   clone_url: string
   updated_at: string
+  [k: string]: string
 }
 
 type PackageManager = 'npm' | 'yarn' | 'pnpm'
@@ -35,7 +36,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
 
   const isNodeProject = existsSync(resolve(process.cwd(), 'package.json'))
   if (isNodeProject) {
-    const pm = (await detect()) || (await packageManagerPrompt())
+    const pm = (await detect()) ?? (await packageManagerPrompt())
     exec(`${pm} install`)
   }
 
@@ -63,7 +64,7 @@ async function getRepository(params: string[]): Promise<Repository> {
     return foundRepository
   }
 
-  return getUserRepositories().then(clonePrompt)
+  return await getUserRepositories().then(clonePrompt)
 }
 
 async function getUserRepositories(): Promise<Repository[]> {

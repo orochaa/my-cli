@@ -15,7 +15,7 @@ jest.mock('@clack/prompts', () => ({
   outro: jest.fn(),
 }))
 
-const verifyMock = () => !existsSync(mockPath)
+const verifyMock = (): boolean => !existsSync(mockPath)
 
 describe('remove', () => {
   const sut = makeSut('remove')
@@ -58,6 +58,6 @@ describe('remove', () => {
   it('should verify param item', async () => {
     rmSync(mockPath)
     const promise = sut.exec(mock)
-    expect(promise).rejects.toThrow(NotFoundError)
+    await expect(promise).rejects.toThrow(NotFoundError)
   })
 })

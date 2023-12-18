@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { cwd } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import {
@@ -14,9 +14,9 @@ import axios from 'axios'
 import * as p from '@clack/prompts'
 
 async function setupCommand(): Promise<void> {
-  const lockfile: Lockfile = verifyLockfile()
+  const lockfile: Partial<Lockfile> = verifyLockfile()
     ? readLockfile()
-    : ({} as Lockfile)
+    : ({} satisfies Partial<Lockfile>)
 
   const setup = await setupPrompt(lockfile)
   const result = mergeObjects(lockfile, setup)
@@ -24,21 +24,21 @@ async function setupCommand(): Promise<void> {
   writeLockfile(result)
 }
 
-async function setupPrompt(lockfile: Lockfile): Promise<Lockfile> {
-  const git = await gitPrompt(lockfile.git)
+async function setupPrompt(lockfile: Partial<Lockfile>): Promise<Lockfile> {
+  const git = await gitPrompt(lockfile.git ?? '')
   const projects = await projectsPrompt(lockfile.projects ?? [])
   p.outro('🚀 Setup finished')
   return { git, projects }
 }
 
-type GitUser = {
+interface GitUser {
   login: string
   name: string
 }
 
 async function gitPrompt(lastGit: string): Promise<string> {
   const spinner = p.spinner()
-  let git = !!lastGit ? lastGit : ''
+  let git = lastGit
   let repeat = false
   let response
   do {
@@ -82,7 +82,7 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
       message: 'What is your root projects path:',
       initialValue: lastProjects[i] ?? defaultProjectRoot,
       validate: res => {
-        if (!!res) {
+        if (res) {
           if (projects.includes(res)) {
             return new InvalidParamError(
               'path',

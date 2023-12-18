@@ -1,5 +1,5 @@
-import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { packageName } from '@/utils/constants.js'
 import cp from 'node:child_process'
 import pacote from 'pacote'
@@ -28,10 +28,12 @@ jest.mock('pacote', () => ({
   })),
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation()
-
 describe('upgrade', () => {
   const sut = makeSut('upgrade')
+
+  beforeAll(() => {
+    jest.spyOn(cp, 'execSync').mockImplementation()
+  })
 
   it('should start spinner', async () => {
     await sut.exec()
@@ -72,12 +74,11 @@ describe('upgrade', () => {
 
   it('should upgrade package to latest version', async () => {
     mockJsonParse({ version: version.current })
-    const execSpy = jest.spyOn(cp, 'execSync').mockImplementation()
 
     await sut.exec()
 
-    expect(execSpy).toHaveBeenCalledTimes(1)
-    expect(execSpy).toHaveBeenCalledWith(
+    expect(cp.execSync).toHaveBeenCalledTimes(1)
+    expect(cp.execSync).toHaveBeenCalledWith(
       'npm install -g @mist3rbru/my-cli@latest',
       expect.anything(),
     )

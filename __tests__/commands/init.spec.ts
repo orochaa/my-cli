@@ -4,6 +4,7 @@ import cp from 'node:child_process'
 import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { mockExec } from '../mocks/utils.js'
 
 jest.mock('@clack/prompts', () => ({
   spinner: () => ({
@@ -15,11 +16,11 @@ jest.mock('@clack/prompts', () => ({
 describe('init', () => {
   const sut = makeSut('init')
 
+  beforeAll(() => {
+    mockExec('origin')
+  })
+
   it('should init project on current dir', async () => {
-    const execSpy = jest.spyOn(cp, 'exec').mockImplementation((cmd, cb) => {
-      ;(cb as any)(null, 'origin', '')
-      return cp as any
-    })
     const writeFileSpy = jest.spyOn(fs, 'writeFile').mockImplementation()
     const mkdirSpy = jest.spyOn(fs, 'mkdir').mockImplementation()
     jest
@@ -29,17 +30,13 @@ describe('init', () => {
 
     await sut.exec()
 
-    expect(execSpy).toHaveBeenCalledTimes(3)
+    expect(cp.exec).toHaveBeenCalledTimes(3)
     expect(writeFileSpy).toHaveBeenCalledTimes(6)
     expect(mkdirSpy).toHaveBeenCalledTimes(1)
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, 'src'))
   })
 
   it('should init project on given dir', async () => {
-    const execSpy = jest.spyOn(cp, 'exec').mockImplementation((cmd, cb) => {
-      ;(cb as any)(null, 'origin', '')
-      return cp as any
-    })
     const writeFileSpy = jest.spyOn(fs, 'writeFile').mockImplementation()
     const mkdirSpy = jest.spyOn(fs, 'mkdir').mockImplementation()
     jest.spyOn(process, 'chdir').mockImplementation()
@@ -51,7 +48,7 @@ describe('init', () => {
     const param = 'param-project'
     await sut.exec(param)
 
-    expect(execSpy).toHaveBeenCalledTimes(3)
+    expect(cp.exec).toHaveBeenCalledTimes(3)
     expect(writeFileSpy).toHaveBeenCalledTimes(6)
     expect(mkdirSpy).toHaveBeenCalledTimes(2)
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, param))

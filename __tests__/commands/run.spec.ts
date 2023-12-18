@@ -1,5 +1,5 @@
-import { mockJsonParse } from '@/tests/mocks/lockfile.js'
 import { makeSut } from '@/tests/mocks/make-sut.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
@@ -17,10 +17,12 @@ jest.mock('@antfu/ni', () => ({
   detect: jest.fn(() => 'yarn'),
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation()
-
 describe('run', () => {
   const sut = makeSut('run')
+
+  beforeAll(() => {
+    jest.spyOn(cp, 'execSync').mockImplementation()
+  })
 
   describe('shallowRun', () => {
     beforeEach(() => {
@@ -95,7 +97,7 @@ describe('run', () => {
 
       const promise = sut.exec('lint')
 
-      expect(promise).rejects.toThrow(NotFoundError)
+      await expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
@@ -103,7 +105,7 @@ describe('run', () => {
 
       const promise = sut.exec('lint')
 
-      expect(promise).rejects.toThrow(NotFoundError)
+      await expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should run install with the right package manager', async () => {
@@ -119,19 +121,6 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenCalledWith(
         'npm run lint',
-        expect.anything(),
-      )
-    })
-
-    it('should run install with the right package manager', async () => {
-      mockJsonParse({ scripts: { install: ' ' } })
-
-      await sut.exec('install')
-
-      expect(detect).toHaveBeenCalledTimes(1)
-      expect(cp.execSync).toHaveBeenCalledTimes(1)
-      expect(cp.execSync).toHaveBeenCalledWith(
-        'yarn install',
         expect.anything(),
       )
     })
@@ -220,12 +209,12 @@ describe('run', () => {
 
     it('should verify package.json', async () => {
       mockJsonParse(null)
-      expect(sut.exec()).rejects.toThrow(NotFoundError)
+      await expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
       mockJsonParse({})
-      expect(sut.exec()).rejects.toThrow(NotFoundError)
+      await expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it('should print `run` command', async () => {

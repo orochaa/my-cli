@@ -1,4 +1,4 @@
-import { mockJsonParse } from '@/tests/mocks/lockfile.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants.js'
 import {
   getPackageJson,

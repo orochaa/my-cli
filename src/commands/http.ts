@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { isSilent } from '@/utils/cmd.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { convertToJSON } from '@/utils/mappers.js'
@@ -16,7 +16,7 @@ type Http = Record<
 >
 
 async function httpCommand(params: string[]): Promise<void> {
-  if (!params.length) {
+  if (params.length === 0) {
     throw new MissingParamError('params')
   }
 
@@ -93,16 +93,16 @@ function createHttp(): Http {
 
   return {
     async get(url, headers) {
-      return a.get(url, { headers }).then(({ data }) => data)
+      return await a.get(url, { headers }).then(({ data }) => data)
     },
     async post(url, headers, body) {
-      return a.post(url, body, { headers }).then(({ data }) => data)
+      return await a.post(url, body, { headers }).then(({ data }) => data)
     },
     async put(url, headers, body) {
-      return a.put(url, body, { headers }).then(({ data }) => data)
+      return await a.put(url, body, { headers }).then(({ data }) => data)
     },
     async delete(url, headers) {
-      return a.delete(url, { headers }).then(({ data }) => data)
+      return await a.delete(url, { headers }).then(({ data }) => data)
     },
   }
 }
