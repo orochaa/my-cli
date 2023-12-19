@@ -92,16 +92,16 @@ function createHttp(): Http {
   })
 
   return {
-    async get(url, headers) {
+    async get(url, headers): Promise<unknown> {
       return await a.get(url, { headers }).then(({ data }) => data)
     },
-    async post(url, headers, body) {
+    async post(url, headers, body): Promise<unknown> {
       return await a.post(url, body, { headers }).then(({ data }) => data)
     },
-    async put(url, headers, body) {
+    async put(url, headers, body): Promise<unknown> {
       return await a.put(url, body, { headers }).then(({ data }) => data)
     },
-    async delete(url, headers) {
+    async delete(url, headers): Promise<unknown> {
       return await a.delete(url, { headers }).then(({ data }) => data)
     },
   }

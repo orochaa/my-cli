@@ -1,65 +1,11 @@
 {
-  "env": {
-    "es2021": true,
-    "node": true,
-    "jest/globals": true
-  },
-  "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "standard-with-typescript"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module",
-    "project": "./tsconfig.json"
-  },
-  "plugins": ["@typescript-eslint"],
-  "rules": {
-    "@typescript-eslint/strict-boolean-expressions": "off",
-    "@typescript-eslint/comma-dangle": "off",
-    "@typescript-eslint/indent": "off",
-    "@typescript-eslint/no-namespace": "off",
-    "@typescript-eslint/method-signature-style": ["error", "method"],
-    "@typescript-eslint/space-before-function-paren": [
-      "error",
-      { "named": "never" }
-    ],
-    "@typescript-eslint/prefer-nullish-coalescing": [
-      "error",
-      { "ignoreConditionalTests": true }
-    ],
-    "@typescript-eslint/consistent-type-imports": [
-      "error",
-      {
-        "prefer": "type-imports",
-        "disallowTypeAnnotations": true,
-        "fixStyle": "separate-type-imports"
-      }
-    ]
-  },
+  "extends": ["plugin:mist3rbru/node"],
+  "rules": {},
   "overrides": [
     {
       "files": ["__tests__/**"],
-      "plugins": ["jest"],
-      "extends": ["plugin:jest/all"],
-      "rules": {
-        "jest/prefer-lowercase-title": ["error", { "ignore": ["describe"] }],
-        "jest/prefer-expect-assertions": "off",
-        "jest/require-to-throw-message": "off",
-        "jest/no-untyped-mock-factory": "off",
-        "jest/unbound-method": "off",
-        "jest/no-hooks": "off",
-        "jest/max-expects": ["error", { "max": 10 }],
-        "jest/no-disabled-tests": "warn",
-
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/unbound-method": "off",
-        "@typescript-eslint/consistent-type-assertions": "warn",
-
-        "no-extra-semi": "off"
-      }
+      "extends": ["plugin:mist3rbru/jest"],
+      "rules": {}
     }
   ]
 }
