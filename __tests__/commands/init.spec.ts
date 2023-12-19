@@ -31,7 +31,7 @@ describe('init', () => {
     await sut.exec()
 
     expect(cp.exec).toHaveBeenCalledTimes(3)
-    expect(writeFileSpy).toHaveBeenCalledTimes(6)
+    expect(writeFileSpy).toHaveBeenCalledTimes(8)
     expect(mkdirSpy).toHaveBeenCalledTimes(1)
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, 'src'))
   })
@@ -49,7 +49,7 @@ describe('init', () => {
     await sut.exec(param)
 
     expect(cp.exec).toHaveBeenCalledTimes(3)
-    expect(writeFileSpy).toHaveBeenCalledTimes(6)
+    expect(writeFileSpy).toHaveBeenCalledTimes(8)
     expect(mkdirSpy).toHaveBeenCalledTimes(2)
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, param))
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, param, 'src'))

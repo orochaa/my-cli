@@ -5,13 +5,13 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "noEmit": true,
-    "lib": ["es2022"],
 
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,
     "isolatedModules": true,
     "moduleDetection": "force",
+    "lib": ["es2022"],
 
     /* Strictness */
     "strict": true,
