@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.2.18
+
+### Patch Changes
+
+- 2d7ebad: feat(init): add editorconfig and eslint
+- c818d8a: feat(run): install dependencies with right package manager
+- bc1a213: feat(init): init project by param
+
 ## 0.2.17
 
 ### Patch Changes
