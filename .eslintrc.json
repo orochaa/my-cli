@@ -1,0 +1,11 @@
+{
+  "extends": ["plugin:mist3rbru/node"],
+  "rules": {},
+  "overrides": [
+    {
+      "files": ["__tests__/**"],
+      "extends": ["plugin:mist3rbru/jest"],
+      "rules": {}
+    }
+  ]
+}

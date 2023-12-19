@@ -8,6 +8,7 @@ src/
 
 .editorconfig
 .gitignore
+.gitattributes
 .prettierignore
 .prettierrc.json
 build.config.ts

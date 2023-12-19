@@ -33,6 +33,7 @@ async function main(): Promise<void> {
       await app.exec(cmdCommand)
     }
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     app.handleError(error)
   }
 }

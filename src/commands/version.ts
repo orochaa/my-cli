@@ -1,12 +1,11 @@
-import { App } from '@/main/app.js'
-import { root } from '@/utils/constants.js'
+import { type App } from '@/main/app.js'
+import { myCliPackageJsonPath } from '@/utils/constants.js'
 import { getPackageJson } from '@/utils/file-system.js'
-import { join } from 'path'
 import * as p from '@clack/prompts'
 
 async function versionCommand(): Promise<void> {
-  const packageJson = getPackageJson(join(root, 'package.json'))
-  if (!!packageJson?.version) {
+  const packageJson = getPackageJson(myCliPackageJsonPath)
+  if (packageJson?.version) {
     p.outro(`v${packageJson.version}`)
   } else {
     p.outro('🙁 Could not find package')

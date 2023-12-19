@@ -1,16 +1,10 @@
-import { App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { createApi } from '@mist3rbru/create-ts-api'
 import * as p from '@clack/prompts'
 
 async function apiCommand(params: string[]): Promise<void> {
-  let apiName: string
-
-  if (params.length) {
-    apiName = params[0]
-  } else {
-    apiName = await apiPrompt()
-  }
+  const apiName = params.length ? params[0] : await apiPrompt()
 
   await createApi(apiName)
 }

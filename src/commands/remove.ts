@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { remove } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
@@ -8,20 +8,21 @@ import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
 async function removeCommand(params: string[]): Promise<void> {
-  let items: string[]
+  const removeList = await getRemoveList(params)
 
-  if (params.length) {
-    const error = verifyItems(params)
-    if (error) throw error
-    items = params
-  } else {
-    items = await removePrompt()
-  }
-
-  for (const item of items) {
+  for (const item of removeList) {
     await remove(cwd, item)
     p.outro(`Removed: ${join(cwd, item)}`)
   }
+}
+
+async function getRemoveList(params: string[]): Promise<string[]> {
+  if (params.length) {
+    const error = verifyItems(params)
+    if (error) throw error
+    return params
+  }
+  return await removePrompt()
 }
 
 async function removePrompt(): Promise<string[]> {
@@ -37,7 +38,7 @@ async function removePrompt(): Promise<string[]> {
 
   if (isSelectOption) {
     const options = readdirSync(cwd)
-    const response = await p.multiselect<PromptOption<string>[], string>({
+    const response = await p.multiselect<Array<PromptOption<string>>, string>({
       message: 'What do you want to delete?',
       options: options.map(path => ({
         label: path.replace(/.+[\\/](\w+)/i, '$1'),

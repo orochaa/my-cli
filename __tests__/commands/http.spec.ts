@@ -4,7 +4,7 @@ import axios from 'axios'
 
 jest.mock('axios', () => {
   class Axios {
-    create = () => this
+    create = (): this => this
     get = jest.fn(async () => ({ data: '' }))
     post = jest.fn(async () => ({ data: '' }))
     put = jest.fn(async () => ({ data: '' }))
@@ -21,7 +21,7 @@ describe('http', () => {
   it('should throw on missing params', async () => {
     const promise = sut.exec()
 
-    expect(promise).rejects.toThrow(MissingParamError)
+    await expect(promise).rejects.toThrow(MissingParamError)
   })
 
   it('should complete host and port', async () => {
@@ -51,7 +51,7 @@ describe('http', () => {
   it('should throw on invalid url', async () => {
     const promise = sut.exec('foo')
 
-    expect(promise).rejects.toThrow(InvalidParamError)
+    await expect(promise).rejects.toThrow(InvalidParamError)
   })
 
   it('should parse nested body', async () => {

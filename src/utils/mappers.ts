@@ -1,4 +1,4 @@
-type ObjectEntries<T extends Record<string, any>> = UnionToTuple<
+type ObjectEntries<T extends object> = UnionToTuple<
   {
     [K in keyof T]-?: [K, T[K] extends infer U | undefined ? U : T[K]]
   }[keyof T]
@@ -26,7 +26,7 @@ type MergeObjects<T, K = T> = T extends [infer F, ...infer R]
   ? F & MergeObjects<R, F>
   : K
 
-export function mergeObjects<T extends Record<string, unknown>[]>(
+export function mergeObjects<T extends Array<Record<string, unknown>>>(
   ...[first, ...rest]: T
 ): MergeObjects<T> {
   return Object.assign(first, ...rest)
@@ -35,10 +35,11 @@ export function mergeObjects<T extends Record<string, unknown>[]>(
 export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
   const result: Record<string, unknown> = {}
 
-  for (let item of keyValueList) {
+  for (const item of keyValueList) {
     const [keys, value] = item.split('=')
     const nestedKeys = keys.split('.')
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let currentObject: any = result
 
     for (let i = 0; i < nestedKeys.length - 1; i++) {

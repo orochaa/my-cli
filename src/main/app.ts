@@ -26,7 +26,7 @@ export class App {
       }
     }
 
-    return command.action(params, flags)
+    await command.action(params, flags)
   }
 
   public getCommand(name: string): App.Command | null {

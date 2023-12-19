@@ -1,7 +1,7 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { hasFlag } from '@/utils/cmd.js'
 import { cwd, root } from '@/utils/constants.js'
-import { verifyPromptResponse } from '@/utils/prompt.js'
+import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import {
   copyFileSync,
   existsSync,
@@ -20,8 +20,6 @@ async function snippetCommand(
   params: string[],
   flags: string[],
 ): Promise<void> {
-  let snippets: string[]
-
   if (hasFlag('--create', flags)) {
     createVsCodeFolder()
     createProjectSnippet()
@@ -29,7 +27,7 @@ async function snippetCommand(
   }
 
   const snippetOptions = mapSnippets()
-  snippets = params.length
+  const snippets = params.length
     ? params.filter(param => snippetOptions.includes(param))
     : await snippetPrompt(snippetOptions)
 
@@ -74,11 +72,11 @@ function mapSnippets(): string[] {
 }
 
 async function snippetPrompt(snippetOptions: string[]): Promise<string[]> {
-  const response = (await p.multiselect({
+  const response = await p.multiselect<Array<PromptOption<string>>, string>({
     message: 'Pick your snippets:',
     options: snippetOptions.map(snippet => ({ value: snippet })),
     required: true,
-  })) as string[] | symbol
+  })
   verifyPromptResponse(response)
   return response
 }

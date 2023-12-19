@@ -1,30 +1,40 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
+import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import { rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { detect } from '@antfu/ni'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  multiselect: jest.fn(async () => ['lint', 'build']),
+  multiselect: jest.fn(() => ['lint', 'build']),
   outro: jest.fn(),
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation()
+jest.mock('@antfu/ni', () => ({
+  detect: jest.fn(() => 'yarn'),
+}))
 
 describe('run', () => {
   const sut = makeSut('run')
 
+  beforeAll(() => {
+    jest.spyOn(cp, 'execSync').mockImplementation()
+  })
+
   describe('shallowRun', () => {
-    it('should run scripts', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce({
+    beforeEach(() => {
+      mockJsonParse({
         scripts: {
           lint: ' ',
           build: ' ',
         },
       })
+    })
 
+    it('should run scripts', async () => {
       await sut.exec('lint build test')
 
       expect(cp.execSync).toHaveBeenCalledTimes(3)
@@ -40,19 +50,12 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx test\n',
+        'npx test',
         expect.anything(),
       )
     })
 
     it('should run custom scripts', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce({
-        scripts: {
-          lint: ' ',
-          build: ' ',
-        },
-      })
-
       await sut.execRaw('lint', 'build', 'vitest --run')
 
       expect(cp.execSync).toHaveBeenCalledTimes(3)
@@ -68,19 +71,12 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx vitest --run\n',
+        'npx vitest --run',
         expect.anything(),
       )
     })
 
     it('should run scripts partially', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce({
-        scripts: {
-          lint: ' ',
-          build: ' ',
-        },
-      })
-
       await sut.exec('lint build test -p')
 
       expect(cp.execSync).toHaveBeenCalledTimes(2)
@@ -97,33 +93,62 @@ describe('run', () => {
     })
 
     it('should verify package.json', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
+      mockJsonParse(null)
 
       const promise = sut.exec('lint')
 
-      expect(promise).rejects.toThrow(NotFoundError)
+      await expect(promise).rejects.toThrow(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
+      mockJsonParse({})
 
       const promise = sut.exec('lint')
 
-      expect(promise).rejects.toThrow(NotFoundError)
+      await expect(promise).rejects.toThrow(NotFoundError)
+    })
+
+    it('should run install with the right package manager', async () => {
+      mockJsonParse({ scripts: { install: ' ', lint: ' ' } })
+
+      await sut.exec('install lint')
+
+      expect(detect).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledTimes(2)
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'yarn install',
+        expect.anything(),
+      )
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'npm run lint',
+        expect.anything(),
+      )
+    })
+
+    it('should run install with default package manager', async () => {
+      mockJsonParse({ scripts: { install: ' ' } })
+      ;(detect as jest.Mock).mockReturnValueOnce(null)
+
+      await sut.exec('install')
+
+      expect(detect).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledTimes(1)
+      expect(cp.execSync).toHaveBeenCalledWith(
+        'pnpm install',
+        expect.anything(),
+      )
     })
   })
 
   describe('deepRun', () => {
     beforeAll(() => {
-      writeFileSync(
-        join(cwd, 'scripts/package.json'),
-        JSON.stringify({
-          scripts: {
-            lint: ' ',
-            build: ' ',
-          },
-        }),
-      )
+      writeFileSync(join(cwd, 'scripts/package.json'), '')
+      mockJsonParse({
+        scripts: {
+          lint: ' ',
+          build: ' ',
+        },
+      })
     })
 
     afterEach(() => {
@@ -150,7 +175,7 @@ describe('run', () => {
       )
       expect(cp.execSync).toHaveBeenNthCalledWith(
         3,
-        'npx test\n',
+        'npx test',
         expect.anything(),
       )
     })
@@ -173,14 +198,23 @@ describe('run', () => {
   })
 
   describe('promptRun', () => {
+    beforeEach(() => {
+      mockJsonParse({
+        scripts: {
+          lint: ' ',
+          build: ' ',
+        },
+      })
+    })
+
     it('should verify package.json', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce(null)
-      expect(sut.exec()).rejects.toThrow(NotFoundError)
+      mockJsonParse(null)
+      await expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it('should verify package.json scripts', async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce({})
-      expect(sut.exec()).rejects.toThrow(NotFoundError)
+      mockJsonParse({})
+      await expect(sut.exec()).rejects.toThrow(NotFoundError)
     })
 
     it('should print `run` command', async () => {
@@ -189,13 +223,6 @@ describe('run', () => {
     })
 
     it("should run prompt's selected scripts", async () => {
-      jest.spyOn(JSON, 'parse').mockReturnValueOnce({
-        scripts: {
-          lint: ' ',
-          build: ' ',
-        },
-      })
-
       await sut.exec()
 
       expect(cp.execSync).toHaveBeenCalledTimes(2)

@@ -14,7 +14,7 @@ describe('setup', () => {
     const nameList = sut.commands.map(c => c.name)
     const noDuplicateNameList = [...new Set(nameList)]
 
-    expect(nameList.length).toBe(noDuplicateNameList.length)
+    expect(nameList).toHaveLength(noDuplicateNameList.length)
   })
 
   it('should not have duplicate command alias', async () => {
@@ -23,7 +23,7 @@ describe('setup', () => {
     const aliasList = sut.commands.map(c => c.alias).filter(Boolean)
     const noDuplicateAliasList = [...new Set(aliasList)]
 
-    expect(aliasList.length).toBe(noDuplicateAliasList.length)
+    expect(aliasList).toHaveLength(noDuplicateAliasList.length)
   })
 
   it('should not have --force flag', async () => {

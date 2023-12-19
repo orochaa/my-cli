@@ -1,4 +1,4 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import * as p from '@clack/prompts'
@@ -55,7 +55,9 @@ function verifyPasswordLength(length: number): Error | null {
 
 function pick(str: string, min: number, max?: number): string {
   let chars: string = ''
-  let n: number = max ? min + Math.floor(Math.random() * (max - min + 1)) : min
+  const n: number = max
+    ? min + Math.floor(Math.random() * (max - min + 1))
+    : min
 
   for (let i = 0; i < n; i++) {
     chars += str.charAt(Math.floor(Math.random() * str.length))

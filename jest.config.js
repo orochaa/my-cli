@@ -4,6 +4,7 @@ export default {
   clearMocks: true,
   collectCoverage: false,
   maxWorkers: 1,
+  cache: false,
   roots: ['<rootDir>/__tests__'],
   collectCoverageFrom: ['src/**/*.ts'],
   coverageDirectory: 'coverage',

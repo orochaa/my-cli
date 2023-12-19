@@ -1,13 +1,12 @@
-import { App } from '@/main/app.js'
+import { type App } from '@/main/app.js'
 import { execOutdated } from '@/utils/cmd.js'
 import * as p from '@clack/prompts'
 
 async function outdatedCommand(): Promise<void> {
   const spinner = p.spinner()
-
   spinner.start('Looking for the latest version')
-  const version = await execOutdated()
 
+  const version = await execOutdated()
   if (version && version.current !== version.latest) {
     spinner.stop(`my-cli@${version.latest} is out`)
     p.note(

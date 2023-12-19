@@ -1,24 +1,24 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import cp from 'node:child_process'
 import * as p from '@clack/prompts'
+import { mockExec } from '../mocks/utils.js'
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => '   master'),
 }))
 
-jest.spyOn(cp, 'execSync').mockImplementation()
-jest.spyOn(cp, 'exec').mockImplementation((cmd, cb) => {
-  ;(cb as any)(null, 'origin', '')
-  return cp as any
-})
-
 describe('branch', () => {
   const sut = makeSut('branch')
+
+  beforeAll(() => {
+    mockExec('origin')
+    jest.spyOn(cp, 'execSync').mockImplementation()
+  })
 
   it('should read git branches', async () => {
     await sut.exec()
 
-    expect(cp.exec).toHaveBeenCalled()
+    expect(cp.exec).toHaveBeenCalledTimes(2)
     expect(cp.exec).toHaveBeenCalledWith('git branch -a', expect.any(Function))
   })
 
@@ -37,10 +37,7 @@ describe('branch', () => {
   })
 
   it('should checkout to selected local branch and pull custom-origin', async () => {
-    jest.spyOn(cp, 'exec').mockImplementation((cmd, cb) => {
-      ;(cb as any)(null, 'custom-origin', '')
-      return cp as any
-    })
+    mockExec('custom-origin')
 
     await sut.exec()
 

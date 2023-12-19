@@ -96,7 +96,7 @@ describe('mappers', () => {
 
   describe('parseValue()', () => {
     it('should parse values to their respective type', () => {
-      const usecases: [string, unknown][] = [
+      const usecases: Array<[string, unknown]> = [
         ['1', 1],
         ['"1"', '1'],
         ['1.3', 1.3],

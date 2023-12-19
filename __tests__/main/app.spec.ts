@@ -1,7 +1,7 @@
 import { App } from '@/main/app.js'
 import colors from 'picocolors'
 
-const makeSut = () => {
+const makeSut = (): App => {
   return new App()
 }
 
@@ -64,14 +64,12 @@ describe('App', () => {
       },
     } as App.Command)
 
-    expect(sut.exec('foo')).rejects.toThrow()
+    await expect(sut.exec('foo')).rejects.toThrow()
   })
 
   it('should display command', async () => {
     const sut = makeSut()
-    const log = jest
-      .spyOn(process.stdout, 'write')
-      .mockImplementation((() => {}) as any)
+    const log = jest.spyOn(process.stdout, 'write').mockImplementation()
 
     sut.displayCommand({
       name: 'foo',
@@ -86,22 +84,20 @@ describe('App', () => {
     expect(log).toHaveBeenCalledWith(
       `${colors.magenta('-')} command: ${colors.cyan('foo')}\n`,
     )
-    expect(log).toHaveBeenCalledWith(`  alias: f\n`)
+    expect(log).toHaveBeenCalledWith('  alias: f\n')
     expect(log).toHaveBeenCalledWith(
       `  params: ${colors.magenta('`p1`')} | ${colors.magenta('`p2`')}\n`,
     )
     expect(log).toHaveBeenCalledWith(
       `  flags: ${colors.magenta('`f1`')} | ${colors.magenta('`f2`')}\n`,
     )
-    expect(log).toHaveBeenCalledWith(`  description: foo description\n`)
-    expect(log).toHaveBeenCalledWith(`  example: my foo\n\n`)
+    expect(log).toHaveBeenCalledWith('  description: foo description\n')
+    expect(log).toHaveBeenCalledWith('  example: my foo\n\n')
   })
 
   it('should display all known commands', async () => {
     const sut = makeSut()
-    const log = jest
-      .spyOn(process.stdout, 'write')
-      .mockImplementation((() => {}) as any)
+    const log = jest.spyOn(process.stdout, 'write').mockImplementation()
 
     sut.register({
       name: 'foo',
@@ -150,8 +146,8 @@ describe('App', () => {
 
     sut.handleError(new Error('test error'))
 
-    expect(exitSpy).toHaveBeenCalled()
-    expect(log).toHaveBeenCalledWith(`Error: test error\n`)
+    expect(exitSpy).toHaveBeenCalledTimes(1)
+    expect(log).toHaveBeenCalledWith('Error: test error\n')
   })
 
   it('should not log error', async () => {
@@ -162,7 +158,7 @@ describe('App', () => {
     process.argv = ['--silent']
     sut.handleError(new Error('test error'))
 
-    expect(exitSpy).toHaveBeenCalled()
+    expect(exitSpy).toHaveBeenCalledTimes(1)
     expect(log).not.toHaveBeenCalled()
   })
 })
