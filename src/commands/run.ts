@@ -13,7 +13,7 @@ import * as p from '@clack/prompts'
 type Runner = 'npm' | 'npx'
 
 async function runCommand(scripts: string[], flags: string[]): Promise<void> {
-  const hasScripts = !!scripts.length
+  const hasScripts = scripts.length > 0
   const isDeep = hasFlag(['--deep', '-d'], flags)
 
   if (hasScripts && isDeep) {

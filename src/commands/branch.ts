@@ -31,7 +31,7 @@ function isRemoteBranch(branch: string): boolean {
 }
 
 function formatBranch(branch: string): string {
-  return branch.replace(/.*?([^\s]+)$/, '$1')
+  return branch.replace(/.*?(\S+)$/, '$1')
 }
 
 function formatRemoteBranch(branch: string): string {

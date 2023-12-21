@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { type App } from '@/main/app.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
@@ -12,7 +13,7 @@ const all = specials + lowercase + uppercase + numbers
 async function passwordCommand(params: string[]): Promise<void> {
   let passwordLength: number
 
-  if (params.length) {
+  if (params.length > 0) {
     const length = Number(params[0])
     const error = verifyPasswordLength(length)
     if (error) throw error
@@ -29,7 +30,7 @@ async function passwordCommand(params: string[]): Promise<void> {
     password += pick(all, 3, 10)
   }
 
-  p.outro(shuffle(password.substring(0, passwordLength)))
+  p.outro(shuffle(password.slice(0, Math.max(0, passwordLength))))
 }
 
 async function passwordPrompt(): Promise<number> {
@@ -45,7 +46,7 @@ async function passwordPrompt(): Promise<number> {
 }
 
 function verifyPasswordLength(length: number): Error | null {
-  if (isNaN(length) || length < 8) {
+  if (Number.isNaN(length) || length < 8) {
     return new InvalidParamError('passwordLength', 'min length is 8')
   } else if (length > 100) {
     return new InvalidParamError('passwordLength', 'max length is 100')
@@ -67,7 +68,7 @@ function pick(str: string, min: number, max?: number): string {
 }
 
 function shuffle(str: string): string {
-  const array: string[] = str.split('')
+  const array: string[] = [...str]
   let tmp: string
   let current: number
   let top: number = array.length

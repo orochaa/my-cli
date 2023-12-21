@@ -1,3 +1,4 @@
+/* eslint-disable no-secrets/no-secrets */
 import { type App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
 import { existsSync } from 'node:fs'
@@ -74,7 +75,7 @@ const eslint = `{
 `
 
 async function initCommand(params: string[]): Promise<void> {
-  const cwd = params.length ? join(process.cwd(), params[0]) : process.cwd()
+  const cwd = params.length > 0 ? join(process.cwd(), params[0]) : process.cwd()
 
   if (!existsSync(cwd)) {
     await mkdir(cwd)

@@ -73,7 +73,7 @@ async function gitPrompt(lastGit: string): Promise<string> {
 
 async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
   const projects: string[] = []
-  const defaultProjectRoot = cwd.replace(/^(.*?)[\\/].+/, '$1').concat('/git')
+  const defaultProjectRoot = `${cwd.replace(/^(.*?)[/\\].+/, '$1')}/git`
 
   let repeat: boolean | symbol = true
   let response

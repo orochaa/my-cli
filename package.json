@@ -67,7 +67,7 @@
     "@types/pacote": "^11.1.8",
     "cross-env": "^7.0.3",
     "eslint": "^8.56.0",
-    "eslint-plugin-mist3rbru": "^0.0.6",
+    "eslint-plugin-mist3rbru": "^0.0.11",
     "jest": "^29.7.0",
     "npm-run-all2": "^6.1.1",
     "prettier": "^3.1.1",

@@ -48,7 +48,7 @@ export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
       currentObject = currentObject[key]
     }
 
-    currentObject[nestedKeys[nestedKeys.length - 1]] = parseValue(value)
+    currentObject[nestedKeys.at(-1) ?? 0] = parseValue(value)
   }
 
   return result
@@ -61,13 +61,17 @@ export function parseValue(value: string): unknown {
     return true
   } else if (value === 'false') {
     return false
-  } else if (!isNaN(Number(value))) {
-    return parseFloat(value)
-  } else if (/^\[.*?\]$/i.test(value)) {
-    return value.slice(1, -1).split(',').filter(Boolean).map(parseValue)
+  } else if (!Number.isNaN(Number(value))) {
+    return Number.parseFloat(value)
+  } else if (/^\[.*?]$/i.test(value)) {
+    return value
+      .slice(1, -1)
+      .split(',')
+      .filter(Boolean)
+      .map(v => parseValue(v))
   } else if (/^{.*?}$/i.test(value)) {
     return JSON.parse(value)
   }
 
-  return value.replace('+', ' ').replace(/(?:^["'])|(?:["']$)/g, '')
+  return value.replace('+', ' ').replaceAll(/(?:^["'])|(?:["']$)/g, '')
 }

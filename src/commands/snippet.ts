@@ -27,9 +27,10 @@ async function snippetCommand(
   }
 
   const snippetOptions = mapSnippets()
-  const snippets = params.length
-    ? params.filter(param => snippetOptions.includes(param))
-    : await snippetPrompt(snippetOptions)
+  const snippets =
+    params.length > 0
+      ? params.filter(param => snippetOptions.includes(param))
+      : await snippetPrompt(snippetOptions)
 
   createVsCodeFolder()
   for (const snippet of snippets) {
@@ -51,11 +52,11 @@ function createProjectSnippet(): void {
   const projectName = cwd.replace(/^.+\/(.+)/, '$1')
   const fileName = projectName + _extension
   const dest = resolve(_vscodeFolder, fileName)
-  if (!existsSync(dest)) {
+  if (existsSync(dest)) {
+    p.log.warn(`Project's snippet already exists: ${dest}`)
+  } else {
     writeFileSync(dest, '{}\n')
     log(dest)
-  } else {
-    p.log.warn(`Project's snippet already exists: ${dest}`)
   }
 }
 

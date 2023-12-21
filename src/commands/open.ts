@@ -13,9 +13,9 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
   const isFilter = hasFlag(['--filter', '-f'], flags)
 
   const openProjectList = await Promise.resolve(
-    params.length && isFilter
+    params.length > 0 && isFilter
       ? getFilteredProjects(controller, params)
-      : params.length
+      : params.length > 0
         ? getProjects(controller, params)
         : openPrompt(controller),
   )
@@ -96,15 +96,13 @@ function getProjects(controller: Controller, params: string[]): string[] {
 async function openPrompt(controller: Controller): Promise<string[]> {
   const projects = await p.multiselect<Array<PromptOption<string>>, string>({
     message: 'Select a project to open:',
-    options: controller
-      .map(([root, folders]) => {
-        const rootEnd = getPathEnd(root)
-        return folders.map(folder => ({
-          label: `${rootEnd}/${folder}`,
-          value: join(root, folder),
-        }))
-      })
-      .flat(),
+    options: controller.flatMap(([root, folders]) => {
+      const rootEnd = getPathEnd(root)
+      return folders.map(folder => ({
+        label: `${rootEnd}/${folder}`,
+        value: join(root, folder),
+      }))
+    }),
   })
   verifyPromptResponse(projects)
 

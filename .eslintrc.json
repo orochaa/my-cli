@@ -1,6 +1,16 @@
 {
   "extends": ["plugin:mist3rbru/node"],
-  "rules": {},
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "error",
+
+    "unicorn/no-process-exit": "off",
+
+    "security/detect-object-injection": "off",
+    "security/detect-non-literal-fs-filename": "off",
+    "security/detect-non-literal-regexp": "off",
+    "security/detect-unsafe-regex": "off",
+    "security/detect-child-process": "off"
+  },
   "overrides": [
     {
       "files": ["__tests__/**"],

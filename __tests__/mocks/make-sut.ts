@@ -12,6 +12,10 @@ interface Sut {
   enableLogs(): void
 }
 
+const setParams = (params: string[]): void => {
+  process.argv = ['node', 'index.[tj]s', 'command', ...params]
+}
+
 export function makeSut(command: Command): Sut {
   const sut = new App()
   for (const [key, record] of objectEntries(commands)) {
@@ -19,10 +23,6 @@ export function makeSut(command: Command): Sut {
       record(sut)
       break
     }
-  }
-
-  const setParams = (params: string[]): void => {
-    process.argv = ['node', 'index.[tj]s', 'command', ...params]
   }
 
   let isSilent = true
@@ -36,7 +36,7 @@ export function makeSut(command: Command): Sut {
 
   return {
     exec: async (...params: string[]): Promise<void> => {
-      setParams(params.map(p => p.split(' ')).flat())
+      setParams(params.flatMap(p => p.split(' ')))
       setSilent()
       await sut.exec(command)
     },

@@ -3,8 +3,7 @@ import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const dirname = fileURLToPath(new URL('.', import.meta.url))
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const isDevelopment = ['development', 'test'].includes(process.env.NODE_ENV!)
+const isDevelopment = ['development', 'test'].includes(process.env.NODE_ENV)
 
 export const packageName = '@mist3rbru/my-cli'
 

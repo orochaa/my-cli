@@ -62,12 +62,14 @@ function getUrl(params: string[]): [string, string[]] {
 }
 
 function getBody(bodyParams: string[]): Record<string, unknown> {
-  return bodyParams.length ? convertToJSON(bodyParams) : {}
+  return bodyParams.length > 0 ? convertToJSON(bodyParams) : {}
 }
 
 function getHeaders(params: string[]): Record<string, string> {
   return (
-    params.length ? convertToJSON(params.map(p => p.replace(/^h\./, ''))) : {}
+    params.length > 0
+      ? convertToJSON(params.map(p => p.replace(/^h\./, '')))
+      : {}
   ) as Record<string, string>
 }
 

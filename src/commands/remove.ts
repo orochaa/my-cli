@@ -17,7 +17,7 @@ async function removeCommand(params: string[]): Promise<void> {
 }
 
 async function getRemoveList(params: string[]): Promise<string[]> {
-  if (params.length) {
+  if (params.length > 0) {
     const error = verifyItems(params)
     if (error) throw error
     return params
@@ -41,7 +41,7 @@ async function removePrompt(): Promise<string[]> {
     const response = await p.multiselect<Array<PromptOption<string>>, string>({
       message: 'What do you want to delete?',
       options: options.map(path => ({
-        label: path.replace(/.+[\\/](\w+)/i, '$1'),
+        label: path.replace(/.+[/\\](\w+)/i, '$1'),
         value: path,
       })),
     })

@@ -31,8 +31,8 @@ async function getController(params: string[]): Promise<Controller> {
 
   if (isDefault) {
     return formatController(25, 5)
-  } else if (params.length) {
-    const timers = params.map(Number).filter(n => !isNaN(n))
+  } else if (params.length > 0) {
+    const timers = params.map(Number).filter(n => !Number.isNaN(n))
 
     if (timers.length < 2) {
       throw new MissingParamError('timers')
@@ -85,7 +85,7 @@ async function togglePeriodPrompt(period: Period): Promise<boolean> {
 }
 
 function verifyPeriod(period: number): Error | null {
-  if (isNaN(period) || period < 5) {
+  if (Number.isNaN(period) || period < 5) {
     return new InvalidParamError('period', 'must be 5 or higher')
   } else if (period > 90) {
     return new InvalidParamError('period', 'must be 90 or lower')
@@ -136,7 +136,7 @@ function parseTime(time: number): string {
 }
 
 function concatTime(...time: number[]): string {
-  return time.map(parseTime).join(':')
+  return time.map(t => parseTime(t)).join(':')
 }
 
 function display(...time: string[]): string {

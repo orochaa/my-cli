@@ -44,7 +44,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
 }
 
 async function getRepository(params: string[]): Promise<Repository> {
-  if (params.length) {
+  if (params.length > 0) {
     const repositoryName = params[0]
     if (/github\.com.+\.git$/.test(repositoryName)) {
       return {

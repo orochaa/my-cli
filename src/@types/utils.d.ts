@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-types */
 type UnionToIntersection<U> = (
   U extends U ? (x: U) => unknown : never
 ) extends (x: infer R) => unknown
