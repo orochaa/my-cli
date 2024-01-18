@@ -2,6 +2,6 @@
   "Type?": {
     "scope": "typescript,typescriptreact",
     "prefix": "?",
-    "body": ["// $0^?"]
-  }
+    "body": ["// $0^?"],
+  },
 }

@@ -7,11 +7,13 @@ export function mockJsonParse(
 ): jest.SpyInstance {
   const spy = jest.spyOn(JSON, 'parse')
   jest.spyOn(fs, 'readFileSync').mockImplementation(() => '')
+
   if (once) {
     spy.mockReturnValueOnce(value)
   } else {
     spy.mockReturnValue(value)
   }
+
   return spy
 }
 
@@ -22,6 +24,7 @@ export function mockExec(result: string): jest.SpyInstance {
   spy.mockImplementation((_cmd, cb) => {
     // @ts-expect-error
     cb(null, result, '')
+
     return cp
   })
 

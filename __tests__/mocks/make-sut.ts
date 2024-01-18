@@ -18,6 +18,7 @@ const setParams = (params: string[]): void => {
 
 export function makeSut(command: Command): Sut {
   const sut = new App()
+
   for (const [key, record] of objectEntries(commands)) {
     if (key.startsWith(command)) {
       record(sut)
@@ -26,6 +27,7 @@ export function makeSut(command: Command): Sut {
   }
 
   let isSilent = true
+
   const setSilent = (): void => {
     if (isSilent) {
       process.argv.push('--silent')

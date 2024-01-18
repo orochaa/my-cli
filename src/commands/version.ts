@@ -5,6 +5,7 @@ import * as p from '@clack/prompts'
 
 async function versionCommand(): Promise<void> {
   const packageJson = getPackageJson(myCliPackageJsonPath)
+
   if (packageJson?.version) {
     p.outro(`v${packageJson.version}`)
   } else {

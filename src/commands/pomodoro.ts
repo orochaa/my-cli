@@ -15,6 +15,7 @@ async function pomodoroCommand(params: string[]): Promise<void> {
   const controller = await getController(params)
 
   let toggle: boolean
+
   do {
     await timer(controller.period, controller[controller.period])
     controller.period = controller.period === 'rest' ? 'work' : 'rest'
@@ -40,12 +41,14 @@ async function getController(params: string[]): Promise<Controller> {
 
     for (let i = 0; i < 2; i++) {
       const error = verifyPeriod(timers[i])
+
       if (error) throw error
     }
 
     return formatController(timers[0], timers[1])
   } else {
     const timers = await pomodoroPrompt()
+
     return formatController(timers[0], timers[1])
   }
 }
@@ -58,6 +61,7 @@ async function pomodoroPrompt(): Promise<[number, number]> {
         initialValue: '25',
         validate: res => {
           const error = verifyPeriod(Number(res))
+
           if (error) return error.message
         },
       }),
@@ -67,11 +71,13 @@ async function pomodoroPrompt(): Promise<[number, number]> {
         initialValue: '5',
         validate: res => {
           const error = verifyPeriod(Number(res))
+
           if (error) return error.message
         },
       }),
   })
   verifyPromptResponse(response)
+
   return [response.work, response.rest].map(Number) as [number, number]
 }
 
@@ -81,6 +87,7 @@ async function togglePeriodPrompt(period: Period): Promise<boolean> {
     initialValue: true,
   })
   verifyPromptResponse(response)
+
   return response
 }
 
@@ -90,6 +97,7 @@ function verifyPeriod(period: number): Error | null {
   } else if (period > 90) {
     return new InvalidParamError('period', 'must be 90 or lower')
   }
+
   return null
 }
 
@@ -118,11 +126,13 @@ async function timer(period: Period, min: number): Promise<void> {
         process.stdout.write('\n')
         unblock()
         resolve()
+
         return
       }
 
       if (seg-- === 0) {
         seg = 59
+
         if (min - 1 >= 0) {
           min--
         }

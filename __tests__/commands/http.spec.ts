@@ -2,9 +2,10 @@ import { makeSut } from '@/tests/mocks/make-sut.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import axios from 'axios'
 
-const mockFn = async () => ({ data: '' })
-
 jest.mock('axios', () => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const mockFn = async () => ({ data: '' })
+
   class Axios {
     create = (): this => this
     get = jest.fn(mockFn)
@@ -12,6 +13,7 @@ jest.mock('axios', () => {
     put = jest.fn(mockFn)
     delete = jest.fn(mockFn)
   }
+
   return new Axios()
 })
 

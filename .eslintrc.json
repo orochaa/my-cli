@@ -1,8 +1,6 @@
 {
   "extends": ["plugin:mist3rbru/node"],
   "rules": {
-    "@typescript-eslint/no-explicit-any": "error",
-
     "unicorn/no-process-exit": "off",
 
     "security/detect-object-injection": "off",

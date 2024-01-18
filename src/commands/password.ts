@@ -16,6 +16,7 @@ async function passwordCommand(params: string[]): Promise<void> {
   if (params.length > 0) {
     const length = Number(params[0])
     const error = verifyPasswordLength(length)
+
     if (error) throw error
     passwordLength = length
   } else {
@@ -23,6 +24,7 @@ async function passwordCommand(params: string[]): Promise<void> {
   }
 
   let password = ''
+
   while (password.length < passwordLength) {
     password += pick(specials, 1)
     password += pick(lowercase, 1)
@@ -38,10 +40,12 @@ async function passwordPrompt(): Promise<number> {
     message: 'What is your desired password length?',
     validate: res => {
       const error = verifyPasswordLength(Number(res))
+
       if (error) return error.message
     },
   })
   verifyPromptResponse(response)
+
   return Number(response)
 }
 
@@ -51,6 +55,7 @@ function verifyPasswordLength(length: number): Error | null {
   } else if (length > 100) {
     return new InvalidParamError('passwordLength', 'max length is 100')
   }
+
   return null
 }
 

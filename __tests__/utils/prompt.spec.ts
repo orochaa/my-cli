@@ -12,6 +12,7 @@ describe('prompt', () => {
       const responses = [Symbol('test:symbol'), { test: Symbol('test:symbol') }]
 
       expect.assertions(responses.length * 2)
+
       for (const response of responses) {
         exitSpy.mockClear()
         verifyPromptResponse(response)
@@ -34,6 +35,7 @@ describe('prompt', () => {
       ]
 
       expect.assertions(responses.length)
+
       for (const response of responses) {
         exitSpy.mockClear()
         verifyPromptResponse(response)

@@ -96,7 +96,7 @@ describe('mappers', () => {
 
   describe('parseValue()', () => {
     it('should parse values to their respective type', () => {
-      const usecases: Array<[string, unknown]> = [
+      const usecases: [string, unknown][] = [
         ['1', 1],
         ['"1"', '1'],
         ['1.3', 1.3],
@@ -113,6 +113,7 @@ describe('mappers', () => {
         ["Let's go", "Let's go"],
       ]
       expect.assertions(usecases.length)
+
       for (const [param, expected] of usecases) {
         expect(parseValue(param)).toStrictEqual(expected)
       }

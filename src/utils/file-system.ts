@@ -18,6 +18,7 @@ export function getPackageJson(
   if (!existsSync(path)) {
     return null
   }
+
   return JSON.parse(readFileSync(path).toString()) as PackageJson
 }
 
@@ -26,6 +27,7 @@ export function verifyLockfile(): boolean {
 }
 
 export type LockfileKey = 'git' | 'projects'
+
 export type Lockfile = {
   git: string
   projects: string[]

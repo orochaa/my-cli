@@ -20,6 +20,7 @@ async function apiPrompt(): Promise<string> {
     },
   })
   verifyPromptResponse(response)
+
   return response
 }
 

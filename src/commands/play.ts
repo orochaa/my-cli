@@ -21,12 +21,14 @@ async function playCommand(params: string[]): Promise<void> {
 
   if (params.length > 0) {
     const alias = params[0]
+
     for (const playerData of objectValues(players)) {
       if (playerData.aliases.includes(alias)) {
         player = playerData.url
         break
       }
     }
+
     if (!player) {
       throw new InvalidParamError('player')
     }
@@ -50,6 +52,7 @@ async function playPrompt(): Promise<string> {
     initialValue: players.youtube.url,
   })
   verifyPromptResponse(response)
+
   return response
 }
 

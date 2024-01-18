@@ -15,7 +15,7 @@ type PromptResponse =
   | Primitive
   | PrimitiveArray
   | Record<string, unknown>
-  | Array<Record<string, unknown>>
+  | Record<string, unknown>[]
 
 type ResponseMapper<T> = T extends Primitive
   ? T
@@ -27,6 +27,7 @@ export function verifyPromptResponse<TResponse extends PromptResponse>(
   response: TResponse | symbol,
 ): asserts response is TResponse & ResponseMapper<TResponse> {
   verifySymbol(response)
+
   if (typeof response === 'object') {
     for (const key of objectKeys(response)) {
       verifySymbol(response[key])

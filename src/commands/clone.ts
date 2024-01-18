@@ -24,6 +24,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
 
   const projectPath = formatProjectPath(repository.name)
   const isCloned = existsSync(projectPath)
+
   if (isCloned) {
     logCommand(`cd ${projectPath}`)
     process.chdir(projectPath)
@@ -35,6 +36,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   }
 
   const isNodeProject = existsSync(resolve(process.cwd(), 'package.json'))
+
   if (isNodeProject) {
     const pm = (await detect()) ?? (await packageManagerPrompt())
     exec(`${pm} install`)
@@ -46,6 +48,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
 async function getRepository(params: string[]): Promise<Repository> {
   if (params.length > 0) {
     const repositoryName = params[0]
+
     if (/github\.com.+\.git$/.test(repositoryName)) {
       return {
         clone_url: repositoryName,
@@ -58,9 +61,11 @@ async function getRepository(params: string[]): Promise<Repository> {
     const foundRepository = repositories.find(repository =>
       repository.name.startsWith(repositoryName),
     )
+
     if (!foundRepository) {
       throw new NotFoundError(repositoryName)
     }
+
     return foundRepository
   }
 
@@ -77,6 +82,7 @@ async function getUserRepositories(): Promise<Repository[]> {
       },
     },
   )
+
   return repositories
 }
 
@@ -92,6 +98,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
       new Date(a.updated_at).getTime(),
       new Date(b.updated_at).getTime(),
     ]
+
     return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
   })
 
@@ -105,6 +112,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
     maxItems,
   })
   verifyPromptResponse(response)
+
   return response
 }
 
@@ -117,6 +125,7 @@ async function packageManagerPrompt(): Promise<PackageManager> {
     maxItems,
   })
   verifyPromptResponse(response)
+
   return response
 }
 

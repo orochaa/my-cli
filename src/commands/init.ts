@@ -103,6 +103,7 @@ async function initCommand(params: string[]): Promise<void> {
   await writeFile(join(cwd, '.eslintrc.json'), eslint)
 
   const srcPath = join(cwd, 'src')
+
   if (!existsSync(join(cwd, 'src'))) {
     await mkdir(srcPath)
     await writeFile(join(srcPath, 'index.ts'), '')
