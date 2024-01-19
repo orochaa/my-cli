@@ -1,5 +1,6 @@
 import { type App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
+import { InvalidParamError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
@@ -62,6 +63,10 @@ async function getFilteredProjects(
       projects.filter(project => filterRegex.test(project)),
     ])
     .filter(tuple => tuple[1].length) as Controller
+
+  if (filteredController.length === 0) {
+    throw new InvalidParamError('filter param', 'No project found')
+  }
 
   return filteredController.length === 1 &&
     filteredController[0][1].length === 1
