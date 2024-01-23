@@ -35,7 +35,7 @@
     "lint": "run-s lint:tsc lint:prettier lint:eslint",
     "lint:tsc": "tsc",
     "lint:prettier": "prettier --write .",
-    "lint:eslint": "eslint --fix src/**/*.ts __tests__/**/*.ts",
+    "lint:eslint": "eslint --fix \"src/**/*.ts\" \"__tests__/**/*.ts\"",
     "build": "unbuild",
     "clean": "rimraf bin coverage",
     "test": "jest",
