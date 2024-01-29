@@ -1,7 +1,7 @@
 import { type App } from '@/main/app.js'
 import { exec, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd, maxItems } from '@/utils/constants.js'
-import { NotFoundError } from '@/utils/errors.js'
+import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
@@ -20,7 +20,7 @@ interface Repository {
 type PackageManager = 'npm' | 'yarn' | 'pnpm'
 
 async function cloneCommand(params: string[], flags: string[]): Promise<void> {
-  const repository = await getRepository(params)
+  const repository = await getRepository(params, flags)
 
   const projectPath = formatProjectPath(repository.name)
   const isCloned = existsSync(projectPath)
@@ -45,21 +45,41 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   exec('code .')
 }
 
-async function getRepository(params: string[]): Promise<Repository> {
-  if (params.length > 0) {
-    const repositoryName = params[0]
+async function getRepository(
+  params: string[],
+  flags: string[],
+): Promise<Repository> {
+  const repositories = await getUserRepositories()
+  const isFilter = hasFlag(['--filter', '-f'], flags)
 
-    if (/github\.com.+\.git$/.test(repositoryName)) {
+  if (isFilter && params.length > 0) {
+    const filterRegex = new RegExp(params.join('|'), 'i')
+    const filteredRepositories = repositories.filter(repository =>
+      filterRegex.test(repository.name),
+    )
+
+    if (filteredRepositories.length === 0) {
+      throw new InvalidParamError('filter param', 'No repository found')
+    } else if (filteredRepositories.length === 1) {
+      return filteredRepositories[0]
+    }
+
+    return await clonePrompt(filteredRepositories)
+  } else if (params.length > 0) {
+    const repositoryName = params[0]
+    const isGitAddress = /github\.com.+\.git$/.test(repositoryName)
+
+    if (isGitAddress) {
       return {
         clone_url: repositoryName,
-        name: repositoryName.replace(/.+\/(.+)\.git/, '$1'),
+        name: repositoryName.replace(/.+\/(.+)\.git$/, '$1'),
         updated_at: '',
       }
     }
 
-    const repositories = await getUserRepositories()
+    const repositoryRegex = new RegExp(repositoryName, 'i')
     const foundRepository = repositories.find(repository =>
-      repository.name.startsWith(repositoryName),
+      repositoryRegex.test(repository.name),
     )
 
     if (!foundRepository) {
@@ -69,7 +89,7 @@ async function getRepository(params: string[]): Promise<Repository> {
     return foundRepository
   }
 
-  return await getUserRepositories().then(clonePrompt)
+  return await clonePrompt(repositories)
 }
 
 async function getUserRepositories(): Promise<Repository[]> {
@@ -134,7 +154,7 @@ export function cloneRecord(app: App): void {
     name: 'clone',
     alias: null,
     params: ['<repository>'],
-    flags: ['--root'],
+    flags: ['--root', '--filter', '-f'],
     description:
       "Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode",
     example: 'my clone my-cli',

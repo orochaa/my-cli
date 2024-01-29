@@ -1,7 +1,7 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd } from '@/utils/constants.js'
-import { NotFoundError } from '@/utils/errors.js'
+import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
 import { join, resolve } from 'node:path'
@@ -15,18 +15,32 @@ const repo = {
   updated_at: new Date(),
 }
 
+const repositories = [
+  {
+    name: 'foo',
+    updated_at: new Date().setDate(-1),
+    clone_url: 'https://github.com/Mist3rBru/foo.git',
+  },
+  {
+    name: 'bar',
+    updated_at: new Date().setDate(1),
+    clone_url: 'https://github.com/Mist3rBru/bar.git',
+  },
+  {
+    name: 'baz',
+    updated_at: new Date().setDate(-1),
+    clone_url: 'https://github.com/Mist3rBru/baz.git',
+  },
+  repo,
+]
+
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(async () => repo),
 }))
 
 jest.mock('axios', () => ({
   get: jest.fn(async () => ({
-    data: [
-      { name: 'foo', updated_at: new Date().setDate(-1) },
-      { name: 'bar', updated_at: new Date().setDate(1) },
-      { name: 'baz', updated_at: new Date().setDate(-1) },
-      repo,
-    ],
+    data: repositories,
   })),
 }))
 
@@ -110,6 +124,41 @@ describe('clone', () => {
     expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
+  })
+
+  it('should filter repositories', async () => {
+    await sut.exec('-f ba')
+
+    const expectedRepositories = repositories.filter(rep =>
+      /ba/i.test(rep.name),
+    )
+
+    expect(p.select).toHaveBeenCalledTimes(1)
+    expect(p.select).toHaveBeenCalledWith({
+      initialValue: expectedRepositories[0],
+      maxItems: 16,
+      message: 'Select one of your repositories:',
+      options: expectedRepositories.map(rep => ({
+        label: rep.name,
+        value: rep,
+      })),
+    })
+  })
+
+  it('should auto select filtered repository', async () => {
+    await sut.exec('-f fo')
+
+    expect(cp.execSync).toHaveBeenCalledTimes(4)
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `git clone https://github.com/Mist3rBru/foo.git ${resolve('foo')}`,
+      expect.anything(),
+    )
+  })
+
+  it('should throw on invalid repository filter', async () => {
+    await expect(sut.exec('-f invalid_filter')).rejects.toThrow(
+      InvalidParamError,
+    )
   })
 
   it('should still prepare pre-cloned repository', async () => {
