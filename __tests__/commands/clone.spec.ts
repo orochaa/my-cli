@@ -1,6 +1,6 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import { mockJsonParse } from '@/tests/mocks/utils.js'
-import { cwd } from '@/utils/constants.js'
+import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
@@ -136,7 +136,7 @@ describe('clone', () => {
     expect(p.select).toHaveBeenCalledTimes(1)
     expect(p.select).toHaveBeenCalledWith({
       initialValue: expectedRepositories[0],
-      maxItems: 16,
+      maxItems,
       message: 'Select one of your repositories:',
       options: expectedRepositories.map(rep => ({
         label: rep.name,

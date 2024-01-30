@@ -19,4 +19,4 @@ export const lockfileDir = join(homedir(), 'my-cli')
 
 export const lockfilePath = join(lockfileDir, 'setup-lock.json')
 
-export const maxItems = process.stdout.rows - 4
+export const maxItems = Math.max(process.stdout.rows - 4, 0)
