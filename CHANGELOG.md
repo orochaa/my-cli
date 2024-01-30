@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.2.19
+
+### Patch Changes
+
+- c84b8cc: fix(open): invalid filter param validation
+- 7c28ac0: feat(init): add initial scripts to package.json
+- 411fdcf: feat(clone): add --filter flag
+
 ## 0.2.18
 
 ### Patch Changes
