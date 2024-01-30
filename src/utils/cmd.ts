@@ -39,9 +39,11 @@ export function exec(
     log: true,
     ...options,
   }
+
   if (options.log) {
     logCommand(cmd)
   }
+
   return execSync(cmd, { stdio: options.stdio })
 }
 

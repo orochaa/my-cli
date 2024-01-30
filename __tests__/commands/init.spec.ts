@@ -31,9 +31,8 @@ describe('init', () => {
     await sut.exec()
 
     expect(cp.exec).toHaveBeenCalledTimes(3)
-    expect(writeFileSpy).toHaveBeenCalledTimes(8)
-    expect(mkdirSpy).toHaveBeenCalledTimes(1)
-    expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, 'src'))
+    expect(writeFileSpy).toHaveBeenCalledTimes(7)
+    expect(mkdirSpy).toHaveBeenCalledTimes(0)
   })
 
   it('should init project on given dir', async () => {
@@ -53,5 +52,27 @@ describe('init', () => {
     expect(mkdirSpy).toHaveBeenCalledTimes(2)
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, param))
     expect(mkdirSpy).toHaveBeenCalledWith(path.join(cwd, param, 'src'))
+  })
+
+  it('should init project with scripts', async () => {
+    let scripts: Record<string, string> = {}
+    jest.spyOn(fs, 'writeFile').mockImplementation(async (_, data) => {
+      // eslint-disable-next-line jest/no-conditional-in-test
+      if (typeof data === 'string' && data.includes('scripts')) {
+        // @ts-expect-error
+        scripts = JSON.parse(data).scripts
+      }
+    })
+
+    await sut.exec()
+
+    expect(scripts.dev).toBe('tsx src/index.ts')
+    expect(scripts.build).toBe('tsc')
+    expect(scripts.lint).toBe('run-s lint:tsc lint:prettier lint:eslint')
+    expect(scripts['lint:tsc']).toBe('tsc --noEmit')
+    expect(scripts['lint:prettier']).toBe('prettier --write .')
+    expect(scripts['lint:eslint']).toBe(
+      'eslint --fix "src/**/*.ts" "__tests__/**/*.ts"',
+    )
   })
 })

@@ -64,7 +64,7 @@ describe('App', () => {
       },
     } as App.Command)
 
-    await expect(sut.exec('foo')).rejects.toThrow()
+    await expect(sut.exec('foo')).rejects.toThrow(Error)
   })
 
   it('should display command', async () => {

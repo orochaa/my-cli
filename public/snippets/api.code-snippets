@@ -26,8 +26,8 @@
       "    $0",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createServiceClass": {
@@ -43,8 +43,8 @@
       "",
       "  $0",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createRepositoryClass": {
@@ -72,8 +72,8 @@
       "    ",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createInterface": {
@@ -92,8 +92,8 @@
       "  ",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createEntity": {
@@ -119,8 +119,8 @@
       "    ",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createMapper": {
@@ -145,8 +145,8 @@
       "    }",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createRouter": {
@@ -164,8 +164,8 @@
       "",
       "  router.${3:get}('/$2', authUser, adaptController(make$1Controller()))",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createDecorator": {
@@ -181,8 +181,8 @@
       "",
       "  $0",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createMakeController": {
@@ -200,8 +200,8 @@
       "  const controller = new $1Controller(validation, $1)",
       "  return makeLogControllerDecorator(controller)",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "createMakeValidation": {
@@ -221,8 +221,8 @@
       "  })",
       "  return new ValidationComposite(validations)",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "validRequest": {
@@ -233,26 +233,26 @@
       "if (error) {",
       "  return Http.badRequest(error)",
       "}",
-      "$0"
-    ]
+      "$0",
+    ],
   },
 
   "returnVoidPromise": {
     "scope": "typescript",
     "prefix": ["rv", "rvp", "void", "returnVoidPromise"],
-    "body": [": Promise<void>"]
+    "body": [": Promise<void>"],
   },
 
   "returnPromise": {
     "scope": "typescript",
     "prefix": ["rp", "returnPromise"],
-    "body": [": Promise<$0>"]
+    "body": [": Promise<$0>"],
   },
 
   "encapsulate": {
     "scope": "typescript",
     "prefix": ["pr", "private"],
-    "body": ["private readonly $0"]
+    "body": ["private readonly $0"],
   },
 
   "StaticMapperMap": {
@@ -261,8 +261,8 @@
     "body": [
       "static Map(data: $1[]) {",
       "  return data.map(d => new this(d).to$0())",
-      "}"
-    ]
+      "}",
+    ],
   },
 
   "StaticMapperSample": {
@@ -277,7 +277,7 @@
       "        img: data.img,",
       "        name: data.name",
       "      }",
-      "}"
-    ]
-  }
+      "}",
+    ],
+  },
 }

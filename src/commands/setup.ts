@@ -28,6 +28,7 @@ async function setupPrompt(lockfile: Partial<Lockfile>): Promise<Lockfile> {
   const git = await gitPrompt(lockfile.git ?? '')
   const projects = await projectsPrompt(lockfile.projects ?? [])
   p.outro('🚀 Setup finished')
+
   return { git, projects }
 }
 
@@ -41,6 +42,7 @@ async function gitPrompt(lastGit: string): Promise<string> {
   let git = lastGit
   let repeat = false
   let response
+
   do {
     response = await p.text({
       message: 'What is your GitHub username?',
@@ -73,10 +75,11 @@ async function gitPrompt(lastGit: string): Promise<string> {
 
 async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
   const projects: string[] = []
-  const defaultProjectRoot = cwd.replace(/^(.*?)[\\/].+/, '$1').concat('/git')
+  const defaultProjectRoot = `${cwd.replace(/^(.*?)[/\\].+/, '$1')}/git`
 
   let repeat: boolean | symbol = true
   let response
+
   for (let i = 0; repeat; i++) {
     response = await p.text({
       message: 'What is your root projects path:',
@@ -89,8 +92,10 @@ async function projectsPrompt(lastProjects: string[]): Promise<string[]> {
               'this path is already registered',
             ).message
           }
+
           try {
             const status = statSync(res)
+
             if (!status.isDirectory()) {
               return new InvalidParamError('path', 'it is not a directory')
                 .message

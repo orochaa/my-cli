@@ -17,11 +17,14 @@ async function removeCommand(params: string[]): Promise<void> {
 }
 
 async function getRemoveList(params: string[]): Promise<string[]> {
-  if (params.length) {
+  if (params.length > 0) {
     const error = verifyItems(params)
+
     if (error) throw error
+
     return params
   }
+
   return await removePrompt()
 }
 
@@ -38,10 +41,10 @@ async function removePrompt(): Promise<string[]> {
 
   if (isSelectOption) {
     const options = readdirSync(cwd)
-    const response = await p.multiselect<Array<PromptOption<string>>, string>({
+    const response = await p.multiselect<PromptOption<string>[], string>({
       message: 'What do you want to delete?',
       options: options.map(path => ({
-        label: path.replace(/.+[\\/](\w+)/i, '$1'),
+        label: path.replace(/.+[/\\](\w+)/i, '$1'),
         value: path,
       })),
     })
@@ -53,6 +56,7 @@ async function removePrompt(): Promise<string[]> {
       placeholder: 'folder-name file-name...',
       validate: res => {
         const error = verifyItems(res.split(' '))
+
         if (error) return error.message
       },
     })
@@ -69,6 +73,7 @@ function verifyItems(items: string[]): Error | null {
       return new NotFoundError(item)
     }
   }
+
   return null
 }
 

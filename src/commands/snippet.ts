@@ -23,15 +23,18 @@ async function snippetCommand(
   if (hasFlag('--create', flags)) {
     createVsCodeFolder()
     createProjectSnippet()
+
     return
   }
 
   const snippetOptions = mapSnippets()
-  const snippets = params.length
-    ? params.filter(param => snippetOptions.includes(param))
-    : await snippetPrompt(snippetOptions)
+  const snippets =
+    params.length > 0
+      ? params.filter(param => snippetOptions.includes(param))
+      : await snippetPrompt(snippetOptions)
 
   createVsCodeFolder()
+
   for (const snippet of snippets) {
     copySnippet(snippet)
   }
@@ -51,11 +54,12 @@ function createProjectSnippet(): void {
   const projectName = cwd.replace(/^.+\/(.+)/, '$1')
   const fileName = projectName + _extension
   const dest = resolve(_vscodeFolder, fileName)
-  if (!existsSync(dest)) {
+
+  if (existsSync(dest)) {
+    p.log.warn(`Project's snippet already exists: ${dest}`)
+  } else {
     writeFileSync(dest, '{}\n')
     log(dest)
-  } else {
-    p.log.warn(`Project's snippet already exists: ${dest}`)
   }
 }
 
@@ -72,12 +76,13 @@ function mapSnippets(): string[] {
 }
 
 async function snippetPrompt(snippetOptions: string[]): Promise<string[]> {
-  const response = await p.multiselect<Array<PromptOption<string>>, string>({
+  const response = await p.multiselect<PromptOption<string>[], string>({
     message: 'Pick your snippets:',
     options: snippetOptions.map(snippet => ({ value: snippet })),
     required: true,
   })
   verifyPromptResponse(response)
+
   return response
 }
 

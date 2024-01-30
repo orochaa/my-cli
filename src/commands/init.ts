@@ -1,5 +1,8 @@
+/* eslint-disable no-secrets/no-secrets */
 import { type App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
+import { packageJsonPath } from '@/utils/constants.js'
+import { getPackageJson } from '@/utils/file-system.js'
 import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -65,7 +68,7 @@ const eslint = `{
   "rules": {},
   "overrides": [
     {
-      "files": ["__tests__/**"],
+      "files": ["__tests__/**/*.spec.ts"],
       "extends": ["plugin:mist3rbru/jest"],
       "rules": {}
     }
@@ -74,7 +77,7 @@ const eslint = `{
 `
 
 async function initCommand(params: string[]): Promise<void> {
-  const cwd = params.length ? join(process.cwd(), params[0]) : process.cwd()
+  const cwd = params.length > 0 ? join(process.cwd(), params[0]) : process.cwd()
 
   if (!existsSync(cwd)) {
     await mkdir(cwd)
@@ -87,8 +90,22 @@ async function initCommand(params: string[]): Promise<void> {
 
   await execAsync('pnpm init')
   await execAsync(
-    'pnpm add -D typescript @types/node tsx prettier eslint eslint-plugin-mist3rbru',
+    'pnpm add -D typescript @types/node tsx prettier eslint eslint-plugin-mist3rbru npm-run-all2',
   )
+
+  const packageJson = getPackageJson(packageJsonPath)
+
+  if (packageJson?.scripts) {
+    packageJson.scripts.dev = 'tsx src/index.ts'
+    packageJson.scripts.build = 'tsc'
+    packageJson.scripts.lint = 'run-s lint:tsc lint:prettier lint:eslint'
+    packageJson.scripts['lint:tsc'] = 'tsc --noEmit'
+    packageJson.scripts['lint:prettier'] = 'prettier --write .'
+    packageJson.scripts['lint:eslint'] =
+      'eslint --fix "src/**/*.ts" "__tests__/**/*.ts"'
+    await writeFile(packageJsonPath, JSON.stringify(packageJson))
+  }
+
   await execAsync('git init')
   await writeFile(
     join(cwd, '.gitignore'),
@@ -102,6 +119,7 @@ async function initCommand(params: string[]): Promise<void> {
   await writeFile(join(cwd, '.eslintrc.json'), eslint)
 
   const srcPath = join(cwd, 'src')
+
   if (!existsSync(join(cwd, 'src'))) {
     await mkdir(srcPath)
     await writeFile(join(srcPath, 'index.ts'), '')

@@ -14,8 +14,8 @@
       "    </${2:Main}>",
       "  )",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
   "reactPage": {
     "scope": "typescriptreact",
@@ -28,8 +28,8 @@
       "    </${2:Main}>",
       "  )",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
   "styledComponent": {
     "scope": "javascriptreact,typescriptreact",
@@ -40,8 +40,8 @@
       "export const ${1:Container} = styled.${2:View}`",
       "  ${3}",
       "`;",
-      ""
-    ]
+      "",
+    ],
   },
   "componentFunctionalTypescript": {
     "scope": "typescriptreact",
@@ -55,17 +55,17 @@
       "  return <View />;",
       "}",
       "",
-      "export default ${1:${TM_DIRECTORY/^.*(\\/|\\\\)([^(\\/|\\\\)]+)$/$2/}};"
-    ]
+      "export default ${1:${TM_DIRECTORY/^.*(\\/|\\\\)([^(\\/|\\\\)]+)$/$2/}};",
+    ],
   },
   "reactState": {
     "scope": "typescript,typescriptreact",
     "prefix": ["stt", "state"],
-    "body": ["const [$1, set$2] = useState<$3>($4)", "$0"]
+    "body": ["const [$1, set$2] = useState<$3>($4)", "$0"],
   },
   "reactHook": {
     "scope": "typescript,typescriptreact",
     "prefix": ["hook", "use"],
-    "body": ["export function use$1($2) {", "  $0", "}", ""]
-  }
+    "body": ["export function use$1($2) {", "  $0", "}", ""],
+  },
 }

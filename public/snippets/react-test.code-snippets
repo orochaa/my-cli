@@ -8,8 +8,8 @@
       "import { faker } from '@faker-js/faker'",
       "import { render, RenderResult } from '@testing-library/react'",
       "",
-      "$0"
-    ]
+      "$0",
+    ],
   },
 
   "sut": {
@@ -30,8 +30,8 @@
       "  }",
       "}",
       "",
-      "$0"
-    ]
+      "$0",
+    ],
   },
 
   "sutWithRouter": {
@@ -54,8 +54,8 @@
       "  }",
       "}",
       "",
-      "$0"
-    ]
+      "$0",
+    ],
   },
 
   "mockProperties": {
@@ -65,8 +65,8 @@
       "const mockProps = (): ${1:Component}Props => ({",
       "  $0",
       "})",
-      ""
-    ]
+      "",
+    ],
   },
 
   "mockComponent": {
@@ -86,8 +86,8 @@
       "  )",
       "}",
       "",
-      "$0"
-    ]
+      "$0",
+    ],
   },
 
   "mockHooks": {
@@ -101,8 +101,8 @@
       "    }))",
       "  }))",
       "})",
-      ""
-    ]
+      "",
+    ],
   },
 
   "mockReact": {
@@ -118,8 +118,8 @@
       "    }",
       "  })",
       "})",
-      ""
-    ]
+      "",
+    ],
   },
 
   "mockReturnValue": {
@@ -129,8 +129,8 @@
       "const $3 = $0",
       ";($1 as Mock).mockReturnValue${2:Once}({",
       "  $3",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "mockReturnValueWithFunction": {
@@ -140,14 +140,14 @@
       "const $3 = vi.fn($0)",
       ";($1 as Mock).mockReturnValue${2:Once}({",
       "  $3",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "mockFunction": {
     "scope": "typescript",
     "prefix": ["mf", "mockFunction"],
-    "body": ["export const mock$1 = (): $1$0 => ({", "})"]
+    "body": ["export const mock$1 = (): $1$0 => ({", "})"],
   },
 
   "test": {
@@ -162,8 +162,8 @@
       "    expect($2).toBeInTheDocument()",
       "  })",
       "})",
-      ""
-    ]
+      "",
+    ],
   },
 
   "it": {
@@ -177,8 +177,8 @@
       "  const ${4:component} = sut.getByTestId('$4')",
       "",
       "  expect($4).to$0()",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "testSubmit": {
@@ -197,7 +197,7 @@
       "  fireEvent.submit(form)",
       "  ",
       "  expect(requestSpy).toHaveBeenCalledTimes(1)",
-      "})"
-    ]
-  }
+      "})",
+    ],
+  },
 }

@@ -1,21 +1,22 @@
 import { type App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
+import { InvalidParamError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import * as p from '@clack/prompts'
 
-type Controller = Array<[projectsRoot: string, projects: string[]]>
+type Controller = [projectsRoot: string, projects: string[]][]
 
 async function openCommand(params: string[], flags: string[]): Promise<void> {
   const controller = getController()
   const isFilter = hasFlag(['--filter', '-f'], flags)
 
   const openProjectList = await Promise.resolve(
-    params.length && isFilter
+    params.length > 0 && isFilter
       ? getFilteredProjects(controller, params)
-      : params.length
+      : params.length > 0
         ? getProjects(controller, params)
         : openPrompt(controller),
   )
@@ -40,12 +41,14 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
 function getController(): Controller {
   const lockfile = readLockfile()
   const controller: Controller = []
+
   for (const projectsRoot of lockfile.projects) {
     const projects = readdirSync(projectsRoot, { withFileTypes: true })
       .filter(item => item.isDirectory() && !/^\./.test(item.name))
       .map(project => project.name)
     controller.push([projectsRoot, projects])
   }
+
   return controller
 }
 
@@ -60,6 +63,11 @@ async function getFilteredProjects(
       projects.filter(project => filterRegex.test(project)),
     ])
     .filter(tuple => tuple[1].length) as Controller
+
+  if (filteredController.length === 0) {
+    throw new InvalidParamError('filter param', 'No project found')
+  }
+
   return filteredController.length === 1 &&
     filteredController[0][1].length === 1
     ? [join(filteredController[0][0], filteredController[0][1][0])]
@@ -79,6 +87,7 @@ function getProjects(controller: Controller, params: string[]): string[] {
         const rootEnd = getPathEnd(projectsRoot)
         const isRoot = rootEnd === paramRoot
         const hasProject = projects.includes(paramProject)
+
         if (isRoot && hasProject) {
           result.push(join(projectsRoot, paramProject))
           break
@@ -94,21 +103,21 @@ function getProjects(controller: Controller, params: string[]): string[] {
 }
 
 async function openPrompt(controller: Controller): Promise<string[]> {
-  const projects = await p.multiselect<Array<PromptOption<string>>, string>({
+  const projects = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select a project to open:',
-    options: controller
-      .map(([root, folders]) => {
-        const rootEnd = getPathEnd(root)
-        return folders.map(folder => ({
-          label: `${rootEnd}/${folder}`,
-          value: join(root, folder),
-        }))
-      })
-      .flat(),
+    options: controller.flatMap(([root, folders]) => {
+      const rootEnd = getPathEnd(root)
+
+      return folders.map(folder => ({
+        label: `${rootEnd}/${folder}`,
+        value: join(root, folder),
+      }))
+    }),
   })
   verifyPromptResponse(projects)
 
   let isWorkspace: boolean | symbol = false
+
   if (projects.length > 1) {
     isWorkspace = await p.confirm({
       message: 'Open on workspace?',

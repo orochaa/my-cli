@@ -19,24 +19,27 @@ const players = {
 async function playCommand(params: string[]): Promise<void> {
   let player: string = ''
 
-  if (params.length) {
+  if (params.length > 0) {
     const alias = params[0]
+
     for (const playerData of objectValues(players)) {
       if (playerData.aliases.includes(alias)) {
         player = playerData.url
         break
       }
     }
+
     if (!player) {
       throw new InvalidParamError('player')
     }
   } else {
     player = await playPrompt()
   }
-  const open = (await import('open')).default
+
+  const open = await import('open')
 
   p.outro(`Opening ${color.blue(player)}`)
-  await open(player)
+  await open.default(player)
 }
 
 async function playPrompt(): Promise<string> {
@@ -49,6 +52,7 @@ async function playPrompt(): Promise<string> {
     initialValue: players.youtube.url,
   })
   verifyPromptResponse(response)
+
   return response
 }
 
@@ -56,9 +60,7 @@ export function playRecord(app: App): void {
   app.register({
     name: 'play',
     alias: null,
-    params: objectValues(players)
-      .map(player => player.aliases)
-      .flat(),
+    params: objectValues(players).flatMap(player => player.aliases),
     description: 'Open a music player on your default browser',
     example: 'my play yt',
     action: playCommand,

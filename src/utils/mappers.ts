@@ -12,21 +12,21 @@ export function objectEntries<const TObj extends object>(
 
 export function objectKeys<const TObj extends object>(
   obj: TObj,
-): Array<keyof TObj> {
-  return Object.keys(obj) as Array<keyof TObj>
+): (keyof TObj)[] {
+  return Object.keys(obj) as (keyof TObj)[]
 }
 
 export function objectValues<const TObj extends object>(
   obj: TObj,
-): Array<TObj[keyof TObj]> {
-  return Object.values(obj) as Array<TObj[keyof TObj]>
+): TObj[keyof TObj][] {
+  return Object.values(obj) as TObj[keyof TObj][]
 }
 
 type MergeObjects<T, K = T> = T extends [infer F, ...infer R]
   ? F & MergeObjects<R, F>
   : K
 
-export function mergeObjects<T extends Array<Record<string, unknown>>>(
+export function mergeObjects<T extends Record<string, unknown>[]>(
   ...[first, ...rest]: T
 ): MergeObjects<T> {
   return Object.assign(first, ...rest)
@@ -48,7 +48,7 @@ export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
       currentObject = currentObject[key]
     }
 
-    currentObject[nestedKeys[nestedKeys.length - 1]] = parseValue(value)
+    currentObject[nestedKeys.at(-1) ?? 0] = parseValue(value)
   }
 
   return result
@@ -61,13 +61,17 @@ export function parseValue(value: string): unknown {
     return true
   } else if (value === 'false') {
     return false
-  } else if (!isNaN(Number(value))) {
-    return parseFloat(value)
-  } else if (/^\[.*?\]$/i.test(value)) {
-    return value.slice(1, -1).split(',').filter(Boolean).map(parseValue)
+  } else if (!Number.isNaN(Number(value))) {
+    return Number.parseFloat(value)
+  } else if (/^\[.*?]$/i.test(value)) {
+    return value
+      .slice(1, -1)
+      .split(',')
+      .filter(Boolean)
+      .map(v => parseValue(v))
   } else if (/^{.*?}$/i.test(value)) {
     return JSON.parse(value)
   }
 
-  return value.replace('+', ' ').replace(/(?:^["'])|(?:["']$)/g, '')
+  return value.replace('+', ' ').replaceAll(/(?:^["'])|(?:["']$)/g, '')
 }

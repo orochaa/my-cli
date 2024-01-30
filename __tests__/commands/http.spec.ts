@@ -3,13 +3,17 @@ import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import axios from 'axios'
 
 jest.mock('axios', () => {
+  // eslint-disable-next-line unicorn/consistent-function-scoping
+  const mockFn = async () => ({ data: '' })
+
   class Axios {
     create = (): this => this
-    get = jest.fn(async () => ({ data: '' }))
-    post = jest.fn(async () => ({ data: '' }))
-    put = jest.fn(async () => ({ data: '' }))
-    delete = jest.fn(async () => ({ data: '' }))
+    get = jest.fn(mockFn)
+    post = jest.fn(mockFn)
+    put = jest.fn(mockFn)
+    delete = jest.fn(mockFn)
   }
+
   return new Axios()
 })
 

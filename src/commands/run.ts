@@ -13,7 +13,7 @@ import * as p from '@clack/prompts'
 type Runner = 'npm' | 'npx'
 
 async function runCommand(scripts: string[], flags: string[]): Promise<void> {
-  const hasScripts = !!scripts.length
+  const hasScripts = scripts.length > 0
   const isDeep = hasFlag(['--deep', '-d'], flags)
 
   if (hasScripts && isDeep) {
@@ -31,8 +31,9 @@ async function shallowRun(scripts: string[]): Promise<void> {
   await run(filterScripts(scripts, packageJson))
 }
 
-async function run(data: Array<[Runner, string]>): Promise<void> {
+async function run(data: [Runner, string][]): Promise<void> {
   const pm = (await detect()) ?? 'pnpm'
+
   for (const [runner, script] of data) {
     const command =
       script === 'install' ? pm : runner === 'npm' ? 'npm run' : runner
@@ -47,6 +48,7 @@ async function deepRun(scripts: string[]): Promise<void> {
 
   for (const folder of localFolders) {
     const packageJson = getPackageJson(join(cwd, folder, 'package.json'))
+
     if (packageJson?.scripts) {
       process.chdir(join(cwd, folder))
       await run(filterScripts(scripts, packageJson))
@@ -67,7 +69,7 @@ function verifyScripts(
 function filterScripts(
   scripts: string[],
   packageJson: PackageJson,
-): Array<[Runner, string]> {
+): [Runner, string][] {
   const isPartial = hasFlag(['--partial', '-p'])
   const mappedScripts = mapScriptsRunner(scripts, packageJson)
 
@@ -79,9 +81,10 @@ function filterScripts(
 function mapScriptsRunner(
   scripts: string[],
   packageJson: PackageJson,
-): Array<[Runner, string]> {
+): [Runner, string][] {
   return scripts.map(script => {
-    const isNpm = !!packageJson?.scripts?.[script]
+    const isNpm = !!packageJson.scripts?.[script]
+
     return [isNpm ? 'npm' : 'npx', script]
   })
 }
@@ -90,7 +93,7 @@ async function runPrompt(): Promise<void> {
   const packageJson = getPackageJson()
   verifyScripts(packageJson)
 
-  const scripts = await p.multiselect<Array<PromptOption<string>>, string>({
+  const scripts = await p.multiselect<PromptOption<string>[], string>({
     message: 'Select some scripts to run in sequence: ',
     options: objectEntries(packageJson.scripts).map(([script, cmd]) => ({
       label: script,

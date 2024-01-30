@@ -19,7 +19,7 @@ async function branchCommand(): Promise<void> {
     const originsData = await execAsync('git remote')
     const originsList = originsData.split(/\n/g)
     const origin =
-      originsList.find(origin => origin.startsWith('o')) ?? originsList[0]
+      originsList.find(_origin => _origin.startsWith('o')) ?? originsList[0]
     const branch = formatBranch(selectedBranch)
     exec(`git checkout ${branch}`)
     exec(`git pull ${origin} ${branch}`)
@@ -31,7 +31,7 @@ function isRemoteBranch(branch: string): boolean {
 }
 
 function formatBranch(branch: string): string {
-  return branch.replace(/.*?([^\s]+)$/, '$1')
+  return branch.replace(/.*?(\S+)$/, '$1')
 }
 
 function formatRemoteBranch(branch: string): string {
@@ -53,6 +53,7 @@ async function branchPrompt(branches: string[]): Promise<string> {
     maxItems,
   })
   verifyPromptResponse(response)
+
   return response
 }
 

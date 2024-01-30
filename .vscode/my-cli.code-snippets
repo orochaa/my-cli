@@ -6,8 +6,8 @@
       "async function $1Command(params: string[], flags: string[]): Promise<void> {",
       "  $0",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
   "create prompt": {
     "scope": "typescript",
@@ -20,8 +20,8 @@
       "  verifyPromptResponse(response)",
       "  return response",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
   "register command": {
     "scope": "typescript",
@@ -38,8 +38,8 @@
       "    example: 'my $1',",
       "    action: $1Command",
       "  })",
-      "}"
-    ]
+      "}",
+    ],
   },
   "test command": {
     "scope": "typescript",
@@ -60,7 +60,7 @@
       "    expect()",
       "  })",
       "})",
-      ""
-    ]
-  }
+      "",
+    ],
+  },
 }

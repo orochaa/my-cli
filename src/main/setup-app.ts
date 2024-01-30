@@ -5,11 +5,13 @@ import { App } from './app.js'
 export function setupApp(): App {
   const app = new App()
 
-  objectEntries(command)
-    .sort(([a], [b]) => (a === 'setupRecord' ? -1 : a > b ? 1 : a < b ? -1 : 0))
-    .forEach(([_, register]) => {
-      register(app)
-    })
+  const sortedCommands = objectEntries(command).sort(([a], [b]) =>
+    a === 'setupRecord' ? -1 : a > b ? 1 : a < b ? -1 : 0,
+  )
+
+  for (const [, register] of sortedCommands) {
+    register(app)
+  }
 
   return app
 }

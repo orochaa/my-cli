@@ -16,8 +16,8 @@
       "    $2",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "makeSut": {
@@ -27,8 +27,8 @@
       "const makeSut = (props: $0Props): $0 => {",
       "  return new ${0:Class}(props)",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "test": {
@@ -45,8 +45,8 @@
       "    expect($5Spy.calledTimes).toBe(1)",
       "    expect($5Spy.$6).${7:toBe}($0)",
       "  })",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "testMakeValidation": {
@@ -71,8 +71,8 @@
       "    expect(ValidationComposite).toHaveBeenCalledWith(validations)",
       "  })",
       "})",
-      ""
-    ]
+      "",
+    ],
   },
 
   "it": {
@@ -87,8 +87,8 @@
       "",
       "  expect($4Spy.calledTimes).toBe(1)",
       "  expect($4Spy.$5).${6:toBe}($0)",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "exception": {
@@ -108,8 +108,8 @@
       "    const promise = sut.${3:method}(mock)",
       "    await expect(promise).rejects.toThrow()",
       "  }",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "mockModel": {
@@ -122,8 +122,8 @@
       "export const mock$1 = (): $1 => ({",
       "  $0",
       "})",
-      ""
-    ]
+      "",
+    ],
   },
 
   "mockEntity": {
@@ -139,8 +139,8 @@
       "    ...props",
       "  })",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "mockReturnValue": {
@@ -150,20 +150,20 @@
       "const $3 = $0",
       ";($1 as jest.Mock).mockReturnValue${2:Once}({",
       "  $3",
-      "})"
-    ]
+      "})",
+    ],
   },
 
   "mockRequest": {
     "scope": "typescript",
     "prefix": ["mr", "mockRequest"],
-    "body": ["const mockRequest = (): I$1.Params => ({", "  $0", "})", ""]
+    "body": ["const mockRequest = (): I$1.Params => ({", "  $0", "})", ""],
   },
 
   "mockProps": {
     "scope": "typescript",
     "prefix": ["mp", "mockProps"],
-    "body": ["const mockProps = (): $1Props => ({", "  $0", "})", ""]
+    "body": ["const mockProps = (): $1Props => ({", "  $0", "})", ""],
   },
 
   "mockSpyClass": {
@@ -188,8 +188,8 @@
       "    return this",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "mockPromiseSpyClass": {
@@ -208,8 +208,8 @@
       "    return this.result",
       "  }",
       "}",
-      ""
-    ]
+      "",
+    ],
   },
 
   "getError": {
@@ -219,7 +219,7 @@
       "get error(): this {",
       "  this.$0 = throwError",
       "  return this",
-      "}"
-    ]
-  }
+      "}",
+    ],
+  },
 }

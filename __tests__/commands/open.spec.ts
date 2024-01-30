@@ -1,6 +1,7 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd } from '@/utils/constants.js'
+import { InvalidParamError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
 import { join } from 'node:path'
@@ -217,7 +218,7 @@ describe('open', () => {
     expect(p.confirm).toHaveBeenCalledTimes(0)
   })
 
-  it('should open prompt with single filtered options', async () => {
+  it('should open prompt with filtered options from a single filter param', async () => {
     mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
@@ -239,7 +240,7 @@ describe('open', () => {
     })
   })
 
-  it('should open prompt with multi filtered options', async () => {
+  it('should open prompt with filtered options from multiple filter params', async () => {
     mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
@@ -261,7 +262,7 @@ describe('open', () => {
     })
   })
 
-  it('should not open prompt with a single filtered option', async () => {
+  it('should auto open if there is only a single filtered project', async () => {
     mockJsonParse({ projects: [join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
@@ -273,5 +274,16 @@ describe('open', () => {
       `code ${join(cwd, '/root/foo')}`,
       expect.anything(),
     )
+  })
+
+  it('should throw on invalid filter param', async () => {
+    mockJsonParse({ projects: [join(cwd, '/root')] })
+    mockReaddir(['foo', 'bar', 'baz'])
+
+    const promise = sut.exec('-f invalid-param')
+
+    await expect(promise).rejects.toThrow(InvalidParamError)
+    expect(p.multiselect).toHaveBeenCalledTimes(0)
+    expect(cp.execSync).toHaveBeenCalledTimes(0)
   })
 })

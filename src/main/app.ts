@@ -11,6 +11,7 @@ export class App {
 
   public async exec(name: string): Promise<void> {
     const command = this.getCommand(name)
+
     if (!command) {
       return this.handleError(new InvalidParamError(name))
     }
@@ -18,6 +19,7 @@ export class App {
     const args = process.argv.slice(3)
     const params: string[] = []
     const flags: string[] = []
+
     for (const arg of args) {
       if (arg.startsWith('-')) {
         flags.push(arg)
@@ -35,17 +37,21 @@ export class App {
         return command
       }
     }
+
     return null
   }
 
   public displayCommand(command: App.Command): void {
     this.log(`${colors.magenta('-')} command: ${colors.cyan(command.name)}\n`)
+
     if (command.alias) {
       this.log(`  alias: ${command.alias}\n`)
     }
+
     if (command.params?.length) {
       this.log(`  params: ${this.mapHighlight(command.params)}\n`)
     }
+
     if (command.flags?.length) {
       this.log(`  flags: ${this.mapHighlight(command.flags)}\n`)
     }
@@ -55,6 +61,7 @@ export class App {
 
   public displayAllCommands(): void {
     this.log('# List of Commands\n')
+
     for (const command of this.commands) {
       this.displayCommand(command)
     }

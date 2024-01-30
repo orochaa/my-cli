@@ -38,9 +38,11 @@ async function httpCommand(params: string[]): Promise<void> {
 function getMethod(params: string[]): [Method, string[]] {
   const methods: Method[] = ['get', 'post', 'put', 'delete']
   const param = params[0].toLowerCase()
+
   if (methods.includes(param)) {
     return [param as Method, params.slice(1)]
   }
+
   return ['get', params]
 }
 
@@ -48,12 +50,15 @@ function getUrl(params: string[]): [string, string[]] {
   const rest = params.slice(1)
 
   const firstParam = params[0]
+
   if (firstParam.startsWith('/')) {
     return [`http://localhost:3000${firstParam}`, rest]
   }
+
   if (firstParam.startsWith(':')) {
     return [`http://localhost${firstParam}`, rest]
   }
+
   if (firstParam.startsWith('http')) {
     return [firstParam, rest]
   }
@@ -62,12 +67,14 @@ function getUrl(params: string[]): [string, string[]] {
 }
 
 function getBody(bodyParams: string[]): Record<string, unknown> {
-  return bodyParams.length ? convertToJSON(bodyParams) : {}
+  return bodyParams.length > 0 ? convertToJSON(bodyParams) : {}
 }
 
 function getHeaders(params: string[]): Record<string, string> {
   return (
-    params.length ? convertToJSON(params.map(p => p.replace(/^h\./, ''))) : {}
+    params.length > 0
+      ? convertToJSON(params.map(p => p.replace(/^h\./, '')))
+      : {}
   ) as Record<string, string>
 }
 
