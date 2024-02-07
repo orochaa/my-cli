@@ -2,7 +2,9 @@ import { type App } from '@/main/app.js'
 import { isSilent } from '@/utils/cmd.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { convertToJSON } from '@/utils/mappers.js'
-import axios from 'axios'
+import axios, { type AxiosResponse } from 'axios'
+import color from 'picocolors'
+import { log, outro } from '@clack/prompts'
 
 type Method = 'get' | 'post' | 'put' | 'delete'
 
@@ -12,7 +14,7 @@ type Http = Record<
     url: string,
     headers: Record<string, string>,
     body: Record<string, unknown>,
-  ) => Promise<unknown>
+  ) => Promise<AxiosResponse>
 >
 
 async function httpCommand(params: string[]): Promise<void> {
@@ -28,10 +30,31 @@ async function httpCommand(params: string[]): Promise<void> {
   const headers = getHeaders(headerParams)
 
   const http = createHttp()
-  const result = await http[method](url, headers, body)
+  const { status, data } = await http[method](url, headers, body)
 
-  if (!isSilent() && result) {
-    console.log(result)
+  if (!isSilent()) {
+    const statusLabel = color.cyan('"StatusCode"')
+    const bodyLabel = color.cyan('"Body"')
+
+    const statusMessage = `${statusLabel}: ${status}`
+    status < 400 ? log.success(statusMessage) : log.error(statusMessage)
+
+    if (data) {
+      const jsonLines = JSON.stringify(data, null, 2).split(/\n/g)
+
+      log.message(`${bodyLabel}: ${jsonLines[0]}`)
+
+      for (let i = 1; i < jsonLines.length; i++) {
+        process.stdout.moveCursor(0, -1)
+        log.message(
+          jsonLines[i].replace(/^(.*?)(".+?")/, `$1${color.cyan('$2')}`),
+        )
+      }
+    } else {
+      log.message(`${bodyLabel}: No Content`)
+    }
+    process.stdout.moveCursor(0, -1)
+    outro()
   }
 }
 
@@ -99,17 +122,17 @@ function createHttp(): Http {
   })
 
   return {
-    async get(url, headers): Promise<unknown> {
-      return await a.get(url, { headers }).then(({ data }) => data)
+    async get(url, headers): Promise<AxiosResponse> {
+      return await a.get(url, { headers })
     },
-    async post(url, headers, body): Promise<unknown> {
-      return await a.post(url, body, { headers }).then(({ data }) => data)
+    async post(url, headers, body): Promise<AxiosResponse> {
+      return await a.post(url, body, { headers })
     },
-    async put(url, headers, body): Promise<unknown> {
-      return await a.put(url, body, { headers }).then(({ data }) => data)
+    async put(url, headers, body): Promise<AxiosResponse> {
+      return await a.put(url, body, { headers })
     },
-    async delete(url, headers): Promise<unknown> {
-      return await a.delete(url, { headers }).then(({ data }) => data)
+    async delete(url, headers): Promise<AxiosResponse> {
+      return await a.delete(url, { headers })
     },
   }
 }
