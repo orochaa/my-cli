@@ -14,7 +14,7 @@ const tsconfig = `{
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "noEmit": true,
+    "noEmit": false,
     
     /* Base Options: */
     "esModuleInterop": true,
@@ -32,8 +32,8 @@ const tsconfig = `{
     /* Alias */
     "baseUrl": ".",
     "paths": {
-      "@/tests/*": ["__tests__/*"],
-      "@/*": ["src/*"]
+      "#tests/*": ["__tests__/*"],
+      "#*": ["src/*"]
     }
   }
 }`
@@ -96,6 +96,7 @@ async function initCommand(params: string[]): Promise<void> {
   const packageJson = getPackageJson(packageJsonPath)
 
   if (packageJson?.scripts) {
+    packageJson.type = 'module'
     packageJson.scripts.dev = 'tsx src/index.ts'
     packageJson.scripts.build = 'tsc'
     packageJson.scripts.lint = 'run-s lint:tsc lint:prettier lint:eslint'
@@ -103,7 +104,7 @@ async function initCommand(params: string[]): Promise<void> {
     packageJson.scripts['lint:prettier'] = 'prettier --write .'
     packageJson.scripts['lint:eslint'] =
       'eslint --fix "src/**/*.ts" "__tests__/**/*.ts"'
-    await writeFile(packageJsonPath, JSON.stringify(packageJson))
+    await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2))
   }
 
   await execAsync('git init')

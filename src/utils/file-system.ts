@@ -6,6 +6,7 @@ import {
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 
 export type PackageJson = Partial<{
+  type: 'commonjs' | 'module'
   version: string
   scripts: Record<string, string>
   dependencies: Record<string, string>
