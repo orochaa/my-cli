@@ -1,10 +1,10 @@
 import { type App } from '@/main/app.js'
 import { myCliPackageJsonPath } from '@/utils/constants.js'
-import { getPackageJson } from '@/utils/file-system.js'
+import { readPackageJson } from '@/utils/file-system.js'
 import * as p from '@clack/prompts'
 
 async function versionCommand(): Promise<void> {
-  const packageJson = getPackageJson(myCliPackageJsonPath)
+  const packageJson = readPackageJson(myCliPackageJsonPath)
 
   if (packageJson?.version) {
     p.outro(`v${packageJson.version}`)

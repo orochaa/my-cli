@@ -2,7 +2,7 @@
 import { type App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
 import { packageJsonPath } from '@/utils/constants.js'
-import { getPackageJson } from '@/utils/file-system.js'
+import { readPackageJson } from '@/utils/file-system.js'
 import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -93,7 +93,7 @@ async function initCommand(params: string[]): Promise<void> {
     'pnpm add -D typescript @types/node tsx prettier eslint eslint-plugin-mist3rbru npm-run-all2',
   )
 
-  const packageJson = getPackageJson(packageJsonPath)
+  const packageJson = readPackageJson(packageJsonPath)
 
   if (packageJson?.scripts) {
     packageJson.type = 'module'

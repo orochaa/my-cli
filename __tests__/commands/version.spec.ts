@@ -1,5 +1,5 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { getPackageJson } from '@/utils/file-system.js'
+import { readPackageJson } from '@/utils/file-system.js'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
@@ -7,7 +7,7 @@ jest.mock('@clack/prompts', () => ({
 }))
 
 jest.mock('@/utils/file-system.js', () => ({
-  getPackageJson: jest.fn(() => ({
+  readPackageJson: jest.fn(() => ({
     version: '1.0.0',
   })),
 }))
@@ -23,7 +23,7 @@ describe('version', () => {
   })
 
   it('should print an error response', async () => {
-    ;(getPackageJson as jest.Mock).mockReturnValueOnce({})
+    ;(readPackageJson as jest.Mock).mockReturnValueOnce({})
 
     await sut.exec()
 

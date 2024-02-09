@@ -141,7 +141,7 @@ export function openRecord(app: App): void {
   app.register({
     name: 'open',
     alias: null,
-    params: ['<project>...'],
+    params: ['<...projects>'],
     flags: ['--workspace', '-w', '--reuse-window', '-r', '--filter', '-f'],
     description:
       'Open a project on vscode, the projects available are based on `setup`',

@@ -4,6 +4,7 @@ import {
   packageJsonPath,
 } from '@/utils/constants.js'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { NotFoundError } from './errors.js'
 
 export type PackageJson = Partial<{
   type: 'commonjs' | 'module'
@@ -13,7 +14,7 @@ export type PackageJson = Partial<{
   devDependencies: Record<string, string>
 }>
 
-export function getPackageJson(
+export function readPackageJson(
   path: string = packageJsonPath,
 ): PackageJson | null {
   if (!existsSync(path)) {
@@ -21,6 +22,17 @@ export function getPackageJson(
   }
 
   return JSON.parse(readFileSync(path).toString()) as PackageJson
+}
+
+export function writePackageJson(
+  data: Record<string, unknown>,
+  path: string = packageJsonPath,
+): void {
+  if (!existsSync(path)) {
+    throw new NotFoundError('package.json')
+  }
+
+  writeFileSync(path, JSON.stringify(data, null, 2))
 }
 
 export function verifyLockfile(): boolean {

@@ -81,7 +81,7 @@ export function removeRecord(app: App): void {
   app.register({
     name: 'remove',
     alias: 'rm',
-    params: ['<folder | file>...'],
+    params: ['<...(folders || files)>'],
     description:
       'Remove recursively a folder or file on the relative given path',
     example: 'my rm dist coverage',
