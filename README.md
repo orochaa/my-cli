@@ -28,7 +28,7 @@ A compilation of my CLI snippets.
 - `init`: Initialize a default project with git and typescript
   - example: my init
 - `open`: Open a project on vscode, the projects available are based on `setup`
-  - params: `<project>...`
+  - params: `<...projects>`
   - flags: `--workspace` | `-w` | `--reuse-window` | `-r` | `--filter` | `-f`
   - example: my open my-cli my-app my-api
 - `outdated`: Check if package is on latest version
@@ -46,12 +46,15 @@ A compilation of my CLI snippets.
   - example: my pomo d
 - `remove`: Remove recursively a folder or file on the relative given path
   - alias: `rm`
-  - params: `<folder | file>...`
+  - params: `<...(folders || files)>`
   - example: my rm dist coverage
 - `run`: Run scripts in sequence
-  - params: `<script>...`
+  - params: `<...scripts>`
   - flags: `--deep` | `-d` | `--partial` | `-p`
   - example: my run lint build "vitest --run"
+- `scripts`: Write common scripts on local package.json
+  - params: `lint` | `jest` | `vitest` | `prisma`
+  - example: my scripts
 - `snippet`: Create snippet collections on local project
   - params: `api` | `api-test` | `esm` | `nest` | `react` | `react-native` | `react-test` | `typescript`
   - flags: `--create`
