@@ -53,7 +53,7 @@ A compilation of my CLI snippets.
   - flags: `--deep` | `-d` | `--partial` | `-p`
   - example: my run lint build "vitest --run"
 - `scripts`: Write common scripts on local package.json
-  - params: `lint` | `jest` | `vitest` | `prisma`
+  - params: `lint` | `jest` | `vitest` | `prisma` | `changeset`
   - example: my scripts
 - `snippet`: Create snippet collections on local project
   - params: `api` | `api-test` | `esm` | `nest` | `react` | `react-native` | `react-test` | `typescript`

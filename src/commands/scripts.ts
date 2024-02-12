@@ -1,11 +1,11 @@
 import { type App } from '@/main/app.js'
-import { NotFoundError } from '@/utils/errors.js'
+import { MissingParamError, NotFoundError } from '@/utils/errors.js'
 import { readPackageJson, writePackageJson } from '@/utils/file-system.js'
 import { objectEntries, objectKeys } from '@/utils/mappers.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import * as p from '@clack/prompts'
 
-type ScriptGroup = 'prisma' | 'jest' | 'vitest' | 'lint'
+type ScriptGroup = 'prisma' | 'jest' | 'vitest' | 'lint' | 'changeset'
 
 const scripts: Record<ScriptGroup, Record<string, string>> = {
   lint: {
@@ -29,6 +29,11 @@ const scripts: Record<ScriptGroup, Record<string, string>> = {
     'prisma:prod': 'prisma migrate deploy',
     'prisma:reset': 'prisma migrate reset',
   },
+  changeset: {
+    ci: 'run-s lint build test',
+    publish: 'changeset publish',
+    release: 'run-s ci publish',
+  },
 }
 
 const scriptKeys = objectKeys(scripts)
@@ -37,10 +42,14 @@ async function scriptsCommand(
   params: string[],
   flags: string[],
 ): Promise<void> {
-  const scriptsGroups =
+  const scriptGroups =
     params.length > 0
       ? (params.filter(param => scriptKeys.includes(param)) as ScriptGroup[])
       : await scriptsPrompt()
+
+  if (scriptGroups.length === 0) {
+    throw new MissingParamError('scripts')
+  }
 
   const packageJson = readPackageJson()
 
@@ -50,7 +59,7 @@ async function scriptsCommand(
 
   packageJson.scripts ??= {}
 
-  for (const scriptGroup of scriptsGroups) {
+  for (const scriptGroup of scriptGroups) {
     for (const [scriptName, scriptCommand] of objectEntries(
       scripts[scriptGroup],
     )) {
