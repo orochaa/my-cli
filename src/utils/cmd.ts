@@ -48,9 +48,9 @@ export function exec(
 }
 
 export async function execAsync(cmd: string): Promise<string> {
-  return await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     execCb(cmd, (error, stdout, stderr) => {
-      stderr ? reject(error) : resolve(stdout)
+      stderr ? reject(error as Error) : resolve(stdout)
     })
   })
 }

@@ -1,16 +1,10 @@
 import { type App } from '@/main/app.js'
-import { myCliPackageJsonPath } from '@/utils/constants.js'
-import { readPackageJson } from '@/utils/file-system.js'
 import * as p from '@clack/prompts'
+import { version } from '../../package.json'
 
+// eslint-disable-next-line @typescript-eslint/require-await
 async function versionCommand(): Promise<void> {
-  const packageJson = readPackageJson(myCliPackageJsonPath)
-
-  if (packageJson?.version) {
-    p.outro(`v${packageJson.version}`)
-  } else {
-    p.outro('🙁 Could not find package')
-  }
+  p.outro(`v${version}`)
 }
 
 export function versionRecord(app: App): void {

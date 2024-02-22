@@ -15,7 +15,7 @@ const players = {
 }
 
 jest.mock('@clack/prompts', () => ({
-  select: jest.fn(async () => players.youtube.url),
+  select: jest.fn(() => players.youtube.url),
   outro: jest.fn(),
 }))
 

@@ -23,7 +23,7 @@ jest.mock('@clack/prompts', () => ({
 }))
 
 jest.mock('pacote', () => ({
-  manifest: jest.fn(async () => ({
+  manifest: jest.fn(() => ({
     version: version.latest,
   })),
 }))

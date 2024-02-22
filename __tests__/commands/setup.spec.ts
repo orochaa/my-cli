@@ -14,8 +14,8 @@ const startSpy = jest.fn()
 const stopSpy = jest.fn()
 
 jest.mock('@clack/prompts', () => ({
-  text: jest.fn(async () => mock.git),
-  confirm: jest.fn(async options => options.initialValue),
+  text: jest.fn(() => mock.git),
+  confirm: jest.fn(options => options.initialValue),
   spinner: jest.fn(() => ({
     start: startSpy,
     stop: stopSpy,
@@ -24,7 +24,7 @@ jest.mock('@clack/prompts', () => ({
 }))
 
 jest.mock('axios', () => ({
-  get: jest.fn(async () => ({
+  get: jest.fn(() => ({
     data: {
       login: '',
       name: '',

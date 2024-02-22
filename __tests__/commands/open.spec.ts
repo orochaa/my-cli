@@ -26,8 +26,8 @@ const mockReaddir = (paths: string[] | fs.Dirent[]): void => {
 }
 
 jest.mock('@clack/prompts', () => ({
-  multiselect: jest.fn(async () => [cwd]),
-  confirm: jest.fn(async () => false),
+  multiselect: jest.fn(() => [cwd]),
+  confirm: jest.fn(() => false),
 }))
 
 describe('open', () => {

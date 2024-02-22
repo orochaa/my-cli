@@ -9,9 +9,9 @@ const mock = 'test-delete.mock'
 const mockPath = join(cwd, mock)
 
 jest.mock('@clack/prompts', () => ({
-  text: jest.fn(async () => mock),
-  confirm: jest.fn(async () => true),
-  multiselect: jest.fn(async () => [mock]),
+  text: jest.fn(() => mock),
+  confirm: jest.fn(() => true),
+  multiselect: jest.fn(() => [mock]),
   outro: jest.fn(),
 }))
 

@@ -14,7 +14,7 @@ type Http = Record<
     url: string,
     headers: Record<string, string>,
     body: Record<string, unknown>,
-  ) => Promise<AxiosResponse>
+  ) => Promise<AxiosResponse<unknown>>
 >
 
 async function httpCommand(params: string[]): Promise<void> {
@@ -123,16 +123,16 @@ function createHttp(): Http {
 
   return {
     async get(url, headers): Promise<AxiosResponse> {
-      return await a.get(url, { headers })
+      return a.get(url, { headers })
     },
     async post(url, headers, body): Promise<AxiosResponse> {
-      return await a.post(url, body, { headers })
+      return a.post(url, body, { headers })
     },
     async put(url, headers, body): Promise<AxiosResponse> {
-      return await a.put(url, body, { headers })
+      return a.put(url, body, { headers })
     },
     async delete(url, headers): Promise<AxiosResponse> {
-      return await a.delete(url, { headers })
+      return a.delete(url, { headers })
     },
   }
 }

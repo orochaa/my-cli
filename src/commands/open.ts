@@ -44,7 +44,7 @@ function getController(): Controller {
 
   for (const projectsRoot of lockfile.projects) {
     const projects = readdirSync(projectsRoot, { withFileTypes: true })
-      .filter(item => item.isDirectory() && !/^\./.test(item.name))
+      .filter(item => item.isDirectory() && !item.name.startsWith('.'))
       .map(project => project.name)
     controller.push([projectsRoot, projects])
   }
@@ -71,7 +71,7 @@ async function getFilteredProjects(
   return filteredController.length === 1 &&
     filteredController[0][1].length === 1
     ? [join(filteredController[0][0], filteredController[0][1][0])]
-    : await openPrompt(filteredController)
+    : openPrompt(filteredController)
 }
 
 function getProjects(controller: Controller, params: string[]): string[] {

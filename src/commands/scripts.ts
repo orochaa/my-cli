@@ -40,7 +40,7 @@ const scriptKeys = objectKeys(scripts)
 
 async function scriptsCommand(
   params: string[],
-  flags: string[],
+  _flags: string[],
 ): Promise<void> {
   const scriptGroups =
     params.length > 0

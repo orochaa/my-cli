@@ -3,7 +3,7 @@ import { InvalidParamError } from '@/utils/errors.js'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  text: jest.fn(async () => '20'),
+  text: jest.fn(() => '20'),
   outro: jest.fn(),
 }))
 

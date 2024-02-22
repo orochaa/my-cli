@@ -35,11 +35,11 @@ const repositories = [
 ]
 
 jest.mock('@clack/prompts', () => ({
-  select: jest.fn(async () => repo),
+  select: jest.fn(() => repo),
 }))
 
 jest.mock('axios', () => ({
-  get: jest.fn(async () => ({
+  get: jest.fn(() => ({
     data: repositories,
   })),
 }))

@@ -6,7 +6,7 @@ import { log } from '@clack/prompts'
 
 jest.mock('axios', () => {
   // eslint-disable-next-line unicorn/consistent-function-scoping
-  const mockFn = async () => ({ data: '' })
+  const mockFn = () => ({ data: '' })
 
   class Axios {
     create = (): this => this

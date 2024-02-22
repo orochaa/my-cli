@@ -56,7 +56,7 @@ async function getController(params: string[]): Promise<Controller> {
 async function pomodoroPrompt(): Promise<[number, number]> {
   const response = await p.group({
     work: async () =>
-      await p.text({
+      p.text({
         message: 'What is your work period?',
         initialValue: '25',
         validate: res => {
@@ -66,7 +66,7 @@ async function pomodoroPrompt(): Promise<[number, number]> {
         },
       }),
     rest: async () =>
-      await p.text({
+      p.text({
         message: 'What is your rest period?',
         initialValue: '5',
         validate: res => {
