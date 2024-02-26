@@ -1,5 +1,13 @@
 # @mist3rbru/my-cli
 
+## 0.2.20
+
+### Patch Changes
+
+- a00e7e6: fix(init): disabled tsconfig.noEmit option
+- 5434cf9: fix(init): add project path to .eslintrc.json
+- 80afe57: feat(http): add styled http response
+
 ## 0.2.19
 
 ### Patch Changes
