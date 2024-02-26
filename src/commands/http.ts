@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import { type App } from '@/main/app.js'
 import { isSilent } from '@/utils/cmd.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
@@ -45,7 +46,7 @@ async function httpCommand(params: string[]): Promise<void> {
       log.message(`${bodyLabel}: ${jsonLines[0]}`)
 
       for (let i = 1; i < jsonLines.length; i++) {
-        process.stdout.moveCursor(0, -1)
+        process.stdout.moveCursor?.(0, -1)
         log.message(
           jsonLines[i].replace(/^(.*?)(".+?")/, `$1${color.cyan('$2')}`),
         )
@@ -53,7 +54,7 @@ async function httpCommand(params: string[]): Promise<void> {
     } else {
       log.message(`${bodyLabel}: No Content`)
     }
-    process.stdout.moveCursor(0, -1)
+    process.stdout.moveCursor?.(0, -1)
     outro()
   }
 }
