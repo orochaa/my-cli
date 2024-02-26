@@ -1,8 +1,8 @@
 import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants.js'
 import {
-  getPackageJson,
   readLockfile,
+  readPackageJson,
   verifyLockfile,
   writeLockfile,
 } from '@/utils/file-system.js'
@@ -14,9 +14,9 @@ describe('file-system', () => {
     jest.spyOn(global.process, 'exit').mockImplementation()
   })
 
-  describe('getPackageJson()', () => {
+  describe('readPackageJson()', () => {
     it('should return parsed package.json', () => {
-      const result = getPackageJson()
+      const result = readPackageJson()
       const expected = JSON.parse(
         fs.readFileSync(join(cwd, 'package.json')).toString(),
       )
@@ -27,7 +27,7 @@ describe('file-system', () => {
       const packageContent = fs.readFileSync(packageJsonPath).toString()
       fs.rmSync(packageJsonPath)
 
-      const result = getPackageJson()
+      const result = readPackageJson()
       fs.writeFileSync(packageJsonPath, packageContent)
 
       expect(result).toBeNull()

@@ -51,7 +51,7 @@
     "scope": "typescript",
     "prefix": ["repo", "repository"],
     "body": [
-      "import { $1 } from '#domain/models/index.js'",
+      "import { $1 } from '#domain/entities/index.js'",
       "",
       "interface I$1Repository {}",
       "",

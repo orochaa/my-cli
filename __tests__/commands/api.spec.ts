@@ -3,7 +3,7 @@ import { createApi } from '@mist3rbru/create-ts-api'
 import * as p from '@clack/prompts'
 
 jest.mock('@clack/prompts', () => ({
-  text: jest.fn(async () => 'my-api'),
+  text: jest.fn(() => 'my-api'),
 }))
 
 jest.mock('@mist3rbru/create-ts-api', () => ({

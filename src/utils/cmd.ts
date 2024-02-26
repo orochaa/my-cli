@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import pacote from 'pacote'
 import { myCliPackageJsonPath, packageName } from './constants.js'
 import { NotFoundError } from './errors.js'
-import { getPackageJson } from './file-system.js'
+import { readPackageJson } from './file-system.js'
 
 export async function remove(folder: string, item: string): Promise<void> {
   await rm(join(folder, item), { recursive: true })
@@ -48,9 +48,9 @@ export function exec(
 }
 
 export async function execAsync(cmd: string): Promise<string> {
-  return await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     execCb(cmd, (error, stdout, stderr) => {
-      stderr ? reject(error) : resolve(stdout)
+      stderr ? reject(error as Error) : resolve(stdout)
     })
   })
 }
@@ -97,7 +97,7 @@ export async function execOutdated(): Promise<Version | null> {
   const manifestInfo = await pacote.manifest(packageName, {
     fullMetadata: true,
   })
-  const packageJson = getPackageJson(myCliPackageJsonPath)
+  const packageJson = readPackageJson(myCliPackageJsonPath)
 
   if (!packageJson) {
     throw new NotFoundError(`${packageName}.packageJson`)

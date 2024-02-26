@@ -21,7 +21,7 @@ describe('App', () => {
 
     sut.register({
       name: 'foo',
-      action: async (params, flags) => {
+      action: (params, flags) => {
         data = { params, flags }
       },
     } as App.Command)
@@ -41,7 +41,7 @@ describe('App', () => {
     sut.register({
       name: 'foo',
       alias: 'f',
-      action: async (params, flags) => {
+      action: (params, flags) => {
         data = { params, flags }
       },
     } as App.Command)
@@ -59,7 +59,7 @@ describe('App', () => {
 
     sut.register({
       name: 'foo',
-      action: async (params, flags): Promise<void> => {
+      action: (_params, _flags): void => {
         throw new Error('')
       },
     } as App.Command)
@@ -67,7 +67,7 @@ describe('App', () => {
     await expect(sut.exec('foo')).rejects.toThrow(Error)
   })
 
-  it('should display command', async () => {
+  it('should display command', () => {
     const sut = makeSut()
     const log = jest.spyOn(process.stdout, 'write').mockImplementation()
 
@@ -95,7 +95,7 @@ describe('App', () => {
     expect(log).toHaveBeenCalledWith('  example: my foo\n\n')
   })
 
-  it('should display all known commands', async () => {
+  it('should display all known commands', () => {
     const sut = makeSut()
     const log = jest.spyOn(process.stdout, 'write').mockImplementation()
 
@@ -139,7 +139,7 @@ describe('App', () => {
     )
   })
 
-  it('should log error', async () => {
+  it('should log error', () => {
     const sut = makeSut()
     const log = jest.spyOn(process.stdout, 'write').mockImplementation()
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
@@ -150,7 +150,7 @@ describe('App', () => {
     expect(log).toHaveBeenCalledWith('Error: test error\n')
   })
 
-  it('should not log error', async () => {
+  it('should not log error', () => {
     const sut = makeSut()
     const log = jest.spyOn(process.stdout, 'write').mockImplementation()
     const exitSpy = jest.spyOn(process, 'exit').mockImplementation()

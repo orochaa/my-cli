@@ -12,7 +12,7 @@ jest.mock('node:fs', () => ({
 }))
 
 jest.mock('@clack/prompts', () => ({
-  multiselect: jest.fn(async () => ['nest', 'typescript']),
+  multiselect: jest.fn(() => ['nest', 'typescript']),
   log: {
     success: jest.fn(),
     warn: jest.fn(),

@@ -56,6 +56,7 @@ describe('init', () => {
 
   it('should init project with scripts', async () => {
     let scripts: Record<string, string> = {}
+    // eslint-disable-next-line @typescript-eslint/require-await
     jest.spyOn(fs, 'writeFile').mockImplementation(async (_, data) => {
       // eslint-disable-next-line jest/no-conditional-in-test
       if (typeof data === 'string' && data.includes('scripts')) {

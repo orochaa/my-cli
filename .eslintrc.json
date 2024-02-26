@@ -1,6 +1,14 @@
 {
+  "root": true,
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "extends": ["plugin:mist3rbru/node"],
   "rules": {
+    "no-console": "off",
+
+    "@typescript-eslint/no-magic-numbers": "off",
+
     "unicorn/no-process-exit": "off",
 
     "security/detect-object-injection": "off",
@@ -13,7 +21,9 @@
     {
       "files": ["__tests__/**"],
       "extends": ["plugin:mist3rbru/jest"],
-      "rules": {}
+      "rules": {
+        "@typescript-eslint/no-empty-function": "off"
+      }
     }
   ]
 }

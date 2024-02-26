@@ -2,7 +2,7 @@
 import { type App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
 import { packageJsonPath } from '@/utils/constants.js'
-import { getPackageJson } from '@/utils/file-system.js'
+import { readPackageJson } from '@/utils/file-system.js'
 import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
@@ -14,7 +14,7 @@ const tsconfig = `{
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "noEmit": true,
+    "noEmit": false,
     
     /* Base Options: */
     "esModuleInterop": true,
@@ -32,8 +32,8 @@ const tsconfig = `{
     /* Alias */
     "baseUrl": ".",
     "paths": {
-      "@/tests/*": ["__tests__/*"],
-      "@/*": ["src/*"]
+      "#tests/*": ["__tests__/*"],
+      "#*": ["src/*"]
     }
   }
 }`
@@ -64,6 +64,10 @@ max_line_length = 80
 `
 
 const eslint = `{
+  "root": true,
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "extends": ["plugin:mist3rbru/node"],
   "rules": {},
   "overrides": [
@@ -93,9 +97,10 @@ async function initCommand(params: string[]): Promise<void> {
     'pnpm add -D typescript @types/node tsx prettier eslint eslint-plugin-mist3rbru npm-run-all2',
   )
 
-  const packageJson = getPackageJson(packageJsonPath)
+  const packageJson = readPackageJson(packageJsonPath)
 
   if (packageJson?.scripts) {
+    packageJson.type = 'module'
     packageJson.scripts.dev = 'tsx src/index.ts'
     packageJson.scripts.build = 'tsc'
     packageJson.scripts.lint = 'run-s lint:tsc lint:prettier lint:eslint'
@@ -103,7 +108,7 @@ async function initCommand(params: string[]): Promise<void> {
     packageJson.scripts['lint:prettier'] = 'prettier --write .'
     packageJson.scripts['lint:eslint'] =
       'eslint --fix "src/**/*.ts" "__tests__/**/*.ts"'
-    await writeFile(packageJsonPath, JSON.stringify(packageJson))
+    await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2))
   }
 
   await execAsync('git init')

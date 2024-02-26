@@ -64,7 +64,7 @@ async function getRepository(
       return filteredRepositories[0]
     }
 
-    return await clonePrompt(filteredRepositories)
+    return clonePrompt(filteredRepositories)
   } else if (params.length > 0) {
     const repositoryName = params[0]
     const isGitAddress = /github\.com.+\.git$/.test(repositoryName)
@@ -89,7 +89,7 @@ async function getRepository(
     return foundRepository
   }
 
-  return await clonePrompt(repositories)
+  return clonePrompt(repositories)
 }
 
 async function getUserRepositories(): Promise<Repository[]> {

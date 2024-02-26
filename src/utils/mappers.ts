@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 type ObjectEntries<T extends object> = UnionToTuple<
   {
     [K in keyof T]-?: [K, T[K] extends infer U | undefined ? U : T[K]]
@@ -29,7 +31,7 @@ type MergeObjects<T, K = T> = T extends [infer F, ...infer R]
 export function mergeObjects<T extends Record<string, unknown>[]>(
   ...[first, ...rest]: T
 ): MergeObjects<T> {
-  return Object.assign(first, ...rest)
+  return Object.assign(first, ...rest) as MergeObjects<T>
 }
 
 export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
@@ -44,6 +46,7 @@ export function convertToJSON(keyValueList: string[]): Record<string, unknown> {
 
     for (let i = 0; i < nestedKeys.length - 1; i++) {
       const key = nestedKeys[i]
+      // eslint-disable-next-line logical-assignment-operators
       currentObject[key] = currentObject[key] || {}
       currentObject = currentObject[key]
     }

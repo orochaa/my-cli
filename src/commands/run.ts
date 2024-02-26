@@ -2,7 +2,7 @@ import { type App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
-import { type PackageJson, getPackageJson } from '@/utils/file-system.js'
+import { type PackageJson, readPackageJson } from '@/utils/file-system.js'
 import { objectEntries } from '@/utils/mappers.js'
 import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
@@ -26,7 +26,7 @@ async function runCommand(scripts: string[], flags: string[]): Promise<void> {
 }
 
 async function shallowRun(scripts: string[]): Promise<void> {
-  const packageJson = getPackageJson()
+  const packageJson = readPackageJson()
   verifyScripts(packageJson)
   await run(filterScripts(scripts, packageJson))
 }
@@ -47,7 +47,7 @@ async function deepRun(scripts: string[]): Promise<void> {
     .map(d => d.name)
 
   for (const folder of localFolders) {
-    const packageJson = getPackageJson(join(cwd, folder, 'package.json'))
+    const packageJson = readPackageJson(join(cwd, folder, 'package.json'))
 
     if (packageJson?.scripts) {
       process.chdir(join(cwd, folder))
@@ -90,7 +90,7 @@ function mapScriptsRunner(
 }
 
 async function runPrompt(): Promise<void> {
-  const packageJson = getPackageJson()
+  const packageJson = readPackageJson()
   verifyScripts(packageJson)
 
   const scripts = await p.multiselect<PromptOption<string>[], string>({
@@ -113,7 +113,7 @@ export function runRecord(app: App): void {
   app.register({
     name: 'run',
     alias: null,
-    params: ['<script>...'],
+    params: ['<...scripts>'],
     flags: ['--deep', '-d', '--partial', '-p'],
     description: 'Run scripts in sequence',
     example: 'my run lint build "vitest --run"',

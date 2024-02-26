@@ -4,7 +4,7 @@ import * as p from '@clack/prompts'
 import { mockExec } from '../mocks/utils.js'
 
 jest.mock('@clack/prompts', () => ({
-  select: jest.fn(async () => '   master'),
+  select: jest.fn(() => '   master'),
 }))
 
 describe('branch', () => {
