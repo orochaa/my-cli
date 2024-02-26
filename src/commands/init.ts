@@ -64,6 +64,10 @@ max_line_length = 80
 `
 
 const eslint = `{
+  "root": true,
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "extends": ["plugin:mist3rbru/node"],
   "rules": {},
   "overrides": [
