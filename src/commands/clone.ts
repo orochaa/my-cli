@@ -1,5 +1,5 @@
 import { type App } from '@/main/app.js'
-import { exec, hasFlag, logCommand } from '@/utils/cmd.js'
+import { exec, execAsync, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
@@ -93,17 +93,39 @@ async function getRepository(
 }
 
 async function getUserRepositories(): Promise<Repository[]> {
-  const username = readLockfile().git
-  const { data: repositories } = await axios.get<Repository[]>(
-    `https://api.github.com/users/${username}/repos`,
-    {
-      data: {
-        username,
-      },
-    },
-  )
+  const authStatus = await execAsync('gh auth status')
 
-  return repositories
+  if (authStatus.includes('Logged in')) {
+    const repositoriesData = await execAsync('gh repo list')
+    const repositories = repositoriesData
+      .split('\n')
+      .filter(Boolean)
+      .map(line => {
+        const username = line.replace(/^(.+?)\/.+/, '$1')
+        const repositoryName = line.replace(/^.+?\/(.+?)\t.+/, '$1')
+        const updatedAt = line.replace(/.+\s(.+)$/, '$1')
+
+        return {
+          name: repositoryName,
+          clone_url: `https://github.com/${username}/${repositoryName}.git`,
+          updated_at: updatedAt,
+        } satisfies Repository
+      })
+
+    return repositories
+  } else {
+    const username = readLockfile().git
+    const { data: repositories } = await axios.get<Repository[]>(
+      `https://api.github.com/users/${username}/repos`,
+      {
+        data: {
+          username,
+        },
+      },
+    )
+
+    return repositories
+  }
 }
 
 function formatProjectPath(repositoryName: string): string {
