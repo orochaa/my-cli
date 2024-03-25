@@ -1,5 +1,11 @@
 # @mist3rbru/my-cli
 
+## 0.2.21
+
+### Patch Changes
+
+- e90779a: feat(clone): add gh cli integration
+
 ## 0.2.20
 
 ### Patch Changes
