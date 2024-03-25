@@ -1,5 +1,5 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { mockJsonParse } from '@/tests/mocks/utils.js'
+import { mockExec, mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
@@ -12,23 +12,23 @@ import * as p from '@clack/prompts'
 const repo = {
   name: 'my-cli',
   clone_url: 'https://github.com/Mist3rBru/my-cli.git',
-  updated_at: new Date(),
+  updated_at: new Date().toISOString(),
 }
 
 const repositories = [
   {
     name: 'foo',
-    updated_at: new Date().setDate(-1),
+    updated_at: new Date().setDate(-1).toString(),
     clone_url: 'https://github.com/Mist3rBru/foo.git',
   },
   {
     name: 'bar',
-    updated_at: new Date().setDate(1),
+    updated_at: new Date().setDate(1).toString(),
     clone_url: 'https://github.com/Mist3rBru/bar.git',
   },
   {
     name: 'baz',
-    updated_at: new Date().setDate(-1),
+    updated_at: new Date().setDate(-1).toString(),
     clone_url: 'https://github.com/Mist3rBru/baz.git',
   },
   repo,
@@ -58,10 +58,38 @@ describe('clone', () => {
 
     jest.spyOn(cp, 'execSync').mockImplementation()
 
+    mockExec('')
+
     mockJsonParse({ projects: [projectRoot] })
   })
 
-  it('should get github repositories', async () => {
+  it('should get github cli repositories', async () => {
+    mockExec('Logged in', true)
+    mockExec(
+      repositories
+        .map(
+          repository =>
+            `Mist3rBru/${repository.name}  ${repository.updated_at}`,
+        )
+        .join('\n'),
+      true,
+    )
+
+    await sut.exec()
+
+    expect(axios.get).toHaveBeenCalledTimes(0)
+    expect(p.select).toHaveBeenLastCalledWith({
+      initialValue: repositories[0],
+      maxItems,
+      message: 'Select one of your repositories:',
+      options: repositories.map(rep => ({
+        label: rep.name,
+        value: rep,
+      })),
+    })
+  })
+
+  it('should get github api repositories', async () => {
     await sut.exec()
 
     expect(axios.get).toHaveBeenCalledTimes(1)
