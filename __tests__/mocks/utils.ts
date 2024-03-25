@@ -17,11 +17,12 @@ export function mockJsonParse(
   return spy
 }
 
-export function mockExec(result: string): jest.SpyInstance {
+export function mockExec(result: string, once?: boolean): jest.SpyInstance {
   const spy = jest.spyOn(cp, 'exec')
 
   // @ts-expect-error
-  spy.mockImplementation((_cmd, cb) => {
+  // eslint-disable-next-line jest/unbound-method
+  ;(once ? spy.mockImplementationOnce : spy.mockImplementation)((_cmd, cb) => {
     // @ts-expect-error
     cb(null, result, '')
 

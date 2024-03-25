@@ -10,7 +10,7 @@ import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
-interface Repository {
+export interface Repository {
   name: string
   clone_url: string
   updated_at: string
@@ -102,7 +102,7 @@ async function getUserRepositories(): Promise<Repository[]> {
       .filter(Boolean)
       .map(line => {
         const username = line.replace(/^(.+?)\/.+/, '$1')
-        const repositoryName = line.replace(/^.+?\/(.+?)\t.+/, '$1')
+        const repositoryName = line.replace(/^.+?\/(.+?)\s.+/, '$1')
         const updatedAt = line.replace(/.+\s(.+)$/, '$1')
 
         return {
