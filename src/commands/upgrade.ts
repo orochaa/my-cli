@@ -1,4 +1,4 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { exec, execOutdated } from '@/utils/cmd.js'
 import * as p from '@clack/prompts'
 

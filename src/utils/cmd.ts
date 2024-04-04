@@ -1,13 +1,13 @@
 import { exec as execCb, execSync } from 'node:child_process'
 import { rm } from 'node:fs/promises'
-import { join } from 'node:path'
+import path from 'node:path'
 import pacote from 'pacote'
 import { myCliPackageJsonPath, packageName } from './constants.js'
 import { NotFoundError } from './errors.js'
 import { readPackageJson } from './file-system.js'
 
 export async function remove(folder: string, item: string): Promise<void> {
-  await rm(join(folder, item), { recursive: true })
+  await rm(path.join(folder, item), { recursive: true })
 }
 
 export function logCommand(cmd: string): string {

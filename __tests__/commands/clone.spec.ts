@@ -4,7 +4,7 @@ import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
-import { join, resolve } from 'node:path'
+import path from 'node:path'
 import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
@@ -51,7 +51,7 @@ jest.mock('@antfu/ni', () => ({
 describe('clone', () => {
   const sut = makeSut('clone')
 
-  const projectRoot = join(cwd, 'root')
+  const projectRoot = path.join(cwd, 'root')
 
   beforeAll(() => {
     jest.spyOn(process, 'chdir').mockImplementation()
@@ -103,7 +103,7 @@ describe('clone', () => {
 
   it('should clone on valid repository', async () => {
     await sut.exec('my-cli')
-    const projectPath = resolve(cwd, repo.name)
+    const projectPath = path.resolve(cwd, repo.name)
 
     expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -121,7 +121,7 @@ describe('clone', () => {
 
   it('should clone http repository', async () => {
     await sut.exec(repo.clone_url)
-    const projectPath = resolve(cwd, repo.name)
+    const projectPath = path.resolve(cwd, repo.name)
 
     expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -141,7 +141,7 @@ describe('clone', () => {
     jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
 
     await sut.exec('my-cli --root')
-    const projectPath = join(projectRoot, 'my-cli')
+    const projectPath = path.join(projectRoot, 'my-cli')
 
     expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
@@ -178,7 +178,7 @@ describe('clone', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `git clone https://github.com/Mist3rBru/foo.git ${resolve('foo')}`,
+      `git clone https://github.com/Mist3rBru/foo.git ${path.resolve('foo')}`,
       expect.anything(),
     )
   })
@@ -193,7 +193,7 @@ describe('clone', () => {
     jest.spyOn(fs, 'existsSync').mockReturnValue(true)
 
     await sut.exec()
-    const projectPath = resolve(cwd, repo.name)
+    const projectPath = path.resolve(cwd, repo.name)
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(process.chdir).toHaveBeenCalledWith(projectPath)

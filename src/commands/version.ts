@@ -1,4 +1,4 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import * as p from '@clack/prompts'
 import { version } from '../../package.json'
 

@@ -1,12 +1,14 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
-import { type PackageJson, readPackageJson } from '@/utils/file-system.js'
+import { readPackageJson } from '@/utils/file-system.js'
+import type { PackageJson } from '@/utils/file-system.js'
 import { objectEntries } from '@/utils/mappers.js'
-import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
+import type { PromptOption } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 import { detect } from '@antfu/ni'
 import * as p from '@clack/prompts'
 
@@ -47,10 +49,10 @@ async function deepRun(scripts: string[]): Promise<void> {
     .map(d => d.name)
 
   for (const folder of localFolders) {
-    const packageJson = readPackageJson(join(cwd, folder, 'package.json'))
+    const packageJson = readPackageJson(path.join(cwd, folder, 'package.json'))
 
     if (packageJson?.scripts) {
-      process.chdir(join(cwd, folder))
+      process.chdir(path.join(cwd, folder))
       await run(filterScripts(scripts, packageJson))
     }
   }

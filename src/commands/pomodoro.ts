@@ -1,4 +1,4 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import colors from 'picocolors'

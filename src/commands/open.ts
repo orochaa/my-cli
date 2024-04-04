@@ -1,10 +1,11 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
-import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
+import type { PromptOption } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 import * as p from '@clack/prompts'
 
 type Controller = [projectsRoot: string, projects: string[]][]
@@ -70,7 +71,7 @@ async function getFilteredProjects(
 
   return filteredController.length === 1 &&
     filteredController[0][1].length === 1
-    ? [join(filteredController[0][0], filteredController[0][1][0])]
+    ? [path.join(filteredController[0][0], filteredController[0][1][0])]
     : openPrompt(filteredController)
 }
 
@@ -89,11 +90,11 @@ function getProjects(controller: Controller, params: string[]): string[] {
         const hasProject = projects.includes(paramProject)
 
         if (isRoot && hasProject) {
-          result.push(join(projectsRoot, paramProject))
+          result.push(path.join(projectsRoot, paramProject))
           break
         }
       } else if (projects.includes(param)) {
-        result.push(join(projectsRoot, param))
+        result.push(path.join(projectsRoot, param))
         break
       }
     }
@@ -110,7 +111,7 @@ async function openPrompt(controller: Controller): Promise<string[]> {
 
       return folders.map(folder => ({
         label: `${rootEnd}/${folder}`,
-        value: join(root, folder),
+        value: path.join(root, folder),
       }))
     }),
   })
@@ -129,8 +130,8 @@ async function openPrompt(controller: Controller): Promise<string[]> {
   return isWorkspace ? [projects.join(' ')] : projects
 }
 
-function getPathEnd(path: string): string {
-  return path.replace(/.*[/\\](.+)$/i, '$1')
+function getPathEnd(_path: string): string {
+  return _path.replace(/.*[/\\](.+)$/i, '$1')
 }
 
 function code(project: string, flags: unknown[]): string {

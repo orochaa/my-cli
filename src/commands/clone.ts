@@ -1,11 +1,11 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { exec, execAsync, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import { readLockfile } from '@/utils/file-system.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
-import { resolve } from 'node:path'
+import path from 'node:path'
 import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
@@ -35,7 +35,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
     exec('git remote rename origin o')
   }
 
-  const isNodeProject = existsSync(resolve(process.cwd(), 'package.json'))
+  const isNodeProject = existsSync(path.resolve(process.cwd(), 'package.json'))
 
   if (isNodeProject) {
     const pm = (await detect()) ?? (await packageManagerPrompt())
@@ -130,8 +130,8 @@ async function getUserRepositories(): Promise<Repository[]> {
 
 function formatProjectPath(repositoryName: string): string {
   return hasFlag('--root')
-    ? resolve(readLockfile().projects[0], repositoryName)
-    : resolve(cwd, repositoryName)
+    ? path.resolve(readLockfile().projects[0], repositoryName)
+    : path.resolve(cwd, repositoryName)
 }
 
 async function clonePrompt(repositories: Repository[]): Promise<Repository> {

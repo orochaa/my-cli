@@ -1,5 +1,5 @@
 import { rmSync } from 'node:fs'
-import { resolve } from 'node:path'
+import path from 'node:path'
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
@@ -14,11 +14,11 @@ export default defineBuildConfig({
     },
   },
   alias: {
-    '@': resolve('src'),
+    '@': path.resolve('src'),
   },
   hooks: {
     'build:done': () => {
-      rmSync(resolve('bin/index.mjs'))
+      rmSync(path.resolve('bin/index.mjs'))
     },
   },
 })

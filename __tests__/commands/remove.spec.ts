@@ -2,11 +2,11 @@ import { makeSut } from '@/tests/mocks/make-sut.js'
 import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import { existsSync, rmSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 import * as p from '@clack/prompts'
 
 const mock = 'test-delete.mock'
-const mockPath = join(cwd, mock)
+const mockPath = path.join(cwd, mock)
 
 jest.mock('@clack/prompts', () => ({
   text: jest.fn(() => mock),

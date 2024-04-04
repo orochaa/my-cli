@@ -1,4 +1,4 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { exec, execAsync } from '@/utils/cmd.js'
 import { maxItems } from '@/utils/constants.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'

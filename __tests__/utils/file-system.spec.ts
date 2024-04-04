@@ -7,7 +7,7 @@ import {
   writeLockfile,
 } from '@/utils/file-system.js'
 import fs from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 
 describe('file-system', () => {
   beforeAll(() => {
@@ -18,7 +18,7 @@ describe('file-system', () => {
     it('should return parsed package.json', () => {
       const result = readPackageJson()
       const expected = JSON.parse(
-        fs.readFileSync(join(cwd, 'package.json')).toString(),
+        fs.readFileSync(path.join(cwd, 'package.json')).toString(),
       )
       expect(result).toStrictEqual(expected)
     })

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { isSilent } from '@/utils/cmd.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { convertToJSON } from '@/utils/mappers.js'
-import axios, { type AxiosResponse } from 'axios'
+import axios from 'axios'
+import type { AxiosResponse } from 'axios'
 import color from 'picocolors'
 import { log, outro } from '@clack/prompts'
 

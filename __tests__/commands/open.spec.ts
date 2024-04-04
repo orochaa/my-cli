@@ -4,7 +4,7 @@ import { cwd } from '@/utils/constants.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 import * as p from '@clack/prompts'
 
 const mockDirent = (folders: string[]): fs.Dirent[] => {
@@ -57,28 +57,30 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, projects[0])}`,
+      `code ${path.join(cwd, projects[0])}`,
       expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, projects[1])}`,
+      `code ${path.join(cwd, projects[1])}`,
       expect.anything(),
     )
   })
 
   it('should differ projects by root', async () => {
-    mockJsonParse({ projects: [join(cwd, '/root1'), join(cwd, '/root2')] })
+    mockJsonParse({
+      projects: [path.join(cwd, '/root1'), path.join(cwd, '/root2')],
+    })
     mockReaddir(['project'])
 
     await sut.exec('project', 'root2/project')
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, '/root1/project')}`,
+      `code ${path.join(cwd, '/root1/project')}`,
       expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, '/root2/project')}`,
+      `code ${path.join(cwd, '/root2/project')}`,
       expect.anything(),
     )
   })
@@ -91,7 +93,7 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])}`,
+      `code ${path.join(cwd, projects[0])} ${path.join(cwd, projects[1])}`,
       expect.anything(),
     )
   })
@@ -104,7 +106,7 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, project)} --reuse-window`,
+      `code ${path.join(cwd, project)} --reuse-window`,
       expect.anything(),
     )
   })
@@ -116,14 +118,14 @@ describe('open', () => {
     await sut.exec(...projects, '-w', '-r')
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
+      `code ${path.join(cwd, projects[0])} ${path.join(cwd, projects[1])} --reuse-window`,
       expect.anything(),
     )
 
     await sut.exec(...projects, '-r')
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, projects[0])} ${join(cwd, projects[1])} --reuse-window`,
+      `code ${path.join(cwd, projects[0])} ${path.join(cwd, projects[1])} --reuse-window`,
       expect.anything(),
     )
   })
@@ -160,27 +162,27 @@ describe('open', () => {
 
   it('should open all prompt selected options', async () => {
     ;(p.multiselect as jest.Mock).mockReturnValueOnce([
-      join(cwd, '/root1'),
-      join(cwd, '/root2'),
+      path.join(cwd, '/root1'),
+      path.join(cwd, '/root2'),
     ])
 
     await sut.exec()
 
     expect(cp.execSync).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, '/root1')}`,
+      `code ${path.join(cwd, '/root1')}`,
       expect.anything(),
     )
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, '/root2')}`,
+      `code ${path.join(cwd, '/root2')}`,
       expect.anything(),
     )
   })
 
   it('should open all prompt selected options on workspace', async () => {
     ;(p.multiselect as jest.Mock).mockResolvedValueOnce([
-      join(cwd, '/root1'),
-      join(cwd, '/root2'),
+      path.join(cwd, '/root1'),
+      path.join(cwd, '/root2'),
     ])
     ;(p.confirm as jest.Mock).mockResolvedValueOnce(true)
 
@@ -188,13 +190,13 @@ describe('open', () => {
 
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, '/root1')} ${join(cwd, '/root2')}`,
+      `code ${path.join(cwd, '/root1')} ${path.join(cwd, '/root2')}`,
       expect.anything(),
     )
   })
 
   it('should ignore config folders', async () => {
-    mockJsonParse({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [path.join(cwd, '/root')] })
     mockReaddir(['.ignore_config', 'project'])
 
     await sut.exec()
@@ -204,14 +206,16 @@ describe('open', () => {
       options: [
         {
           label: 'root/project',
-          value: join(cwd, '/root/project'),
+          value: path.join(cwd, '/root/project'),
         },
       ],
     })
   })
 
   it('should not prompt workspace on single project selection', async () => {
-    ;(p.multiselect as jest.Mock).mockResolvedValueOnce([join(cwd, '/root')])
+    ;(p.multiselect as jest.Mock).mockResolvedValueOnce([
+      path.join(cwd, '/root'),
+    ])
 
     await sut.exec()
 
@@ -219,7 +223,7 @@ describe('open', () => {
   })
 
   it('should open prompt with filtered options from a single filter param', async () => {
-    mockJsonParse({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [path.join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f ba')
@@ -230,18 +234,18 @@ describe('open', () => {
       options: [
         {
           label: 'root/bar',
-          value: join(cwd, '/root/bar'),
+          value: path.join(cwd, '/root/bar'),
         },
         {
           label: 'root/baz',
-          value: join(cwd, '/root/baz'),
+          value: path.join(cwd, '/root/baz'),
         },
       ],
     })
   })
 
   it('should open prompt with filtered options from multiple filter params', async () => {
-    mockJsonParse({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [path.join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f f r')
@@ -252,18 +256,18 @@ describe('open', () => {
       options: [
         {
           label: 'root/foo',
-          value: join(cwd, '/root/foo'),
+          value: path.join(cwd, '/root/foo'),
         },
         {
           label: 'root/bar',
-          value: join(cwd, '/root/bar'),
+          value: path.join(cwd, '/root/bar'),
         },
       ],
     })
   })
 
   it('should auto open if there is only a single filtered project', async () => {
-    mockJsonParse({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [path.join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f f')
@@ -271,13 +275,13 @@ describe('open', () => {
     expect(p.multiselect).toHaveBeenCalledTimes(0)
     expect(cp.execSync).toHaveBeenCalledTimes(1)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `code ${join(cwd, '/root/foo')}`,
+      `code ${path.join(cwd, '/root/foo')}`,
       expect.anything(),
     )
   })
 
   it('should throw on invalid filter param', async () => {
-    mockJsonParse({ projects: [join(cwd, '/root')] })
+    mockJsonParse({ projects: [path.join(cwd, '/root')] })
     mockReaddir(['foo', 'bar', 'baz'])
 
     const promise = sut.exec('-f invalid-param')

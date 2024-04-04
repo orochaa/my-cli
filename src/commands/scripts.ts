@@ -1,4 +1,4 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { MissingParamError, NotFoundError } from '@/utils/errors.js'
 import { readPackageJson, writePackageJson } from '@/utils/file-system.js'
 import { objectEntries, objectKeys } from '@/utils/mappers.js'

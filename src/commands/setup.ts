@@ -1,12 +1,12 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { cwd } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import {
-  type Lockfile,
   readLockfile,
   verifyLockfile,
   writeLockfile,
 } from '@/utils/file-system.js'
+import type { Lockfile } from '@/utils/file-system.js'
 import { mergeObjects } from '@/utils/mappers.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { statSync } from 'node:fs'

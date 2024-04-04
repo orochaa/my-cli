@@ -1,5 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import * as p from '@clack/prompts'
