@@ -4,20 +4,10 @@ import { isSilent } from '@/utils/cmd.js'
 import { InvalidParamError, MissingParamError } from '@/utils/errors.js'
 import { convertToJSON } from '@/utils/mappers.js'
 import axios from 'axios'
-import type { AxiosResponse } from 'axios'
 import color from 'picocolors'
 import { log, outro } from '@clack/prompts'
 
 type Method = 'get' | 'post' | 'put' | 'delete'
-
-type Http = Record<
-  Method,
-  (
-    url: string,
-    headers: Record<string, string>,
-    body: Record<string, unknown>,
-  ) => Promise<AxiosResponse<unknown>>
->
 
 async function httpCommand(params: string[]): Promise<void> {
   if (params.length === 0) {
@@ -31,8 +21,13 @@ async function httpCommand(params: string[]): Promise<void> {
   const body = getBody(bodyParams)
   const headers = getHeaders(headerParams)
 
-  const http = createHttp()
-  const { status, data } = await http[method](url, headers, body)
+  const { status, data } = await axios<unknown>(url, {
+    method,
+    headers,
+    data: body,
+    maxRedirects: 0,
+    validateStatus: () => true,
+  })
 
   if (!isSilent()) {
     const statusLabel = color.cyan('"StatusCode"')
@@ -116,27 +111,6 @@ function splitBodyAndHeaderParams(params: string[]): [string[], string[]] {
   }
 
   return [bodyParams, headersParams]
-}
-
-function createHttp(): Http {
-  const a = axios.create({
-    validateStatus: () => true,
-  })
-
-  return {
-    async get(url, headers): Promise<AxiosResponse> {
-      return a.get(url, { headers })
-    },
-    async post(url, headers, body): Promise<AxiosResponse> {
-      return a.post(url, body, { headers })
-    },
-    async put(url, headers, body): Promise<AxiosResponse> {
-      return a.put(url, body, { headers })
-    },
-    async delete(url, headers): Promise<AxiosResponse> {
-      return a.delete(url, { headers })
-    },
-  }
 }
 
 export function httpRecord(app: App): void {

@@ -4,20 +4,7 @@ import axios from 'axios'
 import color from 'picocolors'
 import { log } from '@clack/prompts'
 
-jest.mock('axios', () => {
-  // eslint-disable-next-line unicorn/consistent-function-scoping
-  const mockFn = () => ({ data: '' })
-
-  class Axios {
-    create = (): this => this
-    get = jest.fn(mockFn)
-    post = jest.fn(mockFn)
-    put = jest.fn(mockFn)
-    delete = jest.fn(mockFn)
-  }
-
-  return new Axios()
-})
+jest.mock('axios', () => jest.fn(() => ({ data: '' })))
 
 jest.spyOn(process, 'exit').mockImplementation()
 
@@ -44,24 +31,36 @@ describe('http', () => {
   it('should complete host and port', async () => {
     await sut.exec('/test')
 
-    expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/test', {
+    expect(axios).toHaveBeenCalledWith('http://localhost:3000/test', {
+      method: 'get',
       headers: {},
+      data: {},
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
     })
   })
 
   it('should complete host', async () => {
     await sut.exec(':3030/test')
 
-    expect(axios.get).toHaveBeenCalledWith('http://localhost:3030/test', {
+    expect(axios).toHaveBeenCalledWith('http://localhost:3030/test', {
+      method: 'get',
       headers: {},
+      data: {},
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
     })
   })
 
   it('should not complete', async () => {
     await sut.exec('http://localhost:3000/test')
 
-    expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/test', {
+    expect(axios).toHaveBeenCalledWith('http://localhost:3000/test', {
+      method: 'get',
       headers: {},
+      data: {},
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
     })
   })
 
@@ -76,9 +75,10 @@ describe('http', () => {
       'post /test key1=1 key2.subset1=true key2.subset2=false key3=Hello+World key4.subset1.subset2=3.14',
     )
 
-    expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:3000/test',
-      {
+    expect(axios).toHaveBeenCalledWith('http://localhost:3000/test', {
+      method: 'post',
+      headers: {},
+      data: {
         key1: 1,
         key2: {
           subset1: true,
@@ -91,22 +91,21 @@ describe('http', () => {
           },
         },
       },
-      {
-        headers: {},
-      },
-    )
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
+    })
   })
 
   it('should parse headers', async () => {
     await sut.exec('post /test h.foo=bar h.bar=baz')
 
-    expect(axios.post).toHaveBeenCalledWith(
-      'http://localhost:3000/test',
-      {},
-      {
-        headers: { foo: 'bar', bar: 'baz' },
-      },
-    )
+    expect(axios).toHaveBeenCalledWith('http://localhost:3000/test', {
+      method: 'post',
+      headers: { foo: 'bar', bar: 'baz' },
+      data: {},
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
+    })
   })
 
   it('should log http success response', async () => {
@@ -119,7 +118,7 @@ describe('http', () => {
         },
       },
     }
-    ;(axios.get as jest.Mock).mockResolvedValueOnce(result)
+    ;(axios as unknown as jest.Mock).mockResolvedValueOnce(result)
 
     sut.enableLogs()
     await sut.exec('get', '/test')
@@ -134,7 +133,7 @@ describe('http', () => {
       status: 400,
       data: undefined,
     }
-    ;(axios.get as jest.Mock).mockResolvedValueOnce(result)
+    ;(axios as unknown as jest.Mock).mockResolvedValueOnce(result)
 
     sut.enableLogs()
     await sut.exec('get', '/test')
@@ -149,7 +148,7 @@ describe('http', () => {
       status: 500,
       data: 'ServerError',
     }
-    ;(axios.get as jest.Mock).mockResolvedValueOnce(result)
+    ;(axios as unknown as jest.Mock).mockResolvedValueOnce(result)
 
     sut.enableLogs()
     await sut.exec('get', '/test')
@@ -162,12 +161,24 @@ describe('http', () => {
   it('should call put method', async () => {
     await sut.exec('put /test')
 
-    expect(axios.put).toHaveBeenCalledTimes(1)
+    expect(axios).toHaveBeenCalledWith('http://localhost:3000/test', {
+      method: 'put',
+      headers: {},
+      data: {},
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
+    })
   })
 
   it('should call delete method', async () => {
     await sut.exec('delete /test')
 
-    expect(axios.delete).toHaveBeenCalledTimes(1)
+    expect(axios).toHaveBeenCalledWith('http://localhost:3000/test', {
+      method: 'delete',
+      headers: {},
+      data: {},
+      maxRedirects: 0,
+      validateStatus: expect.anything(),
+    })
   })
 })

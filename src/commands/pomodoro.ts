@@ -42,7 +42,9 @@ async function getController(params: string[]): Promise<Controller> {
     for (let i = 0; i < 2; i++) {
       const error = verifyPeriod(timers[i])
 
-      if (error) throw error
+      if (error) {
+        throw error
+      }
     }
 
     return formatController(timers[0], timers[1])
@@ -62,7 +64,9 @@ async function pomodoroPrompt(): Promise<[number, number]> {
         validate: res => {
           const error = verifyPeriod(Number(res))
 
-          if (error) return error.message
+          if (error) {
+            return error.message
+          }
         },
       }),
     rest: async () =>
@@ -72,7 +76,9 @@ async function pomodoroPrompt(): Promise<[number, number]> {
         validate: res => {
           const error = verifyPeriod(Number(res))
 
-          if (error) return error.message
+          if (error) {
+            return error.message
+          }
         },
       }),
   })

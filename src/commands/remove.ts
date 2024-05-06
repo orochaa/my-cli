@@ -21,7 +21,9 @@ async function getRemoveList(params: string[]): Promise<string[]> {
   if (params.length > 0) {
     const error = verifyItems(params)
 
-    if (error) throw error
+    if (error) {
+      throw error
+    }
 
     return params
   }
@@ -58,7 +60,9 @@ async function removePrompt(): Promise<string[]> {
       validate: res => {
         const error = verifyItems(res.split(' '))
 
-        if (error) return error.message
+        if (error) {
+          return error.message
+        }
       },
     })
     verifyPromptResponse(response)
