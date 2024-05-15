@@ -74,10 +74,10 @@ describe('clone', () => {
         .join('\n'),
       true,
     )
+    ;(axios.get as jest.Mock).mockResolvedValueOnce({ data: [] })
 
     await sut.exec()
 
-    expect(axios.get).toHaveBeenCalledTimes(0)
     expect(p.select).toHaveBeenLastCalledWith({
       initialValue: repositories[0],
       maxItems,
