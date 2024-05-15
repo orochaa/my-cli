@@ -46,7 +46,6 @@ function run(): void {
     '### Global flags:',
     '',
     '- `--silent`: ignores cmd outputs',
-    '- `--force`: ignores previous `setup`',
     '- `--help`: displays command details',
     '',
   )

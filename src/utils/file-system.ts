@@ -1,9 +1,5 @@
-import {
-  lockfileDir,
-  lockfilePath,
-  packageJsonPath,
-} from '@/utils/constants.js'
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { packageJsonPath } from '@/utils/constants.js'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { NotFoundError } from './errors.js'
 
 export type PackageJson = Partial<{
@@ -33,26 +29,4 @@ export function writePackageJson(
   }
 
   writeFileSync(path, JSON.stringify(data, null, 2))
-}
-
-export function verifyLockfile(): boolean {
-  return existsSync(lockfilePath)
-}
-
-export type LockfileKey = 'git' | 'projects'
-
-export type Lockfile = {
-  git: string
-  projects: string[]
-} & Record<string, string | string[]>
-
-export function readLockfile(): Lockfile {
-  return JSON.parse(readFileSync(lockfilePath).toString()) as Lockfile
-}
-
-export function writeLockfile(content: Record<string, unknown>): void {
-  if (!existsSync(lockfileDir)) {
-    mkdirSync(lockfileDir, { recursive: true })
-  }
-  writeFileSync(lockfilePath, JSON.stringify(content))
 }

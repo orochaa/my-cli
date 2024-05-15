@@ -1,7 +1,7 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { mockJsonParse } from '@/tests/mocks/utils.js'
 import { cwd } from '@/utils/constants.js'
 import { InvalidParamError } from '@/utils/errors.js'
+import { getLockfile } from '@/utils/lockfile.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -30,15 +30,16 @@ jest.mock('@clack/prompts', () => ({
   confirm: jest.fn(() => false),
 }))
 
+jest.mock('@/utils/lockfile.js', () => ({
+  getLockfile: jest.fn(() => [cwd]),
+}))
+
 describe('open', () => {
   const sut = makeSut('open')
+  const getLockfileSpy = getLockfile as jest.Mock
 
   beforeAll(() => {
     jest.spyOn(cp, 'execSync').mockImplementation()
-  })
-
-  beforeEach(() => {
-    mockJsonParse({ projects: [cwd] })
   })
 
   it('should not open invalid projects', async () => {
@@ -67,9 +68,10 @@ describe('open', () => {
   })
 
   it('should differ projects by root', async () => {
-    mockJsonParse({
-      projects: [path.join(cwd, '/root1'), path.join(cwd, '/root2')],
-    })
+    getLockfileSpy.mockReturnValueOnce([
+      path.join(cwd, '/root1'),
+      path.join(cwd, '/root2'),
+    ])
     mockReaddir(['project'])
 
     await sut.exec('project', 'root2/project')
@@ -131,17 +133,15 @@ describe('open', () => {
   })
 
   it("should not display path's root on prompt", async () => {
-    mockJsonParse({
-      projects: [
-        '~/root/sub1',
-        'C:/root/sub2',
-        '/root/sub3',
-        '~\\root\\sub4',
-        'C:\\root\\sub5',
-        '\\root\\sub6',
-        '\\root',
-      ],
-    })
+    getLockfileSpy.mockReturnValueOnce([
+      '~/root/sub1',
+      'C:/root/sub2',
+      '/root/sub3',
+      '~\\root\\sub4',
+      'C:\\root\\sub5',
+      '\\root\\sub6',
+      '\\root',
+    ])
     mockReaddir(['project'])
 
     await sut.exec()
@@ -196,7 +196,7 @@ describe('open', () => {
   })
 
   it('should ignore config folders', async () => {
-    mockJsonParse({ projects: [path.join(cwd, '/root')] })
+    getLockfileSpy.mockReturnValueOnce([path.join(cwd, '/root')])
     mockReaddir(['.ignore_config', 'project'])
 
     await sut.exec()
@@ -223,7 +223,7 @@ describe('open', () => {
   })
 
   it('should open prompt with filtered options from a single filter param', async () => {
-    mockJsonParse({ projects: [path.join(cwd, '/root')] })
+    getLockfileSpy.mockReturnValueOnce([path.join(cwd, '/root')])
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f ba')
@@ -245,7 +245,7 @@ describe('open', () => {
   })
 
   it('should open prompt with filtered options from multiple filter params', async () => {
-    mockJsonParse({ projects: [path.join(cwd, '/root')] })
+    getLockfileSpy.mockReturnValueOnce([path.join(cwd, '/root')])
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f f r')
@@ -267,7 +267,7 @@ describe('open', () => {
   })
 
   it('should auto open if there is only a single filtered project', async () => {
-    mockJsonParse({ projects: [path.join(cwd, '/root')] })
+    getLockfileSpy.mockReturnValueOnce([path.join(cwd, '/root')])
     mockReaddir(['foo', 'bar', 'baz'])
 
     await sut.exec('-f f')
@@ -281,7 +281,7 @@ describe('open', () => {
   })
 
   it('should throw on invalid filter param', async () => {
-    mockJsonParse({ projects: [path.join(cwd, '/root')] })
+    getLockfileSpy.mockReturnValueOnce([path.join(cwd, '/root')])
     mockReaddir(['foo', 'bar', 'baz'])
 
     const promise = sut.exec('-f invalid-param')

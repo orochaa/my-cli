@@ -2,7 +2,7 @@ import type { App } from '@/main/app.js'
 import { exec, execAsync, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
-import { readLockfile } from '@/utils/file-system.js'
+import { getLockfile } from '@/utils/lockfile.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -22,7 +22,7 @@ type PackageManager = 'npm' | 'yarn' | 'pnpm'
 async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   const repository = await getRepository(params, flags)
 
-  const projectPath = formatProjectPath(repository.name)
+  const projectPath = await formatProjectPath(repository.name)
   const isCloned = existsSync(projectPath)
 
   if (isCloned) {
@@ -137,7 +137,7 @@ async function getUserRepositories(): Promise<Repository[]> {
   }
 
   const getGithubApiRepositories = async (): Promise<Repository[]> => {
-    const username = readLockfile().git
+    const username = await getLockfile('userGithubName')
     const { data: repositories } = await axios.get<Repository[]>(
       `https://api.github.com/users/${username}/repos`,
       { data: { username } },
@@ -160,9 +160,13 @@ async function getUserRepositories(): Promise<Repository[]> {
   return deduplicatedRepositories
 }
 
-function formatProjectPath(repositoryName: string): string {
+async function formatProjectPath(repositoryName: string): Promise<string> {
   return hasFlag('--root')
-    ? path.resolve(readLockfile().projects[0], repositoryName)
+    ? path.resolve(
+        // eslint-disable-next-line unicorn/no-await-expression-member
+        (await getLockfile('projectsRootList'))[0],
+        repositoryName,
+      )
     : path.resolve(cwd, repositoryName)
 }
 

@@ -1,20 +1,21 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
 import { mockJsonParse } from '@/tests/mocks/utils.js'
-import { readLockfile } from '@/utils/file-system.js'
+import { readLockfile } from '@/utils/lockfile.js'
+import type { Lockfile } from '@/utils/lockfile.js'
 import fs from 'node:fs'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
-const mock = {
-  git: 'my-git',
-  projects: ['any'],
+const mock: Lockfile = {
+  userGithubName: 'my-git',
+  projectsRootList: ['any'],
 }
 
 const startSpy = jest.fn()
 const stopSpy = jest.fn()
 
 jest.mock('@clack/prompts', () => ({
-  text: jest.fn(() => mock.git),
+  text: jest.fn(() => mock.userGithubName),
   confirm: jest.fn(options => options.initialValue),
   spinner: jest.fn(() => ({
     start: startSpy,
@@ -40,18 +41,19 @@ describe('setup', () => {
   })
 
   beforeEach(() => {
-    mockJsonParse(mock)
+    mockJsonParse(mock as unknown as Record<string, unknown>)
   })
 
   it('should render git prompt with no default value', async () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true)
     mockJsonParse({})
 
     await sut.exec()
 
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
+      initialValue: undefined,
       message: expect.any(String),
-      initialValue: '',
     })
   })
 
@@ -63,7 +65,7 @@ describe('setup', () => {
     expect(p.text).toHaveBeenCalledTimes(2)
     expect(p.text).toHaveBeenCalledWith({
       message: expect.any(String),
-      initialValue: mock.git,
+      initialValue: mock.userGithubName,
     })
   })
 
@@ -78,7 +80,7 @@ describe('setup', () => {
 
     expect(startSpy).toHaveBeenCalledWith('Validating user')
     expect(axios.get).toHaveBeenCalledWith(
-      `https://api.github.com/users/${mock.git}`,
+      `https://api.github.com/users/${mock.userGithubName}`,
     )
     expect(stopSpy).toHaveBeenCalledWith(`User: ${data.login} | ${data.name}`)
   })

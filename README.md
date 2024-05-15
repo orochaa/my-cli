@@ -68,5 +68,4 @@ A compilation of my CLI snippets.
 ### Global flags:
 
 - `--silent`: ignores cmd outputs
-- `--force`: ignores previous `setup`
 - `--help`: displays command details

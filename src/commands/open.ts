@@ -1,7 +1,7 @@
 import type { App } from '@/main/app.js'
 import { exec, hasFlag } from '@/utils/cmd.js'
 import { InvalidParamError } from '@/utils/errors.js'
-import { readLockfile } from '@/utils/file-system.js'
+import { getLockfile } from '@/utils/lockfile.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import type { PromptOption } from '@/utils/prompt.js'
 import { readdirSync } from 'node:fs'
@@ -11,7 +11,7 @@ import * as p from '@clack/prompts'
 type Controller = [projectsRoot: string, projects: string[]][]
 
 async function openCommand(params: string[], flags: string[]): Promise<void> {
-  const controller = getController()
+  const controller = await getController()
   const isFilter = hasFlag(['--filter', '-f'], flags)
 
   const openProjectList = await Promise.resolve(
@@ -39,11 +39,11 @@ async function openCommand(params: string[], flags: string[]): Promise<void> {
   }
 }
 
-function getController(): Controller {
-  const lockfile = readLockfile()
+async function getController(): Promise<Controller> {
+  const projectsRootList = await getLockfile('projectsRootList')
   const controller: Controller = []
 
-  for (const projectsRoot of lockfile.projects) {
+  for (const projectsRoot of projectsRootList) {
     const projects = readdirSync(projectsRoot, { withFileTypes: true })
       .filter(item => item.isDirectory() && !item.name.startsWith('.'))
       .map(project => project.name)

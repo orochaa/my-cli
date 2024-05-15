@@ -1,5 +1,5 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { mockExec, mockJsonParse } from '@/tests/mocks/utils.js'
+import { mockExec } from '@/tests/mocks/utils.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
@@ -34,6 +34,8 @@ const repositories = [
   repo,
 ].sort((a, b) => a.name.localeCompare(b.name))
 
+const projectRoot = path.join(cwd, 'root')
+
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(() => repo),
 }))
@@ -48,10 +50,12 @@ jest.mock('@antfu/ni', () => ({
   detect: jest.fn(() => 'pnpm'),
 }))
 
+jest.mock('@/utils/lockfile.js', () => ({
+  getLockfile: jest.fn(() => [projectRoot]),
+}))
+
 describe('clone', () => {
   const sut = makeSut('clone')
-
-  const projectRoot = path.join(cwd, 'root')
 
   beforeAll(() => {
     jest.spyOn(process, 'chdir').mockImplementation()
@@ -59,8 +63,6 @@ describe('clone', () => {
     jest.spyOn(cp, 'execSync').mockImplementation()
 
     mockExec('')
-
-    mockJsonParse({ projects: [projectRoot] })
   })
 
   it('should get github cli repositories', async () => {
