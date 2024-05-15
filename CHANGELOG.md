@@ -1,5 +1,12 @@
 # @mist3rbru/my-cli
 
+## 0.2.22
+
+### Patch Changes
+
+- d4efa14: feat: add support for request config info on demand
+- d7405bc: feat(clone): add support to go project
+
 ## 0.2.21
 
 ### Patch Changes
