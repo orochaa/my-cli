@@ -40,7 +40,7 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
     !isNodeProject && existsSync(path.resolve(process.cwd(), 'go.mod'))
 
   if (isNodeProject) {
-    const pm = (await detect()) ?? (await packageManagerPrompt())
+    const pm = (await detect()) ?? (await selectPackageManagerPrompt())
     exec(`${pm} install`)
   } else if (isGoProject) {
     exec('go mod download')
@@ -68,7 +68,7 @@ async function getRepository(
       return filteredRepositories[0]
     }
 
-    return clonePrompt(filteredRepositories)
+    return selectRepositoryPrompt(filteredRepositories)
   } else if (params.length > 0) {
     const repositoryName = params[0]
     const isGitAddress = /github\.com.+\.git$/.test(repositoryName)
@@ -93,7 +93,7 @@ async function getRepository(
     return foundRepository
   }
 
-  return clonePrompt(repositories)
+  return selectRepositoryPrompt(repositories)
 }
 
 async function getUserRepositories(): Promise<Repository[]> {
@@ -138,14 +138,20 @@ function formatProjectPath(repositoryName: string): string {
     : path.resolve(cwd, repositoryName)
 }
 
-async function clonePrompt(repositories: Repository[]): Promise<Repository> {
+async function selectRepositoryPrompt(
+  repositories: Repository[],
+): Promise<Repository> {
   const sortedRepositories = repositories.sort((a, b) => {
     const date = [
       new Date(a.updated_at).getTime(),
       new Date(b.updated_at).getTime(),
     ]
 
-    return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
+    return date[0] > date[1]
+      ? -1
+      : date[0] < date[1]
+        ? 1
+        : a.name.localeCompare(b.name)
   })
 
   const response = await p.select({
@@ -162,7 +168,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
   return response
 }
 
-async function packageManagerPrompt(): Promise<PackageManager> {
+async function selectPackageManagerPrompt(): Promise<PackageManager> {
   const options: PackageManager[] = ['pnpm', 'yarn', 'npm']
   const response = await p.select({
     message: 'Select your package manager:',
