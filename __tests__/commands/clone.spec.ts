@@ -151,7 +151,6 @@ describe('clone', () => {
     expect(process.chdir).toHaveBeenCalledWith(projectPath)
     expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
   it('should filter repositories', async () => {
@@ -189,7 +188,7 @@ describe('clone', () => {
     )
   })
 
-  it('should still prepare pre-cloned repository', async () => {
+  it('should install prepare pre-cloned repository', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValue(true)
 
     await sut.exec()
@@ -199,6 +198,21 @@ describe('clone', () => {
     expect(process.chdir).toHaveBeenCalledWith(projectPath)
     expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
     expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
+  })
+
+  it('should install go project dependencies', async () => {
+    jest
+      .spyOn(fs, 'existsSync')
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true)
+
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'go mod download',
+      expect.anything(),
+    )
   })
 
   it('should not install non node project dependencies', async () => {

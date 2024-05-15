@@ -36,10 +36,14 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   }
 
   const isNodeProject = existsSync(path.resolve(process.cwd(), 'package.json'))
+  const isGoProject =
+    !isNodeProject && existsSync(path.resolve(process.cwd(), 'go.mod'))
 
   if (isNodeProject) {
     const pm = (await detect()) ?? (await packageManagerPrompt())
     exec(`${pm} install`)
+  } else if (isGoProject) {
+    exec('go mod download')
   }
 
   exec('code .')
