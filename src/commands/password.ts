@@ -1,5 +1,5 @@
 /* eslint-disable no-secrets/no-secrets */
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import * as p from '@clack/prompts'
@@ -17,7 +17,9 @@ async function passwordCommand(params: string[]): Promise<void> {
     const length = Number(params[0])
     const error = verifyPasswordLength(length)
 
-    if (error) throw error
+    if (error) {
+      throw error
+    }
     passwordLength = length
   } else {
     passwordLength = await passwordPrompt()
@@ -41,7 +43,9 @@ async function passwordPrompt(): Promise<number> {
     validate: res => {
       const error = verifyPasswordLength(Number(res))
 
-      if (error) return error.message
+      if (error) {
+        return error.message
+      }
     },
   })
   verifyPromptResponse(response)

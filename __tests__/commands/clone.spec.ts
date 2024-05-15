@@ -1,10 +1,10 @@
 import { makeSut } from '@/tests/mocks/make-sut.js'
-import { mockExec, mockJsonParse } from '@/tests/mocks/utils.js'
+import { mockExec } from '@/tests/mocks/utils.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import fs from 'node:fs'
-import { join, resolve } from 'node:path'
+import path from 'node:path'
 import { detect } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
@@ -32,7 +32,9 @@ const repositories = [
     clone_url: 'https://github.com/Mist3rBru/baz.git',
   },
   repo,
-]
+].sort((a, b) => a.name.localeCompare(b.name))
+
+const projectRoot = path.join(cwd, 'root')
 
 jest.mock('@clack/prompts', () => ({
   select: jest.fn(() => repo),
@@ -48,10 +50,12 @@ jest.mock('@antfu/ni', () => ({
   detect: jest.fn(() => 'pnpm'),
 }))
 
+jest.mock('@/utils/lockfile.js', () => ({
+  getLockfile: jest.fn(() => [projectRoot]),
+}))
+
 describe('clone', () => {
   const sut = makeSut('clone')
-
-  const projectRoot = join(cwd, 'root')
 
   beforeAll(() => {
     jest.spyOn(process, 'chdir').mockImplementation()
@@ -59,8 +63,6 @@ describe('clone', () => {
     jest.spyOn(cp, 'execSync').mockImplementation()
 
     mockExec('')
-
-    mockJsonParse({ projects: [projectRoot] })
   })
 
   it('should get github cli repositories', async () => {
@@ -74,10 +76,10 @@ describe('clone', () => {
         .join('\n'),
       true,
     )
+    ;(axios.get as jest.Mock).mockResolvedValueOnce({ data: [] })
 
     await sut.exec()
 
-    expect(axios.get).toHaveBeenCalledTimes(0)
     expect(p.select).toHaveBeenLastCalledWith({
       initialValue: repositories[0],
       maxItems,
@@ -101,57 +103,36 @@ describe('clone', () => {
     await expect(promise).rejects.toThrow(NotFoundError)
   })
 
-  it('should clone on valid repository', async () => {
+  it('should clone on valid repository name', async () => {
     await sut.exec('my-cli')
-    const projectPath = resolve(cwd, repo.name)
+    const projectPath = path.resolve(cwd, repo.name)
 
-    expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
       `git clone ${repo.clone_url} ${projectPath}`,
       expect.anything(),
     )
-    expect(process.chdir).toHaveBeenCalledWith(projectPath)
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'git remote rename origin o',
-      expect.anything(),
-    )
-    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
-  it('should clone http repository', async () => {
+  it('should clone on valid repository url', async () => {
     await sut.exec(repo.clone_url)
-    const projectPath = resolve(cwd, repo.name)
+    const projectPath = path.resolve(cwd, repo.name)
 
-    expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
       `git clone ${repo.clone_url} ${projectPath}`,
       expect.anything(),
     )
-    expect(process.chdir).toHaveBeenCalledWith(projectPath)
-    expect(cp.execSync).toHaveBeenCalledWith(
-      'git remote rename origin o',
-      expect.anything(),
-    )
-    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
   it('should clone repository on projects root', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
 
     await sut.exec('my-cli --root')
-    const projectPath = join(projectRoot, 'my-cli')
+    const projectPath = path.join(projectRoot, 'my-cli')
 
-    expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
       `git clone ${repo.clone_url} ${projectPath}`,
       expect.anything(),
     )
-    expect(process.chdir).toHaveBeenCalledWith(projectPath)
-    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 
   it('should filter repositories', async () => {
@@ -161,7 +142,6 @@ describe('clone', () => {
       /ba/i.test(rep.name),
     )
 
-    expect(p.select).toHaveBeenCalledTimes(1)
     expect(p.select).toHaveBeenCalledWith({
       initialValue: expectedRepositories[0],
       maxItems,
@@ -176,9 +156,8 @@ describe('clone', () => {
   it('should auto select filtered repository', async () => {
     await sut.exec('-f fo')
 
-    expect(cp.execSync).toHaveBeenCalledTimes(4)
     expect(cp.execSync).toHaveBeenCalledWith(
-      `git clone https://github.com/Mist3rBru/foo.git ${resolve('foo')}`,
+      `git clone https://github.com/Mist3rBru/foo.git ${path.resolve('foo')}`,
       expect.anything(),
     )
   })
@@ -189,19 +168,76 @@ describe('clone', () => {
     )
   })
 
-  it('should still prepare pre-cloned repository', async () => {
+  it('should rename git origin', async () => {
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'git remote rename origin o',
+      expect.anything(),
+    )
+  })
+
+  it('should not rename git origin from pre-cloned project', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValue(true)
 
     await sut.exec()
-    const projectPath = resolve(cwd, repo.name)
 
-    expect(cp.execSync).toHaveBeenCalledTimes(2)
-    expect(process.chdir).toHaveBeenCalledWith(projectPath)
-    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
+    expect(cp.execSync).not.toHaveBeenCalledWith(
+      'git remote rename origin o',
+      expect.anything(),
+    )
   })
 
-  it('should not install non node project dependencies', async () => {
+  it('should clone and enter cloned project', async () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+
+    const projectPath = path.resolve(repo.name)
+    await sut.exec(repo.name)
+
+    expect(cp.execSync).toHaveBeenCalledWith(
+      `git clone ${repo.clone_url} ${projectPath}`,
+      expect.anything(),
+    )
+    expect(process.chdir).toHaveBeenCalledWith(projectPath)
+  })
+
+  it('should enter pre-cloned project', async () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValue(true)
+
+    const projectPath = path.resolve(repo.name)
+    await sut.exec(repo.name)
+
+    expect(cp.execSync).not.toHaveBeenCalledWith(
+      `git clone ${repo.clone_url} ${projectPath}`,
+      expect.anything(),
+    )
+    expect(process.chdir).toHaveBeenCalledWith(projectPath)
+  })
+
+  it('should install node project dependencies', async () => {
+    jest.spyOn(fs, 'existsSync').mockReturnValue(true)
+
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
+  })
+
+  it('should install go project dependencies', async () => {
+    jest
+      .spyOn(fs, 'existsSync')
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true)
+
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledWith(
+      'go mod download',
+      expect.anything(),
+    )
+  })
+
+  it('should not install unknown project dependencies', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValue(false)
 
     await sut.exec()
@@ -210,7 +246,10 @@ describe('clone', () => {
       'pnpm install',
       expect.anything(),
     )
-    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
+    expect(cp.execSync).not.toHaveBeenCalledWith(
+      'go mod download',
+      expect.anything(),
+    )
   })
 
   it('should render repository prompt', async () => {
@@ -222,7 +261,7 @@ describe('clone', () => {
     expect(cp.execSync).toHaveBeenCalledWith('pnpm install', expect.anything())
   })
 
-  it('should render package manager prompt', async () => {
+  it('should render repository prompt then package manager prompt', async () => {
     jest.spyOn(fs, 'existsSync').mockReturnValue(true)
     ;(detect as jest.Mock).mockResolvedValueOnce(null)
     ;(p.select as jest.Mock)
@@ -233,5 +272,11 @@ describe('clone', () => {
 
     expect(p.select).toHaveBeenCalledTimes(2)
     expect(cp.execSync).toHaveBeenCalledWith('npm install', expect.anything())
+  })
+
+  it('should open vscode editor', async () => {
+    await sut.exec()
+
+    expect(cp.execSync).toHaveBeenCalledWith('code .', expect.anything())
   })
 })

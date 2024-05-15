@@ -1,11 +1,11 @@
 /* eslint-disable no-secrets/no-secrets */
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { execAsync } from '@/utils/cmd.js'
 import { packageJsonPath } from '@/utils/constants.js'
 import { readPackageJson } from '@/utils/file-system.js'
 import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import path from 'node:path'
 import * as p from '@clack/prompts'
 
 const tsconfig = `{
@@ -81,7 +81,8 @@ const eslint = `{
 `
 
 async function initCommand(params: string[]): Promise<void> {
-  const cwd = params.length > 0 ? join(process.cwd(), params[0]) : process.cwd()
+  const cwd =
+    params.length > 0 ? path.join(process.cwd(), params[0]) : process.cwd()
 
   if (!existsSync(cwd)) {
     await mkdir(cwd)
@@ -113,21 +114,21 @@ async function initCommand(params: string[]): Promise<void> {
 
   await execAsync('git init')
   await writeFile(
-    join(cwd, '.gitignore'),
+    path.join(cwd, '.gitignore'),
     'node_modules/\ndist/\ncoverage/\n\n.env',
   )
-  await writeFile(join(cwd, '.gitattributes'), '* text=auto eol=lf')
-  await writeFile(join(cwd, 'tsconfig.json'), tsconfig)
-  await writeFile(join(cwd, '.editorconfig'), editorconfig)
-  await writeFile(join(cwd, '.prettierrc'), prettier)
-  await writeFile(join(cwd, '.prettierignore'), 'node_modules/\n\n*.yaml')
-  await writeFile(join(cwd, '.eslintrc.json'), eslint)
+  await writeFile(path.join(cwd, '.gitattributes'), '* text=auto eol=lf')
+  await writeFile(path.join(cwd, 'tsconfig.json'), tsconfig)
+  await writeFile(path.join(cwd, '.editorconfig'), editorconfig)
+  await writeFile(path.join(cwd, '.prettierrc'), prettier)
+  await writeFile(path.join(cwd, '.prettierignore'), 'node_modules/\n\n*.yaml')
+  await writeFile(path.join(cwd, '.eslintrc.json'), eslint)
 
-  const srcPath = join(cwd, 'src')
+  const srcPath = path.join(cwd, 'src')
 
-  if (!existsSync(join(cwd, 'src'))) {
+  if (!existsSync(path.join(cwd, 'src'))) {
     await mkdir(srcPath)
-    await writeFile(join(srcPath, 'index.ts'), '')
+    await writeFile(path.join(srcPath, 'index.ts'), '')
   }
 
   s.stop("It's all set")

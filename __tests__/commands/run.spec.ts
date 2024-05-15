@@ -4,7 +4,7 @@ import { cwd } from '@/utils/constants.js'
 import { NotFoundError } from '@/utils/errors.js'
 import cp from 'node:child_process'
 import { rmSync, writeFileSync } from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 import { detect } from '@antfu/ni'
 import * as p from '@clack/prompts'
 
@@ -142,7 +142,7 @@ describe('run', () => {
 
   describe('deepRun', () => {
     beforeAll(() => {
-      writeFileSync(join(cwd, 'scripts/package.json'), '')
+      writeFileSync(path.join(cwd, 'scripts/package.json'), '')
       mockJsonParse({
         scripts: {
           lint: ' ',
@@ -156,7 +156,7 @@ describe('run', () => {
     })
 
     afterAll(() => {
-      rmSync(join(cwd, 'scripts/package.json'))
+      rmSync(path.join(cwd, 'scripts/package.json'))
     })
 
     it('should run scripts', async () => {

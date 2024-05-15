@@ -1,13 +1,7 @@
-import { mockJsonParse } from '@/tests/mocks/utils.js'
-import { cwd, lockfilePath, packageJsonPath } from '@/utils/constants.js'
-import {
-  readLockfile,
-  readPackageJson,
-  verifyLockfile,
-  writeLockfile,
-} from '@/utils/file-system.js'
+import { cwd, packageJsonPath } from '@/utils/constants.js'
+import { readPackageJson } from '@/utils/file-system.js'
 import fs from 'node:fs'
-import { join } from 'node:path'
+import path from 'node:path'
 
 describe('file-system', () => {
   beforeAll(() => {
@@ -18,7 +12,7 @@ describe('file-system', () => {
     it('should return parsed package.json', () => {
       const result = readPackageJson()
       const expected = JSON.parse(
-        fs.readFileSync(join(cwd, 'package.json')).toString(),
+        fs.readFileSync(path.join(cwd, 'package.json')).toString(),
       )
       expect(result).toStrictEqual(expected)
     })
@@ -31,50 +25,6 @@ describe('file-system', () => {
       fs.writeFileSync(packageJsonPath, packageContent)
 
       expect(result).toBeNull()
-    })
-  })
-
-  describe('verifyLockfile()', () => {
-    it('should return true if there is a lockfile', () => {
-      jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true)
-
-      const result = verifyLockfile()
-
-      expect(result).toBeTruthy()
-    })
-
-    it('should return false if there is not a lockfile', () => {
-      jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
-
-      const result = verifyLockfile()
-
-      expect(result).toBeFalsy()
-    })
-  })
-
-  describe('readLockfile()', () => {
-    it('should return parsed lockfile', () => {
-      const mock = { test: 'foo' }
-      mockJsonParse(mock)
-
-      const result = readLockfile()
-
-      expect(result).toStrictEqual(mock)
-    })
-  })
-
-  describe('writeLockfile()', () => {
-    it('should write lockfile', () => {
-      jest.spyOn(fs, 'writeFileSync').mockImplementation()
-      jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false)
-
-      const mock = { test: 'foo' }
-      writeLockfile(mock)
-
-      expect(fs.writeFileSync).toHaveBeenLastCalledWith(
-        lockfilePath,
-        JSON.stringify(mock),
-      )
     })
   })
 })

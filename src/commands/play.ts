@@ -1,4 +1,4 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { InvalidParamError } from '@/utils/errors.js'
 import { objectEntries, objectValues } from '@/utils/mappers.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'

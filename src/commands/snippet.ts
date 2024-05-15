@@ -1,7 +1,8 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { hasFlag } from '@/utils/cmd.js'
 import { cwd, root } from '@/utils/constants.js'
-import { type PromptOption, verifyPromptResponse } from '@/utils/prompt.js'
+import { verifyPromptResponse } from '@/utils/prompt.js'
+import type { PromptOption } from '@/utils/prompt.js'
 import {
   copyFileSync,
   existsSync,
@@ -9,11 +10,11 @@ import {
   readdirSync,
   writeFileSync,
 } from 'node:fs'
-import { resolve } from 'node:path'
+import path from 'node:path'
 import * as p from '@clack/prompts'
 
-const _snippetsFolder = resolve(root, 'public/snippets')
-const _vscodeFolder = resolve(cwd, '.vscode')
+const _snippetsFolder = path.resolve(root, 'public/snippets')
+const _vscodeFolder = path.resolve(cwd, '.vscode')
 const _extension = '.code-snippets'
 
 async function snippetCommand(
@@ -53,7 +54,7 @@ function createVsCodeFolder(): void {
 function createProjectSnippet(): void {
   const projectName = cwd.replace(/^.+\/(.+)/, '$1')
   const fileName = projectName + _extension
-  const dest = resolve(_vscodeFolder, fileName)
+  const dest = path.resolve(_vscodeFolder, fileName)
 
   if (existsSync(dest)) {
     p.log.warn(`Project's snippet already exists: ${dest}`)
@@ -65,8 +66,8 @@ function createProjectSnippet(): void {
 
 function copySnippet(snippet: string): void {
   const fileName = snippet + _extension
-  const src = resolve(_snippetsFolder, fileName)
-  const dest = resolve(_vscodeFolder, fileName)
+  const src = path.resolve(_snippetsFolder, fileName)
+  const dest = path.resolve(_vscodeFolder, fileName)
   copyFileSync(src, dest)
   log(dest)
 }

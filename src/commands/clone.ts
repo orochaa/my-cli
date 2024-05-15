@@ -1,12 +1,12 @@
-import { type App } from '@/main/app.js'
+import type { App } from '@/main/app.js'
 import { exec, execAsync, hasFlag, logCommand } from '@/utils/cmd.js'
 import { cwd, maxItems } from '@/utils/constants.js'
 import { InvalidParamError, NotFoundError } from '@/utils/errors.js'
-import { readLockfile } from '@/utils/file-system.js'
+import { getLockfile } from '@/utils/lockfile.js'
 import { verifyPromptResponse } from '@/utils/prompt.js'
 import { existsSync } from 'node:fs'
-import { resolve } from 'node:path'
-import { detect } from '@antfu/ni'
+import path from 'node:path'
+import { detect as detectPackageManager } from '@antfu/ni'
 import axios from 'axios'
 import * as p from '@clack/prompts'
 
@@ -22,7 +22,7 @@ type PackageManager = 'npm' | 'yarn' | 'pnpm'
 async function cloneCommand(params: string[], flags: string[]): Promise<void> {
   const repository = await getRepository(params, flags)
 
-  const projectPath = formatProjectPath(repository.name)
+  const projectPath = await formatProjectPath(repository.name)
   const isCloned = existsSync(projectPath)
 
   if (isCloned) {
@@ -35,11 +35,16 @@ async function cloneCommand(params: string[], flags: string[]): Promise<void> {
     exec('git remote rename origin o')
   }
 
-  const isNodeProject = existsSync(resolve(process.cwd(), 'package.json'))
+  const isNodeProject = existsSync(path.resolve(projectPath, 'package.json'))
+  const isGoProject =
+    !isNodeProject && existsSync(path.resolve(projectPath, 'go.mod'))
 
   if (isNodeProject) {
-    const pm = (await detect()) ?? (await packageManagerPrompt())
-    exec(`${pm} install`)
+    const packageManager =
+      (await detectPackageManager()) ?? (await selectPackageManagerPrompt())
+    exec(`${packageManager} install`)
+  } else if (isGoProject) {
+    exec('go mod download')
   }
 
   exec('code .')
@@ -49,10 +54,22 @@ async function getRepository(
   params: string[],
   flags: string[],
 ): Promise<Repository> {
+  const isGithubUrl = /github\.com.+\.git$/.test(params[0])
+
+  if (isGithubUrl) {
+    const repositoryUrl = params[0]
+
+    return {
+      clone_url: repositoryUrl,
+      name: repositoryUrl.replace(/.+\/(.+)\.git$/, '$1'),
+      updated_at: '',
+    }
+  }
+
   const repositories = await getUserRepositories()
   const isFilter = hasFlag(['--filter', '-f'], flags)
 
-  if (isFilter && params.length > 0) {
+  if (params.length > 0 && isFilter) {
     const filterRegex = new RegExp(params.join('|'), 'i')
     const filteredRepositories = repositories.filter(repository =>
       filterRegex.test(repository.name),
@@ -60,43 +77,47 @@ async function getRepository(
 
     if (filteredRepositories.length === 0) {
       throw new InvalidParamError('filter param', 'No repository found')
-    } else if (filteredRepositories.length === 1) {
+    }
+
+    if (filteredRepositories.length === 1) {
       return filteredRepositories[0]
     }
 
-    return clonePrompt(filteredRepositories)
-  } else if (params.length > 0) {
-    const repositoryName = params[0]
-    const isGitAddress = /github\.com.+\.git$/.test(repositoryName)
+    return selectRepositoryPrompt(filteredRepositories)
+  }
 
-    if (isGitAddress) {
-      return {
-        clone_url: repositoryName,
-        name: repositoryName.replace(/.+\/(.+)\.git$/, '$1'),
-        updated_at: '',
-      }
-    }
+  if (params.length > 0) {
+    const repositoryName = params[0]
 
     const repositoryRegex = new RegExp(repositoryName, 'i')
-    const foundRepository = repositories.find(repository =>
+    const filteredRepositories = repositories.filter(repository =>
       repositoryRegex.test(repository.name),
     )
 
-    if (!foundRepository) {
+    if (filteredRepositories.length === 0) {
       throw new NotFoundError(repositoryName)
     }
 
-    return foundRepository
+    const desiredRepository =
+      filteredRepositories.find(
+        repository => repository.name === repositoryName,
+      ) ?? filteredRepositories[0]
+
+    return desiredRepository
   }
 
-  return clonePrompt(repositories)
+  return selectRepositoryPrompt(repositories)
 }
 
 async function getUserRepositories(): Promise<Repository[]> {
-  const authStatus = await execAsync('gh auth status')
+  const getGithubCliRepositories = async (): Promise<Repository[]> => {
+    const authStatus = await execAsync('gh auth status')
 
-  if (authStatus.includes('Logged in')) {
-    const repositoriesData = await execAsync('gh repo list')
+    if (!authStatus.includes('Logged in')) {
+      return []
+    }
+
+    const repositoriesData = await execAsync('gh repo list -L 50')
     const repositories = repositoriesData
       .split('\n')
       .filter(Boolean)
@@ -113,35 +134,56 @@ async function getUserRepositories(): Promise<Repository[]> {
       })
 
     return repositories
-  } else {
-    const username = readLockfile().git
+  }
+
+  const getGithubApiRepositories = async (): Promise<Repository[]> => {
+    const username = await getLockfile('userGithubName')
     const { data: repositories } = await axios.get<Repository[]>(
       `https://api.github.com/users/${username}/repos`,
-      {
-        data: {
-          username,
-        },
-      },
+      { data: { username } },
     )
 
     return repositories
   }
+
+  const githubRepositories = await Promise.all([
+    getGithubApiRepositories(),
+    getGithubCliRepositories(),
+  ])
+
+  const deduplicatedRepositories = githubRepositories
+    .flat()
+    .filter(
+      (repo, i, arr) => i === arr.findIndex(_repo => _repo.name === repo.name),
+    )
+
+  return deduplicatedRepositories
 }
 
-function formatProjectPath(repositoryName: string): string {
+async function formatProjectPath(repositoryName: string): Promise<string> {
   return hasFlag('--root')
-    ? resolve(readLockfile().projects[0], repositoryName)
-    : resolve(cwd, repositoryName)
+    ? path.resolve(
+        // eslint-disable-next-line unicorn/no-await-expression-member
+        (await getLockfile('projectsRootList'))[0],
+        repositoryName,
+      )
+    : path.resolve(cwd, repositoryName)
 }
 
-async function clonePrompt(repositories: Repository[]): Promise<Repository> {
+async function selectRepositoryPrompt(
+  repositories: Repository[],
+): Promise<Repository> {
   const sortedRepositories = repositories.sort((a, b) => {
     const date = [
       new Date(a.updated_at).getTime(),
       new Date(b.updated_at).getTime(),
     ]
 
-    return date[0] > date[1] ? -1 : date[0] < date[1] ? 1 : 0
+    return date[0] > date[1]
+      ? -1
+      : date[0] < date[1]
+        ? 1
+        : a.name.localeCompare(b.name)
   })
 
   const response = await p.select({
@@ -158,7 +200,7 @@ async function clonePrompt(repositories: Repository[]): Promise<Repository> {
   return response
 }
 
-async function packageManagerPrompt(): Promise<PackageManager> {
+async function selectPackageManagerPrompt(): Promise<PackageManager> {
   const options: PackageManager[] = ['pnpm', 'yarn', 'npm']
   const response = await p.select({
     message: 'Select your package manager:',
