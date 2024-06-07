@@ -2,8 +2,6 @@ SHELL=/bin/bash
 
 packages = ./core ./prompts
 
-run:
-	@go run main.go
 test:
 	@until [ $$RET -eq 0 ]; do \
 		go test $(packages) -cover ; \
