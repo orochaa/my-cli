@@ -29,16 +29,25 @@ func Exec(command ...string) (string, error) {
 	s.Start(strings.Join(command, " "))
 	out, err := exec.Command(command[0], command[1:]...).Output()
 	if err != nil {
-		s.Stop(err.Error(), 1)
-		return "", nil
+		s.Stop("", 1)
+		prompts.Cancel(err.Error())
+		return "", err
 	}
 	s.Stop("", 0)
 	return string(out), nil
 }
 
-func ExecSilent(command ...string) string {
-	out, _ := exec.Command(command[0], command[1:]...).Output()
-	return string(out)
+func ExecSilent(command ...string) (string, error) {
+	out, err := exec.Command(command[0], command[1:]...).Output()
+	return string(out), err
+}
+
+func ExecOrExit(command ...string) string {
+	out, err := Exec(command...)
+	if err != nil {
+		os.Exit(1)
+	}
+	return out
 }
 
 func VerifyPromptCancel(err error) {

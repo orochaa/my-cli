@@ -36,9 +36,9 @@ var cloneCmd = &cobra.Command{
 		if utils.Exists(projectPath) {
 			os.Chdir(projectPath)
 		} else {
-			utils.Exec("git", "clone", repo.Clone_url, projectPath)
+			utils.ExecOrExit("git", "clone", repo.Clone_url, projectPath)
 			os.Chdir(projectPath)
-			utils.Exec("git", "remote", "rename", "origin", "o")
+			utils.ExecOrExit("git", "remote", "rename", "origin", "o")
 		}
 
 		if utils.Exists(path.Join(projectPath, "package.json")) {
@@ -46,12 +46,12 @@ var cloneCmd = &cobra.Command{
 			if err != nil {
 				pkgManager = selectPackageManagerPrompt()
 			}
-			utils.Exec(string(pkgManager), "install")
+			utils.ExecOrExit(string(pkgManager), "install")
 		} else if utils.Exists(path.Join(projectPath, "go.mod")) {
-			utils.Exec("go", "mod", "download")
+			utils.ExecOrExit("go", "mod", "download")
 		}
 
-		utils.Exec("code", projectPath)
+		utils.ExecOrExit("code", projectPath)
 	},
 }
 
@@ -142,12 +142,16 @@ func getUserRepositories() []*Repository {
 func getGhCliRepositories(wg *sync.WaitGroup, reposCh chan *Repository) {
 	defer wg.Done()
 
-	authStatus := utils.ExecSilent("gh", "auth", "status")
-	if !strings.Contains(authStatus, "Logged in") {
+	authStatus, err := utils.ExecSilent("gh", "auth", "status")
+	if err != nil || !strings.Contains(authStatus, "Logged in") {
 		return
 	}
 
-	output := utils.ExecSilent("gh", "repo", "list", "-L", "50")
+	output, err := utils.ExecSilent("gh", "repo", "list", "-L", "50")
+	if err != nil {
+		return
+	}
+
 	for _, line := range strings.Split(output, "\n") {
 		if line == "" {
 			continue
