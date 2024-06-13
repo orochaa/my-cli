@@ -200,7 +200,7 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 		assert.NoError(err, "invalid repository updated_at field")
 		b, err := time.Parse("2006-01-02T15:04:05Z0700", repos[j].Updated_at)
 		assert.NoError(err, "invalid repository updated_at field")
-		return a.Before(b)
+		return a.After(b)
 	})
 
 	var options []prompts.SelectOption[*Repository]

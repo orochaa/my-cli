@@ -24,16 +24,16 @@ func Exists(path string) bool {
 	return err == nil
 }
 
-func Exec(command ...string) error {
+func Exec(command ...string) (string, error) {
 	s, _ := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
 	s.Start(strings.Join(command, " "))
-	err := exec.Command(command[0], command[1:]...).Run()
+	out, err := exec.Command(command[0], command[1:]...).Output()
 	if err != nil {
 		s.Stop(err.Error(), 1)
-	} else {
-		s.Stop("", 0)
+		return "", nil
 	}
-	return err
+	s.Stop("", 0)
+	return string(out), nil
 }
 
 func ExecSilent(command ...string) string {
