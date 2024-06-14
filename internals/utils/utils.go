@@ -29,7 +29,11 @@ func Exists(path string) bool {
 func ParseCommand(command []string) []string {
 	commands := []string{}
 	for _, c := range command {
-		commands = append(commands, strings.Split(c, " ")...)
+		for _, w := range strings.Split(c, " ") {
+			if w != "" {
+				commands = append(commands, w)
+			}
+		}
 	}
 	return commands
 }
