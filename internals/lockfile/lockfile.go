@@ -8,7 +8,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 
 	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/utils"
@@ -27,11 +27,11 @@ type Lockfile struct {
 func DirPath() string {
 	homeDir, err := os.UserHomeDir()
 	assert.NoError(err, "no user homedir found")
-	return path.Join(homeDir, "my-cli")
+	return filepath.Join(homeDir, "my-cli")
 }
 
 func Path() string {
-	return path.Join(DirPath(), Name)
+	return filepath.Join(DirPath(), Name)
 }
 
 func Verify() bool {

@@ -1,5 +1,7 @@
 github.com/Mist3rBru/go-clack v0.1.2 h1:GLZI3gu9yLHEolOxkwtAtTL0y213ULtNOa2Fo1P22kM=
 github.com/Mist3rBru/go-clack v0.1.2/go.mod h1:05dqTPybj4y270D417XAoqg3a1Gd1YxKzU1GOei+SX8=
+github.com/Mist3rBru/go-clack v0.1.3 h1:H5m0QlrQt0oKIACrWlATNAIyNwz/W9ZgVY/CDAtg8Nc=
+github.com/Mist3rBru/go-clack v0.1.3/go.mod h1:05dqTPybj4y270D417XAoqg3a1Gd1YxKzU1GOei+SX8=
 github.com/cpuguy83/go-md2man/v2 v2.0.3/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=

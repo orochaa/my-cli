@@ -19,7 +19,7 @@ var branchCmd = &cobra.Command{
 	Short:   "Checkout to branch",
 	Long:    "List all local and remote branches, to select and checkout to it",
 	Run: func(cmd *cobra.Command, args []string) {
-		branchesData, err := utils.ExecSilent("git", "branch", "-a")
+		branchesData, err := utils.ExecSilent("git branch -a")
 		if err != nil {
 			prompts.Error(err.Error())
 			return
@@ -30,10 +30,10 @@ var branchCmd = &cobra.Command{
 		if isRemoteBranch(selectedBranch) {
 			remoteBranch := formatRemoteBranch(selectedBranch)
 			remoteOrigin := formatRemoteOrigin(selectedBranch)
-			utils.ExecOrExit("git", "checkout", "-b", remoteBranch)
-			utils.ExecOrExit("git", "pull", remoteOrigin, remoteBranch)
+			utils.ExecOrExit("git checkout -b", remoteBranch)
+			utils.ExecOrExit("git pull", remoteOrigin, remoteBranch)
 		} else {
-			originsData := utils.ExecOrExit("git", "remote")
+			originsData := utils.ExecOrExit("git remote")
 			originList := strings.Split(originsData, "\n")
 			origin := originList[0]
 			for _, _origin := range originList {
@@ -43,8 +43,8 @@ var branchCmd = &cobra.Command{
 				}
 			}
 			branch := formatBranch(selectedBranch)
-			utils.ExecOrExit("git", "checkout", branch)
-			utils.ExecOrExit("git", "pull", origin, branch)
+			utils.ExecOrExit("git checkout", branch)
+			utils.ExecOrExit("git pull", origin, branch)
 		}
 	},
 }

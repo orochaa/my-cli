@@ -9,7 +9,7 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -36,19 +36,19 @@ var cloneCmd = &cobra.Command{
 		if utils.Exists(projectPath) {
 			os.Chdir(projectPath)
 		} else {
-			utils.ExecOrExit("git", "clone", repo.Clone_url, projectPath)
+			utils.ExecOrExit("git clone", repo.Clone_url, projectPath)
 			os.Chdir(projectPath)
-			utils.ExecOrExit("git", "remote", "rename", "origin", "o")
+			utils.ExecOrExit("git remote rename origin o")
 		}
 
-		if utils.Exists(path.Join(projectPath, "package.json")) {
+		if utils.Exists(filepath.Join(projectPath, "package.json")) {
 			pkgManager, err := ni.Detect(ni.DetectOptions{})
 			if err != nil {
 				pkgManager = selectPackageManagerPrompt()
 			}
 			utils.ExecOrExit(string(pkgManager), "install")
-		} else if utils.Exists(path.Join(projectPath, "go.mod")) {
-			utils.ExecOrExit("go", "mod", "download")
+		} else if utils.Exists(filepath.Join(projectPath, "go.mod")) {
+			utils.ExecOrExit("go mod download")
 		}
 
 		utils.ExecOrExit("code", projectPath)
@@ -142,12 +142,12 @@ func getUserRepositories() []*Repository {
 func getGhCliRepositories(wg *sync.WaitGroup, reposCh chan *Repository) {
 	defer wg.Done()
 
-	authStatus, err := utils.ExecSilent("gh", "auth", "status")
+	authStatus, err := utils.ExecSilent("gh auth status")
 	if err != nil || !strings.Contains(authStatus, "Logged in") {
 		return
 	}
 
-	output, err := utils.ExecSilent("gh", "repo", "list", "-L", "50")
+	output, err := utils.ExecSilent("gh repo list -L 50")
 	if err != nil {
 		return
 	}
@@ -226,10 +226,10 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 func formatProjectPath(cmd *cobra.Command, repo *Repository) string {
 	if isRoot, _ := cmd.Flags().GetBool("root"); isRoot {
 		projectsRootList := lockfile.GetUserProjectsRootList()
-		return path.Join(projectsRootList[0], repo.Name)
+		return filepath.Join(projectsRootList[0], repo.Name)
 	}
 	cwd, _ := os.Getwd()
-	return path.Join(cwd, repo.Name)
+	return filepath.Join(cwd, repo.Name)
 }
 
 func selectPackageManagerPrompt() ni.Agent {
