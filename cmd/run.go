@@ -29,17 +29,13 @@ var runCmd = &cobra.Command{
 		isDeep, _ := cmd.Flags().GetBool("deep")
 
 		if isDeep {
-			deepRun(cmd, args)
+			deepRun(args)
+		} else if len(args) > 0 {
+			shallowRun(cmd, args)
+		} else {
+			scripts := scriptsPrompt()
+			shallowRun(cmd, scripts)
 		}
-
-		// 	if len(args) > 0 && isDeep {
-		// 		deepRun(args)
-		// 	} else if len(args) > 0 {
-		// 		shallowRun(args)
-		// 	} else {
-		// 		scripts, err := scriptsPrompt()
-		// 		shallowRun(scripts)
-		// 	}
 	},
 }
 
@@ -66,7 +62,7 @@ func (w *CommandWriter) Write(p []byte) (n int, err error) {
 	return 0, nil
 }
 
-func deepRun(cmd *cobra.Command, args []string) {
+func deepRun(args []string) {
 	if len(args) == 0 {
 		prompts.Cancel("no args provided")
 		return
@@ -87,8 +83,6 @@ func deepRun(cmd *cobra.Command, args []string) {
 	projects := filterNodeProjects(mapProjects([]string{cwd}))
 	outputCh := make(chan ProjectOutput, len(projects))
 
-	isScript, _ := cmd.Flags().GetBool("strict")
-
 	for i, project := range projects {
 		wg.Add(1)
 		go func(args []string, project Project, idx int, outputCh chan ProjectOutput) {
@@ -105,7 +99,7 @@ func deepRun(cmd *cobra.Command, args []string) {
 				}
 				return
 			}
-			scriptRunners := mapScriptRunners(args, packageJson, isScript)
+			scriptRunners := mapScriptRunners(args, packageJson)
 			for _, scriptRunner := range scriptRunners {
 				commands := utils.ParseCommand([]string{scriptRunner.Runner, scriptRunner.Script})
 				writer := &CommandWriter{
@@ -181,12 +175,63 @@ func deepRun(cmd *cobra.Command, args []string) {
 	}
 }
 
+func shallowRun(cmd *cobra.Command, args []string) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		prompts.Error(err.Error())
+		return
+	}
+
+	var packageJson PackageJson
+	err = utils.ReadJson(filepath.Join(cwd, "package.json"), &packageJson)
+	if err != nil {
+		prompts.Error("Could not find package.json")
+		return
+	}
+
+	scripts := mapScriptRunners(args, packageJson)
+	for _, script := range scripts {
+		utils.Exec(script.Runner, script.Script)
+	}
+}
+
+func scriptsPrompt() []string {
+	cwd, err := os.Getwd()
+	if err != nil {
+		prompts.Error(err.Error())
+		os.Exit(1)
+	}
+
+	var packageJson PackageJson
+	err = utils.ReadJson(filepath.Join(cwd, "package.json"), &packageJson)
+	if err != nil {
+		prompts.Error("Could not find package.json")
+		os.Exit(1)
+	}
+
+	options := []prompts.MultiSelectOption[string]{}
+	for name, script := range packageJson.Scripts {
+		options = append(options, prompts.MultiSelectOption[string]{
+			Label: name,
+			Value: name,
+			Hint:  script,
+		})
+	}
+
+	scripts, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
+		Message: "Select some scripts to run in sequence:",
+		Options: options,
+	})
+	utils.VerifyPromptCancel(err)
+	return scripts
+}
+
 type ScriptRunner struct {
 	Script string
 	Runner string
 }
 
-func mapScriptRunners(args []string, packageJson PackageJson, isStrict bool) []ScriptRunner {
+func mapScriptRunners(args []string, packageJson PackageJson) []ScriptRunner {
 	var scriptRunners []ScriptRunner
 
 	if packageJson.Scripts == nil {
@@ -198,11 +243,6 @@ func mapScriptRunners(args []string, packageJson PackageJson, isStrict bool) []S
 			scriptRunners = append(scriptRunners, ScriptRunner{
 				Script: arg,
 				Runner: "npm run",
-			})
-		} else if !isStrict {
-			scriptRunners = append(scriptRunners, ScriptRunner{
-				Script: arg,
-				Runner: "npx",
 			})
 		}
 	}
