@@ -4,6 +4,7 @@ import (
 	"embed"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -13,6 +14,8 @@ import (
 
 //go:embed config/* snippets/*
 var e embed.FS
+
+var SnippetExtension string = ".code-snippets"
 
 func CopyConfig(fileName string) {
 	src, err := e.Open(filepath.Join("config", fileName))
@@ -37,23 +40,32 @@ func VsCodeFolderPath() string {
 
 }
 
-func CreateVsCodeFolder() {
-	os.MkdirAll(VsCodeFolderPath(), os.ModePerm)
+func CreateVsCodeFolder() error {
+	return os.MkdirAll(VsCodeFolderPath(), os.ModePerm)
 }
 
-func CopySnippet(snippet string) {
-	fileName := fmt.Sprintf("%s.code-snippets", snippet)
+func CopySnippet(snippet string) error {
+	fileName := snippet + SnippetExtension
 	src, err := e.Open(filepath.Join("snippets", fileName))
 	assert.NoError(err, fmt.Sprintf("%s should open", fileName))
 	defer src.Close()
+
 	dst, err := os.Create(filepath.Join(VsCodeFolderPath(), fileName))
 	if err != nil {
-		prompts.Error(err.Error())
-		return
+		return err
 	}
 	defer dst.Close()
+
 	_, err = io.Copy(dst, src)
 	if err != nil {
-		prompts.Error(err.Error())
+		return err
 	}
+
+	return nil
+}
+
+func ReadSnippets() []fs.DirEntry {
+	files, err := e.ReadDir("snippets")
+	assert.NoError(err, "")
+	return files
 }

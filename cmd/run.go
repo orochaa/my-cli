@@ -31,10 +31,10 @@ var runCmd = &cobra.Command{
 		if isDeep {
 			deepRun(args)
 		} else if len(args) > 0 {
-			shallowRun(cmd, args)
+			shallowRun(args)
 		} else {
 			scripts := scriptsPrompt()
-			shallowRun(cmd, scripts)
+			shallowRun(scripts)
 		}
 	},
 }
@@ -175,7 +175,7 @@ func deepRun(args []string) {
 	}
 }
 
-func shallowRun(cmd *cobra.Command, args []string) {
+func shallowRun(args []string) {
 	cwd, err := os.Getwd()
 	if err != nil {
 		prompts.Error(err.Error())
