@@ -45,8 +45,7 @@ var scriptCmd = &cobra.Command{
 
 		packageJsonPath := filepath.Join(cwd, "package.json")
 		var packageJson PackageJson
-		err = utils.ReadJson(packageJsonPath, &packageJson)
-		if err != nil {
+		if err := utils.ReadJson(packageJsonPath, &packageJson); err != nil {
 			prompts.Error(err.Error())
 			return
 		}

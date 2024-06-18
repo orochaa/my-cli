@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 
@@ -60,22 +61,49 @@ var initCmd = &cobra.Command{
 
 			utils.Exec("git init")
 			utils.Exec("pnpm init")
-			utils.AddPackageJsonScripts(map[string]string{
-				"dev":           "tsx src/index.ts",
-				"build":         "tsc",
-				"lint":          "run-s lint:tsc lint:prettier lint:eslint",
-				"lint:tsc":      "tsc --noEmit",
-				"lint:prettier": "prettier --write .",
-				"lint:eslint":   "eslint --fix \"src/**/*.ts\" \"__tests__/**/*.ts\"",
-			})
-			prompts.Step("scripts added to package.json")
-			utils.Exec("pnpm add -D typescript @types/node tsx prettier eslint eslint-plugin-mist3rbru npm-run-all2")
 
 			cwd, err := os.Getwd()
 			if err != nil {
 				prompts.Error(err.Error())
 				return
 			}
+
+			packageJSONPath := filepath.Join(cwd, "package.json")
+			var packageJson PackageJson
+			if err := utils.ReadJson(packageJSONPath, &packageJson); err != nil {
+				prompts.Error(err.Error())
+				return
+			}
+
+			packageScripts := map[string]string{
+				"dev":           "tsx src/index.ts",
+				"build":         "tsc",
+				"lint":          "run-s lint:tsc lint:prettier lint:eslint",
+				"lint:tsc":      "tsc --noEmit",
+				"lint:prettier": "prettier --write .",
+				"lint:eslint":   "eslint --fix \"src/**/*.ts\" \"__tests__/**/*.ts\"",
+			}
+			if packageJson.Scripts == nil {
+				packageJson.Scripts = make(map[string]string)
+			}
+			for name, command := range packageScripts {
+				packageJson.Scripts[name] = command
+			}
+
+			updatedPackageJson, err := json.MarshalIndent(packageJson, "", "  ")
+			if err != nil {
+				prompts.Error(err.Error())
+				return
+			}
+
+			if err := os.WriteFile(packageJSONPath, updatedPackageJson, 0644); err != nil {
+				prompts.Error(err.Error())
+				return
+			}
+
+			prompts.Step("scripts added to package.json")
+			utils.Exec("pnpm add -D typescript @types/node tsx prettier eslint eslint-plugin-mist3rbru npm-run-all2")
+
 			os.Mkdir(filepath.Join(cwd, "src"), os.ModePerm)
 			_, err = os.Create(filepath.Join(cwd, "src", "index.ts"))
 			if err == nil {
