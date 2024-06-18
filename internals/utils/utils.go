@@ -21,6 +21,14 @@ func ReadJson(path string, target any) error {
 	return err
 }
 
+func WriteJson(path string, v any) error {
+	data, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, data, os.ModePerm)
+}
+
 func Exists(path string) bool {
 	_, err := os.Stat(path)
 	return err == nil
