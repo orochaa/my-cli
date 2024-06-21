@@ -71,13 +71,13 @@ var copyCmd = &cobra.Command{
 					go func() {
 						defer wg.Done()
 
-						if err := os.MkdirAll(filepath.Join(cwd, filepath.Dir(relativePath)), stat.Mode()); err != nil {
+						folderPath := filepath.Join(cwd, filepath.Dir(relativePath))
+						if err := os.MkdirAll(folderPath, stat.Mode()); err != nil {
 							prompts.Error(err.Error())
 							return
 						}
 
-						err = utils.CopyFile(selectedPath, absoluteToPath)
-						if err != nil {
+						if err := utils.CopyFile(selectedPath, absoluteToPath); err != nil {
 							prompts.Error(err.Error())
 							return
 						}

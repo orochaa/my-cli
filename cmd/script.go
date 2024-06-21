@@ -44,45 +44,49 @@ var scriptCmd = &cobra.Command{
 		utils.VerifyPromptCancel(err)
 
 		packageJsonPath := filepath.Join(cwd, "package.json")
-		var packageJson PackageJson
-		if err := utils.ReadJson(packageJsonPath, &packageJson); err != nil {
+		var packageJson map[string]any
+		if err = utils.ReadJson(packageJsonPath, &packageJson); err != nil {
 			prompts.Error(err.Error())
 			return
 		}
 
-		if packageJson.Scripts == nil {
-			packageJson.Scripts = make(map[string]string)
+		var packageJsonScripts map[string]any
+		if packageJson["scripts"] == nil {
+			packageJsonScripts = make(map[string]any)
+		} else {
+			packageJsonScripts = packageJson["scripts"].(map[string]any)
 		}
 
 		for _, script := range scripts {
 			switch script {
 			case "lint":
-				packageJson.Scripts["lint"] = "run-s lint:tsc lint:prettier lint:eslint"
-				packageJson.Scripts["lint:tsc"] = "tsc --noEmit"
-				packageJson.Scripts["lint:prettier"] = "prettier --write ."
-				packageJson.Scripts["lint:eslint"] = "eslint --fix \"src/**/*.ts\" \"__tests__/**/*.ts\""
+				packageJsonScripts["lint"] = "run-s lint:tsc lint:prettier lint:eslint"
+				packageJsonScripts["lint:tsc"] = "tsc --noEmit"
+				packageJsonScripts["lint:prettier"] = "prettier --write ."
+				packageJsonScripts["lint:eslint"] = "eslint --fix \"src/**/*.ts\" \"__tests__/**/*.ts\""
 			case "jest":
-				packageJson.Scripts["test"] = "jest --no-cache"
-				packageJson.Scripts["test:ci"] = "jest --no-cache  --coverage --silent"
+				packageJsonScripts["test"] = "jest --no-cache"
+				packageJsonScripts["test:ci"] = "jest --no-cache  --coverage --silent"
 			case "vitest":
-				packageJson.Scripts["test"] = "vitest --run"
-				packageJson.Scripts["test:ci"] = "vitest --run --coverage --silent"
+				packageJsonScripts["test"] = "vitest --run"
+				packageJsonScripts["test:ci"] = "vitest --run --coverage --silent"
 			case "prisma":
-				packageJson.Scripts["postinstall"] = "npm run prisma"
-				packageJson.Scripts["prisma"] = "prisma generate"
-				packageJson.Scripts["prisma:dev"] = "prisma migrate dev"
-				packageJson.Scripts["prisma:prod"] = "prisma migrate deploy"
-				packageJson.Scripts["prisma:reset"] = "prisma migrate reset"
+				packageJsonScripts["postinstall"] = "npm run prisma"
+				packageJsonScripts["prisma"] = "prisma generate"
+				packageJsonScripts["prisma:dev"] = "prisma migrate dev"
+				packageJsonScripts["prisma:prod"] = "prisma migrate deploy"
+				packageJsonScripts["prisma:reset"] = "prisma migrate reset"
 			case "changeset":
-				packageJson.Scripts["ci"] = "run-s lint build test"
-				packageJson.Scripts["publish"] = "changeset publish"
-				packageJson.Scripts["release"] = "run-s ci publish"
+				packageJsonScripts["ci"] = "run-s lint build test"
+				packageJsonScripts["publish"] = "changeset publish"
+				packageJsonScripts["release"] = "run-s ci publish"
 			default:
 				prompts.Warn(fmt.Sprint("script not found: ", script))
 			}
 		}
 
-		err = utils.WriteJson(packageJsonPath, packageJson)
+		packageJson["scripts"] = packageJsonScripts
+		err = utils.WriteJson(packageJsonPath, &packageJson)
 		if err != nil {
 			prompts.Error(err.Error())
 		} else {

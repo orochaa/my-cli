@@ -10,12 +10,12 @@ import (
 	"github.com/Mist3rBru/go-clack/prompts"
 )
 
-func ReadJson(path string, target any) error {
+func ReadJson(path string, v any) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(data, target)
+	err = json.Unmarshal(data, v)
 	return err
 }
 

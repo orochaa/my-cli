@@ -4,7 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 
@@ -69,13 +68,20 @@ var initCmd = &cobra.Command{
 			}
 
 			packageJSONPath := filepath.Join(cwd, "package.json")
-			var packageJson PackageJson
+			var packageJson map[string]any
 			if err := utils.ReadJson(packageJSONPath, &packageJson); err != nil {
 				prompts.Error(err.Error())
 				return
 			}
 
-			packageScripts := map[string]string{
+			var packageJsonScripts map[string]any
+			if packageJson["scripts"] == nil {
+				packageJsonScripts = make(map[string]any)
+			} else {
+				packageJsonScripts = packageJson["scripts"].(map[string]any)
+			}
+
+			scripts := map[string]string{
 				"dev":           "tsx src/index.ts",
 				"build":         "tsc",
 				"lint":          "run-s lint:tsc lint:prettier lint:eslint",
@@ -83,20 +89,12 @@ var initCmd = &cobra.Command{
 				"lint:prettier": "prettier --write .",
 				"lint:eslint":   "eslint --fix \"src/**/*.ts\" \"__tests__/**/*.ts\"",
 			}
-			if packageJson.Scripts == nil {
-				packageJson.Scripts = make(map[string]string)
-			}
-			for name, command := range packageScripts {
-				packageJson.Scripts[name] = command
+			for name, command := range scripts {
+				packageJsonScripts[name] = command
 			}
 
-			updatedPackageJson, err := json.MarshalIndent(packageJson, "", "  ")
-			if err != nil {
-				prompts.Error(err.Error())
-				return
-			}
-
-			if err := os.WriteFile(packageJSONPath, updatedPackageJson, 0644); err != nil {
+			packageJson["scripts"] = packageJsonScripts
+			if err := utils.WriteJson(packageJSONPath, &packageJson); err != nil {
 				prompts.Error(err.Error())
 				return
 			}

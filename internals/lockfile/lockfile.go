@@ -50,9 +50,8 @@ func Write(lockfile Lockfile) {
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
 		os.MkdirAll(dirPath, fs.ModeDir)
 	}
-	file, err := json.Marshal(&lockfile)
+	err := utils.WriteJson(Path(), &lockfile)
 	assert.NoError(err, "lockfile failed to marshal")
-	os.WriteFile(Path(), file, fs.ModePerm)
 }
 
 func GetUserGithubName() string {

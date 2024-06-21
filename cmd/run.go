@@ -39,10 +39,6 @@ var runCmd = &cobra.Command{
 	},
 }
 
-type PackageJson struct {
-	Scripts map[string]string `json:"scripts"`
-}
-
 type ProjectOutput struct {
 	Idx     int
 	Name    string
@@ -88,7 +84,7 @@ func deepRun(args []string) {
 		go func(args []string, project Project, idx int, outputCh chan ProjectOutput) {
 			defer wg.Done()
 
-			var packageJson PackageJson
+			var packageJson map[string]any
 			err := utils.ReadJson(filepath.Join(project.Path, "package.json"), &packageJson)
 			if err != nil {
 				outputCh <- ProjectOutput{
@@ -99,6 +95,7 @@ func deepRun(args []string) {
 				}
 				return
 			}
+
 			scriptRunners := mapScriptRunners(args, packageJson)
 			for _, scriptRunner := range scriptRunners {
 				commands := utils.ParseCommand([]string{scriptRunner.Runner, scriptRunner.Script})
@@ -182,7 +179,7 @@ func shallowRun(args []string) {
 		return
 	}
 
-	var packageJson PackageJson
+	var packageJson map[string]any
 	err = utils.ReadJson(filepath.Join(cwd, "package.json"), &packageJson)
 	if err != nil {
 		prompts.Error("Could not find package.json")
@@ -202,19 +199,25 @@ func scriptsPrompt() []string {
 		os.Exit(1)
 	}
 
-	var packageJson PackageJson
+	var packageJson map[string]any
 	err = utils.ReadJson(filepath.Join(cwd, "package.json"), &packageJson)
 	if err != nil {
 		prompts.Error("Could not find package.json")
 		os.Exit(1)
 	}
 
+	if packageJson["scripts"] == nil {
+		prompts.Error("There is no scripts on package.json")
+		os.Exit(1)
+	}
+	packageJsonScripts := packageJson["scripts"].(map[string]any)
+
 	options := []prompts.MultiSelectOption[string]{}
-	for name, script := range packageJson.Scripts {
+	for name, command := range packageJsonScripts {
 		options = append(options, prompts.MultiSelectOption[string]{
 			Label: name,
 			Value: name,
-			Hint:  script,
+			Hint:  command.(string),
 		})
 	}
 
@@ -231,15 +234,16 @@ type ScriptRunner struct {
 	Runner string
 }
 
-func mapScriptRunners(args []string, packageJson PackageJson) []ScriptRunner {
+func mapScriptRunners(args []string, packageJson map[string]any) []ScriptRunner {
 	var scriptRunners []ScriptRunner
 
-	if packageJson.Scripts == nil {
+	if packageJson["scripts"] == nil {
 		return scriptRunners
 	}
+	packageJsonScripts := packageJson["scripts"].(map[string]any)
 
 	for _, arg := range args {
-		if packageJson.Scripts[arg] != "" {
+		if packageJsonScripts[arg] != "" {
 			scriptRunners = append(scriptRunners, ScriptRunner{
 				Script: arg,
 				Runner: "npm run",
