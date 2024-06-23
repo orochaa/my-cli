@@ -4,11 +4,15 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/utils"
+	"github.com/Mist3rBru/my-cli/third_party/ni"
 	"github.com/spf13/cobra"
 )
 
@@ -25,7 +29,23 @@ var branchCmd = &cobra.Command{
 			return
 		}
 		branches := strings.Split(branchesData, "\n")
-		selectedBranch := branchPrompt(branches)
+
+		var selectedBranch string
+		if len(args) > 0 {
+			for _, branch := range branches {
+				if strings.HasSuffix(branch, args[0]) {
+					selectedBranch = branch
+					break
+				}
+			}
+
+			if selectedBranch == "" {
+				prompts.Error(fmt.Sprintf("branch not found: %s", args[0]))
+				return
+			}
+		} else {
+			selectedBranch = branchPrompt(branches)
+		}
 
 		if isRemoteBranch(selectedBranch) {
 			remoteBranch := formatRemoteBranch(selectedBranch)
@@ -33,7 +53,11 @@ var branchCmd = &cobra.Command{
 			utils.ExecOrExit("git checkout -b", remoteBranch)
 			utils.ExecOrExit("git pull", remoteOrigin, remoteBranch)
 		} else {
-			originsData := utils.ExecOrExit("git remote")
+			originsData, err := utils.ExecSilent("git remote")
+			if err != nil {
+				prompts.Error(err.Error())
+				return
+			}
 			originList := strings.Split(originsData, "\n")
 			origin := originList[0]
 			for _, _origin := range originList {
@@ -45,6 +69,22 @@ var branchCmd = &cobra.Command{
 			branch := formatBranch(selectedBranch)
 			utils.ExecOrExit("git checkout", branch)
 			utils.ExecOrExit("git pull", origin, branch)
+		}
+
+		cwd, err := os.Getwd()
+		if err != nil {
+			prompts.Error(err.Error())
+			return
+		}
+
+		if utils.Exists(filepath.Join(cwd, "package.json")) {
+			pkgManager, err := ni.Detect(ni.DetectOptions{})
+			if err != nil {
+				pkgManager = selectPackageManagerPrompt()
+			}
+			utils.ExecOrExit(string(pkgManager), "install")
+		} else if utils.Exists(filepath.Join(cwd, "go.mod")) {
+			utils.ExecOrExit("go mod download")
 		}
 	},
 }

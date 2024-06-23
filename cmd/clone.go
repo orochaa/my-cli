@@ -79,7 +79,14 @@ func getRepository(cmd *cobra.Command, args []string) *Repository {
 	repos := getUserRepositories()
 	filter := cmd.Flag("filter").Value.String()
 
-	if filter != "" {
+	if len(args) > 0 {
+		for _, repo := range repos {
+			if args[0] == repo.Name {
+				return repo
+			}
+		}
+		prompts.Warn("repository not found")
+	} else if filter != "" {
 		filterRegex := regexp.MustCompile("(?i)" + filter)
 		var filteredRepos []*Repository
 		for _, repo := range repos {
