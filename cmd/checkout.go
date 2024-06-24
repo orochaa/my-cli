@@ -12,10 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// branchCmd represents the branch command
-var branchCmd = &cobra.Command{
-	Use:     "branch",
-	Aliases: []string{"b"},
+// checkoutCmd represents the checkout command
+var checkoutCmd = &cobra.Command{
+	Use:     "checkout",
+	Aliases: []string{"ck"},
 	Short:   "Checkout to branch",
 	Long:    "List all local and remote branches, to select and checkout to it",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -25,7 +25,7 @@ var branchCmd = &cobra.Command{
 			return
 		}
 		branches := strings.Split(branchesData, "\n")
-		selectedBranch := branchPrompt(branches)
+		selectedBranch := checkoutPrompt(branches)
 
 		if isRemoteBranch(selectedBranch) {
 			remoteBranch := formatRemoteBranch(selectedBranch)
@@ -42,9 +42,9 @@ var branchCmd = &cobra.Command{
 					break
 				}
 			}
-			branch := formatBranch(selectedBranch)
-			utils.ExecOrExit("git checkout", branch)
-			utils.ExecOrExit("git pull", origin, branch)
+			checkout := formatBranch(selectedBranch)
+			utils.ExecOrExit("git checkout", checkout)
+			utils.ExecOrExit("git pull", origin, checkout)
 		}
 	},
 }
@@ -65,19 +65,19 @@ func formatRemoteOrigin(origin string) string {
 	return regexp.MustCompile(`^\s*\w+\/(\w+).+`).ReplaceAllString(origin, "$1")
 }
 
-func branchPrompt(branches []string) string {
+func checkoutPrompt(branches []string) string {
 	var initialValue string
 	options := make([]prompts.SelectOption[string], len(branches)-1)
-	for i, branch := range branches {
-		if branch == "" {
+	for i, checkout := range branches {
+		if checkout == "" {
 			continue
 		}
-		if strings.HasPrefix(branch, "*") {
-			initialValue = branch
+		if strings.HasPrefix(checkout, "*") {
+			initialValue = checkout
 		}
 		options[i] = prompts.SelectOption[string]{
-			Label: branch,
-			Value: branch,
+			Label: checkout,
+			Value: checkout,
 		}
 	}
 	branch, err := prompts.Select[string](prompts.SelectParams[string]{
@@ -90,15 +90,15 @@ func branchPrompt(branches []string) string {
 }
 
 func init() {
-	rootCmd.AddCommand(branchCmd)
+	rootCmd.AddCommand(checkoutCmd)
 
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
-	// branchCmd.PersistentFlags().String("foo", "", "A help for foo")
+	// checkoutCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// branchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// checkoutCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
