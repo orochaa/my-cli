@@ -12,10 +12,7 @@ A compilation of my CLI snippets.
 
 - `setup`: Prepare the required setup
   - example: my setup
-- `api`: Create an api with typescript, prettier, eslint and jest with opined configuration
-  - params: `<name>`
-  - example: my api ts-api
-- `branch`: List all local and remote branches, to select and checkout to it
+- `checkout`: List all local and remote branches, to select and checkout to it
   - alias: `b`
   - example: my b
 - `clone`: Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode
@@ -31,28 +28,15 @@ A compilation of my CLI snippets.
   - params: `<...projects>`
   - flags: `--workspace` | `-w` | `--reuse-window` | `-r` | `--filter` | `-f`
   - example: my open my-cli my-app my-api
-- `outdated`: Check if package is on latest version
-  - example: my outdated
 - `password`: Generate a random and safe password with the given length
   - alias: `pass`
   - params: `<length>`
   - example: my pass 30
-- `play`: Open a music player on your default browser
-  - params: `y` | `yt` | `youtube` | `s` | `spot` | `spotify`
-  - example: my play yt
-- `pomodoro`: Start a pomodoro timer
-  - alias: `pomo`
-  - params: `d` | `<work> <rest>`
-  - example: my pomo d
-- `remove`: Remove recursively a folder or file on the relative given path
-  - alias: `rm`
-  - params: `<...(folders || files)>`
-  - example: my rm dist coverage
 - `run`: Run scripts in sequence
   - params: `<...scripts>`
   - flags: `--deep` | `-d` | `--partial` | `-p`
   - example: my run lint build "vitest --run"
-- `scripts`: Write common scripts on local package.json
+- `script`: Write common scripts on local package.json
   - params: `lint` | `jest` | `vitest` | `prisma` | `changeset`
   - example: my scripts
 - `snippet`: Create snippet collections on local project
@@ -62,10 +46,4 @@ A compilation of my CLI snippets.
 - `upgrade`: Update package to latest version
   - alias: `up`
   - example: my up
-- `version`: Display current package version
-  - example: my version
 
-### Global flags:
-
-- `--silent`: ignores cmd outputs
-- `--help`: displays command details
