@@ -25,7 +25,22 @@ var checkoutCmd = &cobra.Command{
 			return
 		}
 		branches := strings.Split(branchesData, "\n")
-		selectedBranch := checkoutPrompt(branches)
+
+		var selectedBranch string
+		if len(args) > 0 {
+			for _, branch := range branches {
+				if strings.HasSuffix(branch, args[0]) {
+					selectedBranch = branch
+					break
+				}
+			}
+			if selectedBranch == "" {
+				prompts.Warn("branch not found, trying to fetch it")
+				selectedBranch = args[0]
+			}
+		} else {
+			selectedBranch = checkoutPrompt(branches)
+		}
 
 		if isRemoteBranch(selectedBranch) {
 			remoteBranch := formatRemoteBranch(selectedBranch)
@@ -33,7 +48,11 @@ var checkoutCmd = &cobra.Command{
 			utils.ExecOrExit("git checkout -b", remoteBranch)
 			utils.ExecOrExit("git pull", remoteOrigin, remoteBranch)
 		} else {
-			originsData := utils.ExecOrExit("git remote")
+			originsData, err := utils.ExecSilent("git remote")
+			if err != nil {
+				prompts.Error("no remote repository found")
+				return
+			}
 			originList := strings.Split(originsData, "\n")
 			origin := originList[0]
 			for _, _origin := range originList {
