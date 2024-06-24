@@ -4,11 +4,14 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
 	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/utils"
+	"github.com/Mist3rBru/my-cli/third_party/ni"
 	"github.com/spf13/cobra"
 )
 
@@ -35,8 +38,8 @@ var checkoutCmd = &cobra.Command{
 				}
 			}
 			if selectedBranch == "" {
-				prompts.Warn("branch not found, trying to fetch it")
-				selectedBranch = args[0]
+				prompts.Error("branch not found")
+				return
 			}
 		} else {
 			selectedBranch = checkoutPrompt(branches)
@@ -64,6 +67,22 @@ var checkoutCmd = &cobra.Command{
 			checkout := formatBranch(selectedBranch)
 			utils.ExecOrExit("git checkout", checkout)
 			utils.ExecOrExit("git pull", origin, checkout)
+		}
+
+		cwd, err := os.Getwd()
+		if err != nil {
+			prompts.Error(err.Error())
+			return
+		}
+
+		if utils.Exists(filepath.Join(cwd, "package.json")) {
+			pkgManager, err := ni.Detect(ni.DetectOptions{})
+			if err != nil {
+				pkgManager = selectPackageManagerPrompt()
+			}
+			utils.ExecOrExit(string(pkgManager), "install")
+		} else if utils.Exists(filepath.Join(cwd, "go.mod")) {
+			utils.ExecOrExit("go mod download")
 		}
 	},
 }

@@ -20,13 +20,11 @@ var initCmd = &cobra.Command{
 	Long:  "Initialize a default node or go project",
 	Run: func(cmd *cobra.Command, args []string) {
 		var err error
-		var project string
 
+		var project string
 		if len(args) > 0 {
 			project = args[0]
-		}
-
-		if project == "" {
+		} else {
 			project, err = prompts.Select(prompts.SelectParams[string]{
 				Message: "Select a project:",
 				Options: []prompts.SelectOption[string]{
