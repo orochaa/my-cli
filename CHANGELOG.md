@@ -1,4 +1,17 @@
 
+<a name="v0.3.2"></a>
+## [v0.3.2](https://github.com/Mist3rBru/go-clack/compare/v0.3.1...v0.3.2) (2024-06-26)
+
+### Bug Fixes
+
+* **setup:** use user.login instead of user.name
+
+### Chore
+
+* remake changelog
+* add changelog
+
+
 <a name="v0.3.1"></a>
 ## [v0.3.1](https://github.com/Mist3rBru/go-clack/compare/v0.3.0...v0.3.1) (2024-06-26)
 
