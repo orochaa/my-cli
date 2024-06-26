@@ -51,7 +51,7 @@ func Write(lockfile Lockfile) {
 		os.MkdirAll(dirPath, fs.ModeDir)
 	}
 	err := utils.WriteJson(Path(), &lockfile)
-	assert.NoError(err, "lockfile failed to marshal")
+	assert.NoError(err, "lockfile failed be written")
 }
 
 func GetUserGithubName() string {
@@ -130,9 +130,11 @@ func RunGithubUserNamePrompt(lastName string) string {
 }
 
 func RunProjectsRootPrompt(lastRootList []string) []string {
+	fmt.Println(lastRootList)
 	res, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
-		Message:     "What is your root projects path?",
-		OnlyShowDir: true,
+		Message:      "What is your root projects path?",
+		OnlyShowDir:  true,
+		InitialValue: lastRootList,
 	})
 	utils.VerifyPromptCancel(err)
 	return res
