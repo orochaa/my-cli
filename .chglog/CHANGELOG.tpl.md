@@ -9,7 +9,6 @@
 * {{ if .Scope }}**{{ .Scope }}:** {{ end }}{{ .Subject }}
 {{ end }}
 {{ end -}}
-
 {{- if .RevertCommits -}}
 ### Reverts
 
