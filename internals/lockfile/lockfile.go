@@ -124,7 +124,7 @@ func RunGithubUserNamePrompt(lastName string) string {
 		})
 		utils.VerifyPromptCancel(err)
 		if isUser {
-			return user.Name
+			return user.Login
 		}
 	}
 }
