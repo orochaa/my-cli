@@ -29,7 +29,10 @@ var copyCmd = &cobra.Command{
 			return
 		}
 
-		userProjectsRootList := lockfile.GetUserProjectsRootList()
+		l := lockfile.Open()
+		defer l.Close()
+
+		userProjectsRootList := l.GetUserProjectsRootList()
 
 		selectedPaths, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
 			Message:     "Select mudules to copy:",

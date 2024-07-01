@@ -27,7 +27,10 @@ var openCmd = &cobra.Command{
 	Short: "Open a project",
 	Long:  "Open a project on vscode, the projects available are based on `setup`",
 	Run: func(cmd *cobra.Command, args []string) {
-		projectsRootList := lockfile.GetUserProjectsRootList()
+		l := lockfile.Open()
+		defer l.Close()
+
+		projectsRootList := l.GetUserProjectsRootList()
 		projects := mapProjects(projectsRootList)
 		if len(projects) == 0 {
 			prompts.Error("no project found")

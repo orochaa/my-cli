@@ -179,7 +179,10 @@ func getGhCliRepositories(wg *sync.WaitGroup, reposCh chan *Repository) {
 func getGhRepositories(wg *sync.WaitGroup, reposCh chan *Repository) {
 	defer wg.Done()
 
-	userName := lockfile.GetUserGithubName()
+	l := lockfile.Open()
+	defer l.Close()
+
+	userName := l.GetUserGithubName()
 	if userName == "" {
 		return
 	}
@@ -231,8 +234,11 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 }
 
 func formatProjectPath(cmd *cobra.Command, repo *Repository) string {
+	l := lockfile.Open()
+	defer l.Close()
+
 	if isRoot, _ := cmd.Flags().GetBool("root"); isRoot {
-		projectsRootList := lockfile.GetUserProjectsRootList()
+		projectsRootList := l.GetUserProjectsRootList()
 		return filepath.Join(projectsRootList[0], repo.Name)
 	}
 	cwd, _ := os.Getwd()

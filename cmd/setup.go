@@ -15,14 +15,12 @@ var setupCmd = &cobra.Command{
 	Short: "Prepare the required setup",
 	Long:  "Prepare the required setup",
 	Run: func(cmd *cobra.Command, args []string) {
-		var data lockfile.Lockfile
-		if lockfile.Verify() {
-			data = lockfile.Read()
-		}
+		l := lockfile.Open()
+		defer l.Close()
 
-		data.UserGithubName = lockfile.RunGithubUserNamePrompt(data.UserGithubName)
-		data.UserProjectsRootList = lockfile.RunProjectsRootPrompt(data.UserProjectsRootList)
-		lockfile.Write(data)
+		l.UserGithubName = l.RunGithubUserNamePrompt()
+		l.UserProjectsRootList = l.RunProjectsRootPrompt()
+		l.Updated = true
 
 		prompts.Success("Setup finished!")
 	},

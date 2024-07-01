@@ -3,6 +3,7 @@ package lockfile
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -15,69 +16,54 @@ import (
 	"github.com/Mist3rBru/my-cli/third_party/assert"
 )
 
-const (
-	Name string = "lockfile.json"
-)
-
 type Lockfile struct {
+	Updated              bool
+	DirPath              string
+	FilePath             string
 	UserGithubName       string   `json:"userGithubName"`
 	UserProjectsRootList []string `json:"userProjectsRootList"`
 }
 
-func DirPath() string {
+func NewLockfile() *Lockfile {
 	homeDir, err := os.UserHomeDir()
 	assert.NoError(err, "no user homedir found")
-	return filepath.Join(homeDir, "my-cli")
-}
+	dirPath := filepath.Join(homeDir, "my-cli")
 
-func Path() string {
-	return filepath.Join(DirPath(), Name)
-}
-
-func Verify() bool {
-	return utils.Exists(Path())
-}
-
-func Read() Lockfile {
-	var lockfile Lockfile
-	err := utils.ReadJson(Path(), &lockfile)
-	assert.NoError(err, "failed to read lockfile")
-	return lockfile
-}
-
-func Write(lockfile Lockfile) {
-	dirPath := DirPath()
-	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
-		os.MkdirAll(dirPath, fs.ModeDir)
+	return &Lockfile{
+		DirPath:  dirPath,
+		FilePath: filepath.Join(dirPath, "lockfile.json"),
 	}
-	err := utils.WriteJson(Path(), &lockfile)
-	assert.NoError(err, "lockfile failed be written")
 }
 
-func GetUserGithubName() string {
-	var lockfile Lockfile
-	if Verify() {
-		lockfile = Read()
+func Open() *Lockfile {
+	l := NewLockfile()
+
+	if utils.Exists(l.FilePath) {
+		utils.ReadJson(l.FilePath, &l)
 	}
-	if lockfile.UserGithubName != "" {
-		return lockfile.UserGithubName
-	}
-	lockfile.UserGithubName = RunGithubUserNamePrompt("")
-	Write(lockfile)
-	return lockfile.UserGithubName
+
+	return l
 }
 
-func GetUserProjectsRootList() []string {
-	var lockfile Lockfile
-	if Verify() {
-		lockfile = Read()
+func (l *Lockfile) Close() {
+	if !l.Updated {
+		return
 	}
-	if len(lockfile.UserProjectsRootList) > 0 {
-		return lockfile.UserProjectsRootList
+	if _, err := os.Stat(l.DirPath); os.IsNotExist(err) {
+		err := os.MkdirAll(l.DirPath, fs.ModeDir)
+		assert.NoError(err, "my-cli folder failed to be created")
 	}
-	lockfile.UserProjectsRootList = RunProjectsRootPrompt([]string{})
-	Write(lockfile)
-	return lockfile.UserProjectsRootList
+	err := utils.WriteJson(l.FilePath, l)
+	assert.NoError(err, "lockfile failed to be written")
+}
+
+func (l *Lockfile) GetUserGithubName() string {
+	if l.UserGithubName != "" {
+		return l.UserGithubName
+	}
+	l.UserGithubName = l.RunGithubUserNamePrompt()
+	l.Updated = true
+	return l.UserGithubName
 }
 
 type GitHubUser struct {
@@ -85,9 +71,11 @@ type GitHubUser struct {
 	Name  string `json:"name"`
 }
 
-func RunGithubUserNamePrompt(lastName string) string {
+func (l *Lockfile) RunGithubUserNamePrompt() string {
 	s, err := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
 	assert.NoError(err, "failed to start spinner")
+
+	lastName := l.UserGithubName
 
 	for {
 		name, err := prompts.Text(prompts.TextParams{
@@ -129,12 +117,31 @@ func RunGithubUserNamePrompt(lastName string) string {
 	}
 }
 
-func RunProjectsRootPrompt(lastRootList []string) []string {
-	fmt.Println(lastRootList)
+func (l *Lockfile) GetUserProjectsRootList() []string {
+	if len(l.UserProjectsRootList) > 0 {
+		return l.UserProjectsRootList
+	}
+	l.UserProjectsRootList = l.RunProjectsRootPrompt()
+	l.Updated = true
+	return l.UserProjectsRootList
+}
+
+func (l *Lockfile) RunProjectsRootPrompt() []string {
+	var initialPath string
+	if len(l.UserProjectsRootList) > 0 {
+		initialPath = l.UserProjectsRootList[0]
+	}
 	res, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
 		Message:      "What is your root projects path?",
 		OnlyShowDir:  true,
-		InitialValue: lastRootList,
+		InitialValue: l.UserProjectsRootList,
+		InitialPath:  initialPath,
+		Validate: func(value []string) error {
+			if len(value) == 0 {
+				return errors.New("must select at least one folder")
+			}
+			return nil
+		},
 	})
 	utils.VerifyPromptCancel(err)
 	return res
