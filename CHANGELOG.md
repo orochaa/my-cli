@@ -1,4 +1,16 @@
 
+<a name="v0.3.3"></a>
+## [v0.3.3](https://github.com/Mist3rBru/go-clack/compare/v0.3.2...v0.3.3) (2024-07-01)
+
+### Features
+
+* add http command
+
+### Bug Fixes
+
+* **setup:** use user.login instead of user.name
+
+
 <a name="v0.3.2"></a>
 ## [v0.3.2](https://github.com/Mist3rBru/go-clack/compare/v0.3.1...v0.3.2) (2024-06-26)
 
