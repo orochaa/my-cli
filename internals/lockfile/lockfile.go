@@ -72,8 +72,7 @@ type GitHubUser struct {
 }
 
 func (l *Lockfile) RunGithubUserNamePrompt() string {
-	s, err := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
-	assert.NoError(err, "failed to start spinner")
+	s := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
 
 	lastName := l.UserGithubName
 

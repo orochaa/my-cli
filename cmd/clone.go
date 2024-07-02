@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -34,9 +35,11 @@ var cloneCmd = &cobra.Command{
 		projectPath := formatProjectPath(cmd, repo)
 
 		if utils.Exists(projectPath) {
+			prompts.Step(fmt.Sprintf("cd %s", projectPath))
 			os.Chdir(projectPath)
 		} else {
 			utils.ExecOrExit("git clone", repo.Clone_url, projectPath)
+			prompts.Step(fmt.Sprintf("cd %s", projectPath))
 			os.Chdir(projectPath)
 			utils.ExecOrExit("git remote rename origin o")
 		}
@@ -110,6 +113,10 @@ func getUserRepositories() []*Repository {
 	var wg sync.WaitGroup
 	var repos []*Repository
 	reposCh := make(chan *Repository, 10)
+
+	s := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
+	s.Start("Fetching repositories")
+	defer s.Stop("", 0)
 
 	wg.Add(2)
 	go getGhCliRepositories(&wg, reposCh)

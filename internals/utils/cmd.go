@@ -23,7 +23,7 @@ func ParseCommand(command []string) []string {
 
 func Exec(command ...string) (string, error) {
 	commands := ParseCommand(command)
-	s, _ := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
+	s := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
 	s.Start(strings.Join(commands, " "))
 	out, err := exec.Command(commands[0], commands[1:]...).Output()
 	if err != nil {
