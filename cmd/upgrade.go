@@ -4,9 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
-
-	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
 )
@@ -18,13 +15,7 @@ var upgradeCmd = &cobra.Command{
 	Short:   "Update package to latest version",
 	Long:    "Update package to latest version",
 	Run: func(cmd *cobra.Command, args []string) {
-		s, err := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
-		if err != nil {
-			prompts.Error(err.Error())
-			return
-		}
-		s.Start("Upgrading to lastest version")
-		utils.ExecOrExit("go install github.com/Mist3rBru/my-cli@latest")
+		utils.ExecOrExit("go install github.com/Mist3rBru/my-cli")
 	},
 }
 
