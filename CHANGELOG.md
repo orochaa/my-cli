@@ -1,4 +1,25 @@
 
+<a name="v0.3.4"></a>
+## [v0.3.4](https://github.com/Mist3rBru/go-clack/compare/v0.3.3...v0.3.4) (2024-07-02)
+
+### Features
+
+* **clone:** add spinner to fetching repos step
+
+### Bug Fixes
+
+* **upgrade:** loading spinner
+
+### Refactor
+
+* **utils:** remake lockfile logic
+
+### Chore
+
+* remove old unused script
+* update changelog
+
+
 <a name="v0.3.3"></a>
 ## [v0.3.3](https://github.com/Mist3rBru/go-clack/compare/v0.3.2...v0.3.3) (2024-07-01)
 
