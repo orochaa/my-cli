@@ -1,4 +1,26 @@
 
+<a name="v0.3.5"></a>
+## [v0.3.5](https://github.com/Mist3rBru/my-cli/compare/v0.3.4...v0.3.5) (2024-07-03)
+
+### 🚀 Features
+
+* **run:** add go project support
+
+### 🩹 Fixes
+
+* **copy:** relative path mapping
+
+### 🛠️ Refactors
+
+* make prompts required
+
+### 🏡 Chore
+
+* update changelog
+* upgrade dependencies
+* update changelog
+
+
 <a name="v0.3.4"></a>
 ## [v0.3.4](https://github.com/Mist3rBru/my-cli/compare/v0.3.3...v0.3.4) (2024-07-02)
 
