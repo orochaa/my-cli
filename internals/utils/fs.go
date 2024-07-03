@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"sync"
@@ -56,6 +57,11 @@ func CopyFile(fromFilePath, toFilePath string) error {
 func CopyDir(fromDirPath string, toDirPath string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
+	if err := os.MkdirAll(toDirPath, fs.ModeDir); err != nil {
+		prompts.Error(err.Error())
+		return
+	}
+
 	entries, err := os.ReadDir(fromDirPath)
 	if err != nil {
 		prompts.Error(err.Error())
@@ -71,10 +77,6 @@ func CopyDir(fromDirPath string, toDirPath string, wg *sync.WaitGroup) {
 		toPath := filepath.Join(toDirPath, entry.Name())
 
 		if entry.IsDir() {
-			if err = os.MkdirAll(toPath, entry.Type()); err != nil {
-				prompts.Error(err.Error())
-				continue
-			}
 			wg.Add(1)
 			go CopyDir(fromPath, toPath, wg)
 		} else {

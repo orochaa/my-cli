@@ -53,7 +53,7 @@ var copyCmd = &cobra.Command{
 				var relativePath string
 				for _, root := range userProjectsRootList {
 					relativeRegex := regexp.MustCompile(fmt.Sprintf(`^%s/.+?/(.+)`, root))
-					if relativeRegex.MatchString(root) {
+					if relativeRegex.MatchString(selectedPath) {
 						relativePath = relativeRegex.ReplaceAllString(selectedPath, "$1")
 						break
 					}
