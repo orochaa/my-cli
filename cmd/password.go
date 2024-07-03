@@ -33,7 +33,8 @@ var passwordCmd = &cobra.Command{
 			}
 		} else {
 			res, err := prompts.Text(prompts.TextParams{
-				Message: "What is your desired password length?",
+				Message:  "What is your desired password length?",
+				Required: true,
 				Validate: func(value string) error {
 					if _, err := strconv.Atoi(value); err != nil {
 						return fmt.Errorf("invalid number")

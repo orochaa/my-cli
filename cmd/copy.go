@@ -37,6 +37,7 @@ var copyCmd = &cobra.Command{
 		selectedPaths, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
 			Message:     "Select mudules to copy:",
 			InitialPath: userProjectsRootList[0],
+			Required:    true,
 		})
 		utils.VerifyPromptCancel(err)
 

@@ -4,7 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -128,14 +127,9 @@ func projectsPrompt(projects []Project) []Project {
 		}
 	}
 	openProjectList, err := prompts.MultiSelect(prompts.MultiSelectParams[Project]{
-		Message: "Select one or more project to open:",
-		Options: options,
-		Validate: func(value []Project) error {
-			if len(value) == 0 {
-				return fmt.Errorf("should select at least one project to open")
-			}
-			return nil
-		},
+		Message:  "Select one or more project to open:",
+		Options:  options,
+		Required: true,
 	})
 	utils.VerifyPromptCancel(err)
 	return openProjectList

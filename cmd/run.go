@@ -222,8 +222,9 @@ func scriptsPrompt() []string {
 	}
 
 	scripts, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
-		Message: "Select some scripts to run in sequence:",
-		Options: options,
+		Message:  "Select some scripts to run in sequence:",
+		Options:  options,
+		Required: true,
 	})
 	utils.VerifyPromptCancel(err)
 	return scripts

@@ -78,6 +78,7 @@ func (l *Lockfile) RunGithubUserNamePrompt() string {
 
 	for {
 		name, err := prompts.Text(prompts.TextParams{
+			Required:     true,
 			Message:      "What is your GitHub username?",
 			InitialValue: lastName,
 		})
@@ -133,6 +134,7 @@ func (l *Lockfile) RunProjectsRootPrompt() []string {
 	res, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
 		Message:      "What is your root projects path?",
 		OnlyShowDir:  true,
+		Required:     true,
 		InitialValue: l.UserProjectsRootList,
 		InitialPath:  initialPath,
 		Validate: func(value []string) error {
