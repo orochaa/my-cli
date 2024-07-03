@@ -2,7 +2,7 @@ style: github
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://github.com/Mist3rBru/go-clack
+  repository_url: https://github.com/Mist3rBru/my-cli
 options:
   sort: 'date'
   commits:
@@ -15,10 +15,15 @@ options:
       - fix
       - test
       - refactor
+      - docs
       - chore
     title_maps:
-      feat: Features
-      fix: Bug Fixes
+      feat: 🚀 Features
+      fix: 🩹 Fixes
+      test: 🧪 Tests
+      refactor: 🛠️ Refactors
+      docs: 📖 Documentation
+      chore: 🏡 Chore
   header:
     pattern: "^(\\w*)(?:\\(([\\w\\$\\.\\-\\*\\s]*)\\))?\\:\\s(.*)$"
     pattern_maps:

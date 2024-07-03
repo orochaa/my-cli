@@ -1,58 +1,58 @@
 
 <a name="v0.3.4"></a>
-## [v0.3.4](https://github.com/Mist3rBru/go-clack/compare/v0.3.3...v0.3.4) (2024-07-02)
+## [v0.3.4](https://github.com/Mist3rBru/my-cli/compare/v0.3.3...v0.3.4) (2024-07-02)
 
-### Features
+### 🚀 Features
 
 * **clone:** add spinner to fetching repos step
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **upgrade:** loading spinner
 
-### Refactor
+### 🛠️ Refactors
 
 * **utils:** remake lockfile logic
 
-### Chore
+### 🏡 Chore
 
 * remove old unused script
 * update changelog
 
 
 <a name="v0.3.3"></a>
-## [v0.3.3](https://github.com/Mist3rBru/go-clack/compare/v0.3.2...v0.3.3) (2024-07-01)
+## [v0.3.3](https://github.com/Mist3rBru/my-cli/compare/v0.3.2...v0.3.3) (2024-07-01)
 
-### Features
+### 🚀 Features
 
 * add http command
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **setup:** use user.login instead of user.name
 
 
 <a name="v0.3.2"></a>
-## [v0.3.2](https://github.com/Mist3rBru/go-clack/compare/v0.3.1...v0.3.2) (2024-06-26)
+## [v0.3.2](https://github.com/Mist3rBru/my-cli/compare/v0.3.1...v0.3.2) (2024-06-26)
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **setup:** use user.login instead of user.name
 
-### Chore
+### 🏡 Chore
 
 * remake changelog
 * add changelog
 
 
 <a name="v0.3.1"></a>
-## [v0.3.1](https://github.com/Mist3rBru/go-clack/compare/v0.3.0...v0.3.1) (2024-06-26)
+## [v0.3.1](https://github.com/Mist3rBru/my-cli/compare/v0.3.0...v0.3.1) (2024-06-26)
 
-### Features
+### 🚀 Features
 
 * add setup command
 
-### Chore
+### 🏡 Chore
 
 * remake changelog
 * add changelog
@@ -60,9 +60,9 @@
 
 
 <a name="v0.3.0"></a>
-## [v0.3.0](https://github.com/Mist3rBru/go-clack/compare/v0.2.20...v0.3.0) (2024-06-24)
+## [v0.3.0](https://github.com/Mist3rBru/my-cli/compare/v0.2.20...v0.3.0) (2024-06-24)
 
-### Features
+### 🚀 Features
 
 * add password command
 * add copy command
@@ -83,12 +83,12 @@
 * **clone:** add gh cli integration
 * **clone:** add support to go project
 
-### Test
+### 🧪 Tests
 
 * **clone:** improve test metodology
 * **clone:** add gh cli tests
 
-### Refactor
+### 🛠️ Refactors
 
 * migrate to go lang
 * rename branch command to checkout
@@ -96,29 +96,29 @@
 * module utils
 * **clone:** improve code readability and performance
 
-### Chore
+### 🏡 Chore
 
 * update readme
 * update dependencies
 * bump dependencies
 * bump dependencies
-* add clone path changeset ([#53](https://github.com/Mist3rBru/go-clack/issues/53))
+* add clone path changeset ([#53](https://github.com/Mist3rBru/my-cli/issues/53))
 * add clone path changeset
 
 
 <a name="v0.2.20"></a>
-## [v0.2.20](https://github.com/Mist3rBru/go-clack/compare/v0.2.18...v0.2.20) (2024-02-26)
+## [v0.2.20](https://github.com/Mist3rBru/my-cli/compare/v0.2.18...v0.2.20) (2024-02-26)
 
-### Features
+### 🚀 Features
 
 * add scripts command
 * **clone:** add --filter flag
 * **http:** add styled http response
 * **init:** add initial scripts to package.json
 
-### Bug Fixes
+### 🩹 Fixes
 
-* **ci:** add process.stdout optional chain ([#51](https://github.com/Mist3rBru/go-clack/issues/51))
+* **ci:** add process.stdout optional chain ([#51](https://github.com/Mist3rBru/my-cli/issues/51))
 * **ci:** add process.stdout optional chain
 * **clone:** use global constant maxItems
 * **init:** add project path to .eslintrc.json
@@ -126,65 +126,65 @@
 * **open:** invalid filter param validation
 * **snippets:** rename model typo to entity
 
-### Test
+### 🧪 Tests
 
 * **scripts:** add tests
 
-### Refactor
+### 🛠️ Refactors
 
 * lint code
 * rename getPackgeJson to readPackageJson and add writePackageJson
 * lint with eslint-plugin-mist3rbru
 
-### Chore
+### 🏡 Chore
 
 * bump dependencies
 * bump dependencies
 
 
 <a name="v0.2.18"></a>
-## [v0.2.18](https://github.com/Mist3rBru/go-clack/compare/v0.2.17...v0.2.18) (2023-12-19)
+## [v0.2.18](https://github.com/Mist3rBru/my-cli/compare/v0.2.17...v0.2.18) (2023-12-19)
 
-### Features
+### 🚀 Features
 
 * **init:** add editorconfig and eslint
 * **init:** init project by param
 * **run:** install dependencies with right package manager
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **clone:** max item list
 * **init:** test suite
 
-### Refactor
+### 🛠️ Refactors
 
 * lint with eslint-plugin-mist3rbru
 * eslint fix
 * **global:** clean code
 * **tests:** mock instead of manipulate lockfile
 
-### Chore
+### 🏡 Chore
 
 * add eslint
 * bump dependencies
 
 
 <a name="v0.2.17"></a>
-## [v0.2.17](https://github.com/Mist3rBru/go-clack/compare/v0.2.16...v0.2.17) (2023-11-24)
+## [v0.2.17](https://github.com/Mist3rBru/my-cli/compare/v0.2.16...v0.2.17) (2023-11-24)
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **init:** test suite
 
 
 <a name="v0.2.16"></a>
-## [v0.2.16](https://github.com/Mist3rBru/go-clack/compare/v0.2.15...v0.2.16) (2023-11-24)
+## [v0.2.16](https://github.com/Mist3rBru/my-cli/compare/v0.2.15...v0.2.16) (2023-11-24)
 
-### Features
+### 🚀 Features
 
 * **global:** add relative max items to selects
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **init:** test suite
 * **init:** remove git checkout
@@ -192,9 +192,9 @@
 
 
 <a name="v0.2.15"></a>
-## [v0.2.15](https://github.com/Mist3rBru/go-clack/compare/v0.2.12...v0.2.15) (2023-11-23)
+## [v0.2.15](https://github.com/Mist3rBru/my-cli/compare/v0.2.12...v0.2.15) (2023-11-23)
 
-### Features
+### 🚀 Features
 
 * snippet command
 * **branch:** pull local branch from origin
@@ -204,22 +204,22 @@
 * **snippet:** react-antive snippets
 * **snippet:** react snippets
 
-### Docs
-
-* update readme with latest changes
-
-### Bug Fixes
+### 🩹 Fixes
 
 * ci
 * ci
 * **global:** bundle package with public folder
 * **global:** bundle package with public folder
 
-### Test
+### 🧪 Tests
 
 * snippet command
 
-### Chore
+### 📖 Documentation
+
+* update readme with latest changes
+
+### 🏡 Chore
 
 * update tsconfig with modern patterns
 * always add trailing comma
@@ -232,42 +232,42 @@
 
 
 <a name="v0.2.12"></a>
-## [v0.2.12](https://github.com/Mist3rBru/go-clack/compare/v0.2.11...v0.2.12) (2023-10-18)
+## [v0.2.12](https://github.com/Mist3rBru/my-cli/compare/v0.2.11...v0.2.12) (2023-10-18)
 
-### Features
+### 🚀 Features
 
 * --help flag
 * **clone:** accept http repository
 * **clone:** install deps with right package manager
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **global:** store setup config on home dir
 * **http:** convert body to JSON object
 
-### Refactor
+### 🛠️ Refactors
 
 * move setup-lock.json to os temp folder
 
 
 <a name="v0.2.11"></a>
-## [v0.2.11](https://github.com/Mist3rBru/go-clack/compare/v0.2.10...v0.2.11) (2023-10-16)
+## [v0.2.11](https://github.com/Mist3rBru/my-cli/compare/v0.2.10...v0.2.11) (2023-10-16)
 
 
 <a name="v0.2.10"></a>
-## [v0.2.10](https://github.com/Mist3rBru/go-clack/compare/v0.2.9...v0.2.10) (2023-10-06)
+## [v0.2.10](https://github.com/Mist3rBru/my-cli/compare/v0.2.9...v0.2.10) (2023-10-06)
 
-### Features
+### 🚀 Features
 
 * **init:** add prettier base setup
 * **run:** print run command on prompt
 * **run:** script hint
 
-### Bug Fixes
+### 🩹 Fixes
 
 * restore cursor on pomodoro exit
 
-### Chore
+### 🏡 Chore
 
 * add [@clack](https://github.com/clack)/core
 * increse max prompt options
@@ -275,23 +275,23 @@
 
 
 <a name="v0.2.9"></a>
-## [v0.2.9](https://github.com/Mist3rBru/go-clack/compare/v0.2.6...v0.2.9) (2023-08-16)
+## [v0.2.9](https://github.com/Mist3rBru/my-cli/compare/v0.2.6...v0.2.9) (2023-08-16)
 
-### Features
+### 🚀 Features
 
 * **run:** custom scripts
 * **run:** custom scripts
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **play:** change open import to dynamic import
 * **run:** print 'npx' command
 
 
 <a name="v0.2.6"></a>
-## [v0.2.6](https://github.com/Mist3rBru/go-clack/compare/v0.2.4...v0.2.6) (2023-07-06)
+## [v0.2.6](https://github.com/Mist3rBru/my-cli/compare/v0.2.4...v0.2.6) (2023-07-06)
 
-### Features
+### 🚀 Features
 
 * **global:** feedback message from prompt cancellation
 * **open:** conditional workspace prompt
@@ -299,24 +299,24 @@
 * **setup:** improve commom mistake validations
 * **version:** version command
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **play:** support multi platforms
 
-### Test
+### 🧪 Tests
 
 * remake sut manipulation
 * **global:** enable multi thread
 * **version:** add version commands tests
 
-### Refactor
+### 🛠️ Refactors
 
 * remove temp folder
 * clean code
 * **upgrade:** ignore npm logs
 * **upgrade:** separate outdated from upgrade
 
-### Chore
+### 🏡 Chore
 
 * update dependencies
 * clean code
@@ -324,21 +324,21 @@
 
 
 <a name="v0.2.4"></a>
-## [v0.2.4](https://github.com/Mist3rBru/go-clack/compare/v0.2.3...v0.2.4) (2023-06-20)
+## [v0.2.4](https://github.com/Mist3rBru/my-cli/compare/v0.2.3...v0.2.4) (2023-06-20)
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **open:** ignore config folders
 
-### Chore
+### 🏡 Chore
 
 * **global:** remove and  commands because it does not last on update
 
 
 <a name="v0.2.3"></a>
-## [v0.2.3](https://github.com/Mist3rBru/go-clack/compare/v0.2.2...v0.2.3) (2023-06-15)
+## [v0.2.3](https://github.com/Mist3rBru/my-cli/compare/v0.2.2...v0.2.3) (2023-06-15)
 
-### Features
+### 🚀 Features
 
 * **open:** reuse window on -r flag
 
@@ -346,25 +346,21 @@
 
 * lint
 
-### Docs
-
-* reorder commands
-
-### Bug Fixes
+### 🩹 Fixes
 
 * **clone:** prevent install dependencies of non node project
 * **open:** prevent prompt to display root paths
 * **run:** -d flag not catching up
 
+### 📖 Documentation
+
+* reorder commands
+
 
 <a name="v0.2.2"></a>
-## [v0.2.2](https://github.com/Mist3rBru/go-clack/compare/v0.2.1...v0.2.2) (2023-06-09)
+## [v0.2.2](https://github.com/Mist3rBru/my-cli/compare/v0.2.1...v0.2.2) (2023-06-09)
 
-### Docs
-
-* update readme with latest changes
-
-### Features
+### 🚀 Features
 
 * support concatenated paths on open command params
 * **cmd:** add hasFlag() utility function
@@ -372,46 +368,50 @@
 * **global:** log cmd commands
 * **open:** add workspace support
 
-### Bug Fixes
+### 🩹 Fixes
 
 * **docs:** map all play params
 * **http:** uncaught missing params error
 
-### Test
+### 🧪 Tests
 
 * **open:** fix tests fo linux environment
 
-### Refactor
+### 🛠️ Refactors
 
 * **mappers:** improve mergeObjects efficiency
 
-### Chore
+### 📖 Documentation
+
+* update readme with latest changes
+
+### 🏡 Chore
 
 * lint files
 * **actions:** add docs to ci
 
 
 <a name="v0.2.1"></a>
-## [v0.2.1](https://github.com/Mist3rBru/go-clack/compare/v0.2.0...v0.2.1) (2023-06-02)
+## [v0.2.1](https://github.com/Mist3rBru/my-cli/compare/v0.2.0...v0.2.1) (2023-06-02)
 
-### Features
+### 🚀 Features
 
 * commands documentation script
 * commands documentation script
 
-### Test
+### 🧪 Tests
 
 * convertToJSON function
 * add missing tests
 
-### Refactor
+### 🛠️ Refactors
 
 * remove unnecessary async from docs script
 * improve code semantic
 * add global error handler
 * add convertToJson to store command
 
-### Chore
+### 🏡 Chore
 
 * complete clone's command description
 * complete clone's command description
@@ -419,40 +419,40 @@
 
 
 <a name="v0.2.0"></a>
-## [v0.2.0](https://github.com/Mist3rBru/go-clack/compare/v0.1.3...v0.2.0) (2023-05-19)
+## [v0.2.0](https://github.com/Mist3rBru/my-cli/compare/v0.1.3...v0.2.0) (2023-05-19)
 
-### Features
+### 🚀 Features
 
 * http command
 * deep run command
 * add silent mode
 
-### Bug Fixes
+### 🩹 Fixes
 
 * ci
 
-### Test
+### 🧪 Tests
 
 * duplicate commands
 * add app tests
 * fix command tests
 * branch command
 
-### Refactor
+### 🛠️ Refactors
 
 * add centralized app instance
 * add command examples
 * add app instance
 
-### Chore
+### 🏡 Chore
 
 * change tsup to unbuild
 
 
 <a name="v0.1.3"></a>
-## [v0.1.3](https://github.com/Mist3rBru/go-clack/compare/v0.1.2...v0.1.3) (2023-05-02)
+## [v0.1.3](https://github.com/Mist3rBru/my-cli/compare/v0.1.2...v0.1.3) (2023-05-02)
 
-### Features
+### 🚀 Features
 
 * branch command
 * branch command
@@ -461,12 +461,12 @@
 * **setup:** add git validation
 * **upgrade:** spinner loading
 
-### Bug Fixes
+### 🩹 Fixes
 
 * ci
 * pomodoro strobbing
 
-### Chore
+### 🏡 Chore
 
 * update readme
 * rework patch release
@@ -480,17 +480,17 @@
 
 
 <a name="v0.1.2"></a>
-## [v0.1.2](https://github.com/Mist3rBru/go-clack/compare/v0.1.0...v0.1.2) (2023-03-20)
+## [v0.1.2](https://github.com/Mist3rBru/my-cli/compare/v0.1.0...v0.1.2) (2023-03-20)
 
-### Features
+### 🚀 Features
 
 * add setup command validation for path values
 
-### Bug Fixes
+### 🩹 Fixes
 
 * npm ignore
 
-### Chore
+### 🏡 Chore
 
 * add select prompt to remove command
 
@@ -498,7 +498,7 @@
 <a name="v0.1.0"></a>
 ## v0.1.0 (2023-03-14)
 
-### Features
+### 🚀 Features
 
 * add auto install deps to clone command
 * clone integration with github
@@ -516,22 +516,18 @@
 * add store command
 * add remove command
 
-### Docs
-
-* add readme
-
 ### Style
 
 * add import sorting
 
-### Bug Fixes
+### 🩹 Fixes
 
 * ci pipeline
 * utc time location
 * double setup execution
 * relative path conflict
 
-### Test
+### 🧪 Tests
 
 * file system utils
 * mapper utils
@@ -548,7 +544,7 @@
 * clone command
 * setup command
 
-### Refactor
+### 🛠️ Refactors
 
 * add test helpers
 * handle duplication error on clone command
@@ -560,7 +556,11 @@
 * improve user experience
 * improve not found error handling
 
-### Chore
+### 📖 Documentation
+
+* add readme
+
+### 🏡 Chore
 
 * rename minor changes
 * add pomodoro alias
