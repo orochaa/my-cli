@@ -212,9 +212,9 @@ func scriptsPrompt() []string {
 	}
 	packageJsonScripts := packageJson["scripts"].(map[string]any)
 
-	options := []prompts.MultiSelectOption[string]{}
+	options := []*prompts.MultiSelectOption[string]{}
 	for name, command := range packageJsonScripts {
-		options = append(options, prompts.MultiSelectOption[string]{
+		options = append(options, &prompts.MultiSelectOption[string]{
 			Label: name,
 			Value: name,
 			Hint:  command.(string),

@@ -105,7 +105,7 @@ func formatRemoteOrigin(origin string) string {
 
 func checkoutPrompt(branches []string) string {
 	var initialValue string
-	options := make([]prompts.SelectOption[string], len(branches)-1)
+	options := make([]*prompts.SelectOption[string], len(branches)-1)
 	for i, checkout := range branches {
 		if checkout == "" {
 			continue
@@ -113,7 +113,7 @@ func checkoutPrompt(branches []string) string {
 		if strings.HasPrefix(checkout, "*") {
 			initialValue = checkout
 		}
-		options[i] = prompts.SelectOption[string]{
+		options[i] = &prompts.SelectOption[string]{
 			Label: checkout,
 			Value: checkout,
 		}

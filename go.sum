@@ -1,5 +1,5 @@
-github.com/Mist3rBru/go-clack v0.1.6 h1:xXhFcj8UWgaCalt0Tt1+MtcLF+TvaUFbNswtH0bQCgY=
-github.com/Mist3rBru/go-clack v0.1.6/go.mod h1:05dqTPybj4y270D417XAoqg3a1Gd1YxKzU1GOei+SX8=
+github.com/Mist3rBru/go-clack v0.1.7 h1:KKO7EvnqO+S4dI9WMDcCuIEsJ3pXEWvmUWCkY1Xnh90=
+github.com/Mist3rBru/go-clack v0.1.7/go.mod h1:05dqTPybj4y270D417XAoqg3a1Gd1YxKzU1GOei+SX8=
 github.com/bradleyjkemp/cupaloy v2.3.0+incompatible h1:UafIjBvWQmS9i/xRg+CamMrnLTKNzo+bdmT/oH34c2Y=
 github.com/bradleyjkemp/cupaloy v2.3.0+incompatible/go.mod h1:Au1Xw1sgaJ5iSFktEhYsS0dbQiS1B0/XMXl+42y9Ilk=
 github.com/cpuguy83/go-md2man/v2 v2.0.4/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=

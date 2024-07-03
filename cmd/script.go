@@ -27,12 +27,12 @@ var scriptCmd = &cobra.Command{
 
 		scripts, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
 			Message: "Select one or more scripts to use:",
-			Options: []prompts.MultiSelectOption[string]{
-				{Label: "lint", Value: "lint"},
-				{Label: "jest", Value: "jest"},
-				{Label: "vitest", Value: "vitest"},
-				{Label: "prisma", Value: "prisma"},
-				{Label: "changeset", Value: "changeset"},
+			Options: []*prompts.MultiSelectOption[string]{
+				{Label: "lint"},
+				{Label: "jest"},
+				{Label: "vitest"},
+				{Label: "prisma"},
+				{Label: "changeset"},
 			},
 			Validate: func(value []string) error {
 				if len(value) == 0 {

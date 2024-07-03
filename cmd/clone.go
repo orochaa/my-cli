@@ -224,9 +224,9 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 		return a.After(b)
 	})
 
-	var options []prompts.SelectOption[*Repository]
+	var options []*prompts.SelectOption[*Repository]
 	for _, repo := range repos {
-		options = append(options, prompts.SelectOption[*Repository]{
+		options = append(options, &prompts.SelectOption[*Repository]{
 			Label: repo.Name,
 			Value: repo,
 		})
@@ -255,10 +255,10 @@ func formatProjectPath(cmd *cobra.Command, repo *Repository) string {
 func selectPackageManagerPrompt() ni.Agent {
 	agent, err := prompts.Select[ni.Agent](prompts.SelectParams[ni.Agent]{
 		Message: "Select your package manager:",
-		Options: []prompts.SelectOption[ni.Agent]{
-			{Label: "pnpm", Value: "pnpm"},
-			{Label: "yarn", Value: "yarn"},
-			{Label: "npm", Value: "npm"},
+		Options: []*prompts.SelectOption[ni.Agent]{
+			{Label: "pnpm"},
+			{Label: "yarn"},
+			{Label: "npm"},
 		},
 	})
 	utils.VerifyPromptCancel(err)

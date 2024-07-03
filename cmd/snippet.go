@@ -54,10 +54,10 @@ var snippetCmd = &cobra.Command{
 		}
 
 		files := public.ReadSnippets()
-		options := []prompts.MultiSelectOption[string]{}
+		options := []*prompts.MultiSelectOption[string]{}
 		for _, file := range files {
 			snippet := strings.ReplaceAll(file.Name(), public.SnippetExtension, "")
-			options = append(options, prompts.MultiSelectOption[string]{
+			options = append(options, &prompts.MultiSelectOption[string]{
 				Label: snippet,
 				Value: snippet,
 			})

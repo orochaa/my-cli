@@ -120,9 +120,9 @@ func mapProjects(rootList []string) []Project {
 }
 
 func projectsPrompt(projects []Project) []Project {
-	options := make([]prompts.MultiSelectOption[Project], len(projects))
+	options := make([]*prompts.MultiSelectOption[Project], len(projects))
 	for i, project := range projects {
-		options[i] = prompts.MultiSelectOption[Project]{
+		options[i] = &prompts.MultiSelectOption[Project]{
 			Label: filepath.Join(project.Folder, project.Name),
 			Value: project,
 		}

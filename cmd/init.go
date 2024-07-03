@@ -27,7 +27,7 @@ var initCmd = &cobra.Command{
 		} else {
 			project, err = prompts.Select(prompts.SelectParams[string]{
 				Message: "Select a project:",
-				Options: []prompts.SelectOption[string]{
+				Options: []*prompts.SelectOption[string]{
 					{Label: "Node", Value: "node"},
 					{Label: "Go", Value: "go"},
 				},
