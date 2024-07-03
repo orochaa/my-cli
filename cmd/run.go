@@ -24,19 +24,120 @@ import (
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Run scripts in sequence",
-	Long:  "Run scripts in sequence from package.json",
+	Long:  "Run scripts in sequence for node/go",
 	Run: func(cmd *cobra.Command, args []string) {
 		isDeep, _ := cmd.Flags().GetBool("deep")
 
+		cwd, err := os.Getwd()
+		if err != nil {
+			prompts.Error(err.Error())
+			os.Exit(1)
+		}
+
 		if isDeep {
-			deepRun(args)
-		} else if len(args) > 0 {
-			shallowRun(args)
+			deepRun(args, cwd)
+			return
+		}
+
+		var scripts []ScriptRunner
+		packageJsonPath := filepath.Join(cwd, "package.json")
+		goModPath := filepath.Join(cwd, "go.mod")
+
+		if utils.Exists(packageJsonPath) {
+			var packageJson map[string]any
+
+			if err := utils.ReadJson(packageJsonPath, &packageJson); err != nil {
+				prompts.Error("Could not read package.json")
+				os.Exit(1)
+			}
+
+			if len(args) > 0 {
+				scripts = mapNodeScriptRunners(args, packageJson)
+			} else {
+				scripts = nodeScriptsPrompt(packageJson)
+			}
+		} else if utils.Exists(goModPath) {
+			scripts = goScriptsPrompt()
 		} else {
-			scripts := scriptsPrompt()
-			shallowRun(scripts)
+			prompts.Error("Could not indentify the project")
+			return
+		}
+
+		for _, script := range scripts {
+			utils.Exec(script.Runner, script.Script)
 		}
 	},
+}
+
+type ScriptRunner struct {
+	Script string
+	Runner string
+}
+
+func nodeScriptsPrompt(packageJson map[string]any) []ScriptRunner {
+	if packageJson["scripts"] == nil {
+		prompts.Error("There is no scripts on package.json")
+		os.Exit(1)
+	}
+	packageJsonScripts := packageJson["scripts"].(map[string]any)
+
+	options := []*prompts.MultiSelectOption[string]{}
+	for name, command := range packageJsonScripts {
+		options = append(options, &prompts.MultiSelectOption[string]{
+			Label: name,
+			Value: name,
+			Hint:  command.(string),
+		})
+	}
+
+	commands, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
+		Message:  "Select some scripts to run:",
+		Options:  options,
+		Required: true,
+	})
+	utils.VerifyPromptCancel(err)
+
+	return mapNodeScriptRunners(commands, packageJson)
+}
+
+func mapNodeScriptRunners(args []string, packageJson map[string]any) []ScriptRunner {
+	var scriptRunners []ScriptRunner
+
+	if packageJson["scripts"] == nil {
+		return scriptRunners
+	}
+	packageJsonScripts := packageJson["scripts"].(map[string]any)
+
+	for _, arg := range args {
+		if packageJsonScripts[arg] != "" {
+			scriptRunners = append(scriptRunners, ScriptRunner{
+				Script: arg,
+				Runner: "npm run",
+			})
+		}
+	}
+
+	return scriptRunners
+}
+
+func goScriptsPrompt() []ScriptRunner {
+	commands, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
+		Message: "Select some scripts to run:",
+		Options: []*prompts.MultiSelectOption[string]{
+			{Label: "run", Value: "go run .", Hint: "go run ."},
+			{Label: "format", Value: "gofmt -w .", Hint: "gofmt -w ."},
+			{Label: "test", Value: "go test ./...", Hint: "go test ./..."},
+		},
+		Required: true,
+	})
+	utils.VerifyPromptCancel(err)
+
+	scripts := make([]ScriptRunner, len(commands))
+	for i, command := range commands {
+		scripts[i] = ScriptRunner{Runner: command}
+	}
+
+	return scripts
 }
 
 type ProjectOutput struct {
@@ -58,7 +159,7 @@ func (w *CommandWriter) Write(p []byte) (n int, err error) {
 	return 0, nil
 }
 
-func deepRun(args []string) {
+func deepRun(args []string, cwd string) {
 	if len(args) == 0 {
 		prompts.Cancel("no args provided")
 		return
@@ -67,12 +168,6 @@ func deepRun(args []string) {
 	_, maxRows, err := term.GetSize(int(os.Stdout.Fd()))
 	if err != nil {
 		maxRows = 10
-	}
-
-	cwd, err := os.Getwd()
-	if err != nil {
-		prompts.Error(err.Error())
-		return
 	}
 
 	var wg sync.WaitGroup
@@ -96,7 +191,7 @@ func deepRun(args []string) {
 				return
 			}
 
-			scriptRunners := mapScriptRunners(args, packageJson)
+			scriptRunners := mapNodeScriptRunners(args, packageJson)
 			for _, scriptRunner := range scriptRunners {
 				commands := utils.ParseCommand([]string{scriptRunner.Runner, scriptRunner.Script})
 				writer := &CommandWriter{
@@ -170,89 +265,6 @@ func deepRun(args []string) {
 		os.Stdout.WriteString(fmt.Sprintf("%s\n%s\n%s", picocolors.Cyan(output.Name), output.Command, value))
 		os.Stdout.WriteString(sisteransi.MoveCursorDown(999))
 	}
-}
-
-func shallowRun(args []string) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		prompts.Error(err.Error())
-		return
-	}
-
-	var packageJson map[string]any
-	err = utils.ReadJson(filepath.Join(cwd, "package.json"), &packageJson)
-	if err != nil {
-		prompts.Error("Could not find package.json")
-		return
-	}
-
-	scripts := mapScriptRunners(args, packageJson)
-	for _, script := range scripts {
-		utils.Exec(script.Runner, script.Script)
-	}
-}
-
-func scriptsPrompt() []string {
-	cwd, err := os.Getwd()
-	if err != nil {
-		prompts.Error(err.Error())
-		os.Exit(1)
-	}
-
-	var packageJson map[string]any
-	err = utils.ReadJson(filepath.Join(cwd, "package.json"), &packageJson)
-	if err != nil {
-		prompts.Error("Could not find package.json")
-		os.Exit(1)
-	}
-
-	if packageJson["scripts"] == nil {
-		prompts.Error("There is no scripts on package.json")
-		os.Exit(1)
-	}
-	packageJsonScripts := packageJson["scripts"].(map[string]any)
-
-	options := []*prompts.MultiSelectOption[string]{}
-	for name, command := range packageJsonScripts {
-		options = append(options, &prompts.MultiSelectOption[string]{
-			Label: name,
-			Value: name,
-			Hint:  command.(string),
-		})
-	}
-
-	scripts, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
-		Message:  "Select some scripts to run in sequence:",
-		Options:  options,
-		Required: true,
-	})
-	utils.VerifyPromptCancel(err)
-	return scripts
-}
-
-type ScriptRunner struct {
-	Script string
-	Runner string
-}
-
-func mapScriptRunners(args []string, packageJson map[string]any) []ScriptRunner {
-	var scriptRunners []ScriptRunner
-
-	if packageJson["scripts"] == nil {
-		return scriptRunners
-	}
-	packageJsonScripts := packageJson["scripts"].(map[string]any)
-
-	for _, arg := range args {
-		if packageJsonScripts[arg] != "" {
-			scriptRunners = append(scriptRunners, ScriptRunner{
-				Script: arg,
-				Runner: "npm run",
-			})
-		}
-	}
-
-	return scriptRunners
 }
 
 func filterNodeProjects(projects []Project) []Project {

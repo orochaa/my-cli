@@ -75,8 +75,8 @@ var snippetCmd = &cobra.Command{
 			}
 		} else {
 			snippets, err = prompts.MultiSelect(prompts.MultiSelectParams[string]{
-				Message: "Select one or more snippets to use:",
-				Options: options,
+				Message:  "Select one or more snippets to use:",
+				Options:  options,
 				Required: true,
 			})
 			utils.VerifyPromptCancel(err)
