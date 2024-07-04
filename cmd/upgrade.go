@@ -15,7 +15,7 @@ var upgradeCmd = &cobra.Command{
 	Short:   "Update package to latest version",
 	Long:    "Update package to latest version",
 	Run: func(cmd *cobra.Command, args []string) {
-		utils.ExecOrExit("go install github.com/Mist3rBru/my-cli")
+		utils.ExecOrExit("go install github.com/Mist3rBru/my-cli@latest")
 	},
 }
 
