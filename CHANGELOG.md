@@ -1,4 +1,16 @@
 
+<a name="v0.3.6"></a>
+## [v0.3.6](https://github.com/Mist3rBru/my-cli/compare/v0.3.5...v0.3.6) (2024-07-04)
+
+### 🚀 Features
+
+* **my-cli:** add custom root command
+
+### 🏡 Chore
+
+* update changelog
+
+
 <a name="v0.3.5"></a>
 ## [v0.3.5](https://github.com/Mist3rBru/my-cli/compare/v0.3.4...v0.3.5) (2024-07-03)
 
@@ -17,7 +29,7 @@
 ### 🏡 Chore
 
 * update changelog
-* upgrade dependencies
+* upgrade dapendencies
 * update changelog
 
 
