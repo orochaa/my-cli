@@ -10,6 +10,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -31,8 +32,17 @@ var cloneCmd = &cobra.Command{
 	Short: "Clone a Github's repository",
 	Long:  "Clone a Github's repository based on `setup`, sets git `origin` to `o`, install dependencies, and open it on vscode",
 	Run: func(cmd *cobra.Command, args []string) {
-		repo := getRepository(cmd, args)
-		projectPath := formatProjectPath(cmd, repo)
+		var repoArg, folderArg string
+
+		if len(args) >= 2 {
+			repoArg = args[0]
+			folderArg = args[1]
+		} else if len(args) == 1 {
+			repoArg = args[0]
+		}
+
+		repo := getRepository(cmd, repoArg)
+		projectPath := formatProjectPath(cmd, repo, folderArg)
 
 		if utils.Exists(projectPath) {
 			prompts.Step(fmt.Sprintf("cd %s", projectPath))
@@ -64,11 +74,11 @@ type Repository struct {
 	Updated_at string `json:"updated_at"`
 }
 
-func getRepository(cmd *cobra.Command, args []string) *Repository {
+func getRepository(cmd *cobra.Command, repoArg string) *Repository {
 	githubRegex := regexp.MustCompile(`github.com.+\.git$`)
 
-	if len(args) > 0 && githubRegex.MatchString(args[0]) {
-		repotitoryUrl := args[0]
+	if repoArg != "" && githubRegex.MatchString(repoArg) {
+		repotitoryUrl := repoArg
 		repositoryNameRegex := regexp.MustCompile(`.+\/(.+)\.git$`)
 		repositoryName := repositoryNameRegex.ReplaceAllString(repotitoryUrl, "$1")
 
@@ -82,9 +92,9 @@ func getRepository(cmd *cobra.Command, args []string) *Repository {
 	repos := getUserRepositories()
 	filter := cmd.Flag("filter").Value.String()
 
-	if len(args) > 0 {
+	if repoArg != "" {
 		for _, repo := range repos {
-			if args[0] == repo.Name {
+			if repoArg == repo.Name {
 				return repo
 			}
 		}
@@ -240,7 +250,17 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 	return repo
 }
 
-func formatProjectPath(cmd *cobra.Command, repo *Repository) string {
+func formatProjectPath(cmd *cobra.Command, repo *Repository, folderArg string) string {
+	cwd, err := os.Getwd()
+	if err != nil {
+		prompts.Error(err.Error())
+		os.Exit(0)
+	}
+
+	if folderArg != "" {
+		return path.Join(cwd, folderArg)
+	}
+
 	l := lockfile.Open()
 	defer l.Close()
 
@@ -248,7 +268,7 @@ func formatProjectPath(cmd *cobra.Command, repo *Repository) string {
 		projectsRootList := l.GetUserProjectsRootList()
 		return filepath.Join(projectsRootList[0], repo.Name)
 	}
-	cwd, _ := os.Getwd()
+
 	return filepath.Join(cwd, repo.Name)
 }
 
