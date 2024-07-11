@@ -65,7 +65,7 @@ type Repository struct {
 }
 
 func getRepository(cmd *cobra.Command, args []string) *Repository {
-	githubRegex := regexp.MustCompile(`github.com\.com.+\.git$`)
+	githubRegex := regexp.MustCompile(`github.com.+\.git$`)
 
 	if len(args) > 0 && githubRegex.MatchString(args[0]) {
 		repotitoryUrl := args[0]
