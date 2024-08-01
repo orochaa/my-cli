@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/Mist3rBru/go-clack/prompts"
-	pUtils "github.com/Mist3rBru/go-clack/prompts/utils"
+	"github.com/Mist3rBru/go-clack/prompts/symbols"
 	"github.com/Mist3rBru/go-clack/third_party/picocolors"
 	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
@@ -30,8 +30,9 @@ var rootCmd = &cobra.Command{
 			}
 
 			command, err := prompts.Select(prompts.SelectParams[*cobra.Command]{
-				Message: "Select a command to run:",
-				Options: options,
+				Message:  "Select a command to run:",
+				Options:  options,
+				Required: true,
 			})
 			utils.VerifyPromptCancel(err)
 
@@ -44,7 +45,7 @@ var rootCmd = &cobra.Command{
 		for _, command := range cmd.Commands() {
 			os.Stdout.WriteString(fmt.Sprintf(
 				"%s %s %s %s\n",
-				picocolors.Gray(pUtils.S_BAR),
+				picocolors.Gray(symbols.BAR),
 				picocolors.Cyan(command.Use),
 				picocolors.Dim("-"),
 				command.Short,
@@ -53,8 +54,8 @@ var rootCmd = &cobra.Command{
 
 		os.Stdout.WriteString(fmt.Sprintf(
 			"%s\n%s %s\n",
-			picocolors.Gray(pUtils.S_BAR),
-			picocolors.Gray(pUtils.S_BAR_END),
+			picocolors.Gray(symbols.BAR),
+			picocolors.Gray(symbols.BAR_END),
 			picocolors.Dim("use `my-cli -i` to enable interactive mode"),
 		))
 	},

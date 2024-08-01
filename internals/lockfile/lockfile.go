@@ -1,7 +1,6 @@
 package lockfile
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -72,15 +71,15 @@ type GitHubUser struct {
 }
 
 func (l *Lockfile) RunGithubUserNamePrompt() string {
-	s := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
+	s := prompts.Spinner(prompts.SpinnerOptions{})
 
 	lastName := l.UserGithubName
 
 	for {
 		name, err := prompts.Text(prompts.TextParams{
-			Required:     true,
 			Message:      "What is your GitHub username?",
 			InitialValue: lastName,
+			Required:     true,
 		})
 		utils.VerifyPromptCancel(err)
 		lastName = name
@@ -134,6 +133,7 @@ func (l *Lockfile) RunProjectsRootPrompt() []string {
 	res, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
 		Message:      "What is your root projects path?",
 		OnlyShowDir:  true,
+		Filter:       true,
 		Required:     true,
 		InitialValue: l.UserProjectsRootList,
 		InitialPath:  initialPath,

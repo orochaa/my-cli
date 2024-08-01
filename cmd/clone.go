@@ -4,7 +4,6 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -124,7 +123,7 @@ func getUserRepositories() []*Repository {
 	var repos []*Repository
 	reposCh := make(chan *Repository, 10)
 
-	s := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
+	s := prompts.Spinner(prompts.SpinnerOptions{})
 	s.Start("Fetching repositories")
 	defer s.Stop("", 0)
 
@@ -242,8 +241,10 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 		})
 	}
 	repo, err := prompts.Select[*Repository](prompts.SelectParams[*Repository]{
-		Message: "Select one of your repositories:",
-		Options: options,
+		Message:  "Select one of your repositories:",
+		Options:  options,
+		Filter:   true,
+		Required: true,
 	})
 	utils.VerifyPromptCancel(err)
 
@@ -280,6 +281,7 @@ func selectPackageManagerPrompt() ni.Agent {
 			{Label: "yarn"},
 			{Label: "npm"},
 		},
+		Required: true,
 	})
 	utils.VerifyPromptCancel(err)
 	return agent

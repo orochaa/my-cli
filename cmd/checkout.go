@@ -122,6 +122,7 @@ func checkoutPrompt(branches []string) string {
 		Message:      "Select a branch",
 		Options:      options,
 		InitialValue: initialValue,
+		Required:     true,
 	})
 	utils.VerifyPromptCancel(err)
 	return branch

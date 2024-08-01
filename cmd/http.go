@@ -16,7 +16,7 @@ import (
 	"strings"
 
 	"github.com/Mist3rBru/go-clack/prompts"
-	"github.com/Mist3rBru/go-clack/prompts/utils"
+	"github.com/Mist3rBru/go-clack/prompts/symbols"
 	"github.com/Mist3rBru/go-clack/third_party/picocolors"
 	"github.com/spf13/cobra"
 )
@@ -71,18 +71,18 @@ var httpCmd = &cobra.Command{
 		}
 
 		if len(responseJsonLines) > 0 {
-			os.Stdout.WriteString(fmt.Sprintf("%s %s: %s\n", picocolors.Gray(utils.S_BAR), bodyLabel, responseJsonLines[0]))
+			os.Stdout.WriteString(fmt.Sprintf("%s %s: %s\n", picocolors.Gray(symbols.BAR), bodyLabel, responseJsonLines[0]))
 			lineTemplate := fmt.Sprintf(`$1%s`, picocolors.Cyan("$2"))
 			lineRegex := regexp.MustCompile(`^(.*?)(".+?")`)
 			for i := 1; i < len(responseJsonLines); i++ {
 				formattedLine := lineRegex.ReplaceAllString(responseJsonLines[i], lineTemplate)
-				os.Stdout.WriteString(fmt.Sprintf("%s %s\n", picocolors.Gray(utils.S_BAR), formattedLine))
+				os.Stdout.WriteString(fmt.Sprintf("%s %s\n", picocolors.Gray(symbols.BAR), formattedLine))
 			}
 		} else {
-			os.Stdout.WriteString(fmt.Sprintf("%s %s: No Content\n", picocolors.Gray(utils.S_BAR), bodyLabel))
+			os.Stdout.WriteString(fmt.Sprintf("%s %s: No Content\n", picocolors.Gray(symbols.BAR), bodyLabel))
 		}
 
-		os.Stdout.WriteString(picocolors.Gray(utils.S_BAR_END) + "\n")
+		os.Stdout.WriteString(picocolors.Gray(symbols.BAR_END) + "\n")
 	},
 }
 

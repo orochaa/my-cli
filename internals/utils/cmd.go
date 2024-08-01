@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"context"
 	"os"
 	"os/exec"
 	"strings"
@@ -23,7 +22,7 @@ func ParseCommand(command []string) []string {
 
 func Exec(command ...string) (string, error) {
 	commands := ParseCommand(command)
-	s := prompts.Spinner(context.Background(), prompts.SpinnerOptions{})
+	s := prompts.Spinner(prompts.SpinnerOptions{})
 	s.Start(strings.Join(commands, " "))
 	out, err := exec.Command(commands[0], commands[1:]...).Output()
 	if err != nil {

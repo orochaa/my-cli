@@ -31,6 +31,7 @@ var initCmd = &cobra.Command{
 					{Label: "Node", Value: "node"},
 					{Label: "Go", Value: "go"},
 				},
+				Required: true,
 			})
 			utils.VerifyPromptCancel(err)
 		}

@@ -129,6 +129,7 @@ func projectsPrompt(projects []Project) []Project {
 	openProjectList, err := prompts.MultiSelect(prompts.MultiSelectParams[Project]{
 		Message:  "Select one or more project to open:",
 		Options:  options,
+		Filter:   true,
 		Required: true,
 	})
 	utils.VerifyPromptCancel(err)
