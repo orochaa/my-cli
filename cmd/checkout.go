@@ -4,6 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -38,8 +40,12 @@ var checkoutCmd = &cobra.Command{
 				}
 			}
 			if selectedBranch == "" {
-				prompts.Error("branch not found")
-				return
+				origins, err := listOrigins()
+				if err != nil {
+					prompts.Error(err.Error())
+					return
+				}
+				selectedBranch = fmt.Sprintf("remotes/%s/%s", origins[0], args[0])
 			}
 		} else {
 			selectedBranch = checkoutPrompt(branches)
@@ -51,19 +57,24 @@ var checkoutCmd = &cobra.Command{
 			utils.ExecOrExit("git checkout -b", remoteBranch)
 			utils.ExecOrExit("git pull", remoteOrigin, remoteBranch)
 		} else {
-			originsData, err := utils.ExecSilent("git remote")
+			origins, err := listOrigins()
 			if err != nil {
-				prompts.Error("no remote repository found")
+				prompts.Error(err.Error())
 				return
 			}
-			originList := strings.Split(originsData, "\n")
-			origin := originList[0]
-			for _, _origin := range originList {
+
+			var origin string
+			for _, _origin := range origins {
 				if strings.HasPrefix(_origin, "o") {
 					origin = _origin
 					break
 				}
 			}
+
+			if origin == "" {
+				origin = origins[0]
+			}
+
 			checkout := formatBranch(selectedBranch)
 			utils.ExecOrExit("git checkout", checkout)
 			utils.ExecOrExit("git pull", origin, checkout)
@@ -101,6 +112,20 @@ func formatRemoteBranch(branch string) string {
 
 func formatRemoteOrigin(origin string) string {
 	return regexp.MustCompile(`^\s*\w+\/(\w+).+`).ReplaceAllString(origin, "$1")
+}
+
+func listOrigins() ([]string, error) {
+	originsData, err := utils.ExecSilent("git remote")
+	if err != nil {
+		return nil, err
+	}
+
+	origins := strings.Split(originsData, "\n")
+	if len(origins) == 0 {
+		return nil, errors.New("no git's origin found")
+	}
+
+	return origins, nil
 }
 
 func checkoutPrompt(branches []string) string {
