@@ -95,7 +95,7 @@ func nodeScriptsPrompt(packageJson map[string]any) []ScriptRunner {
 		Options:  options,
 		Required: true,
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 
 	return mapNodeScriptRunners(commands, packageJson)
 }
@@ -130,7 +130,7 @@ func goScriptsPrompt() []ScriptRunner {
 		},
 		Required: true,
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 
 	scripts := make([]ScriptRunner, len(commands))
 	for i, command := range commands {

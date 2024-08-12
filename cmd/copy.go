@@ -20,7 +20,6 @@ import (
 	"github.com/Mist3rBru/go-clack/third_party/picocolors"
 	"github.com/Mist3rBru/go-clack/third_party/sisteransi"
 	"github.com/Mist3rBru/my-cli/internals/lockfile"
-	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -45,7 +44,7 @@ var copyCmd = &cobra.Command{
 			Filter:      true,
 			Required:    true,
 		})
-		utils.VerifyPromptCancel(err)
+		prompts.ExitOnError(err)
 		os.Stdout.WriteString("\n")
 
 		slices.Reverse(userProjectsRootList)

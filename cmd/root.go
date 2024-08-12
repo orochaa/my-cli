@@ -10,7 +10,6 @@ import (
 	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/go-clack/prompts/symbols"
 	"github.com/Mist3rBru/go-clack/third_party/picocolors"
-	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +33,7 @@ var rootCmd = &cobra.Command{
 				Options:  options,
 				Required: true,
 			})
-			utils.VerifyPromptCancel(err)
+			prompts.ExitOnError(err)
 
 			command.Run(command, args)
 			return

@@ -82,7 +82,7 @@ func (l *Lockfile) RunGithubUserNamePrompt() string {
 			return nil
 		},
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 
 	return l.UserGithubName
 }
@@ -115,6 +115,6 @@ func (l *Lockfile) RunProjectsRootPrompt() []string {
 			return nil
 		},
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 	return res
 }

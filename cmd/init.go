@@ -33,7 +33,7 @@ var initCmd = &cobra.Command{
 				},
 				Required: true,
 			})
-			utils.VerifyPromptCancel(err)
+			prompts.ExitOnError(err)
 		}
 
 		cwd, err := os.Getwd()

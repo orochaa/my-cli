@@ -36,7 +36,7 @@ var scriptCmd = &cobra.Command{
 			},
 			Required: true,
 		})
-		utils.VerifyPromptCancel(err)
+		prompts.ExitOnError(err)
 
 		packageJsonPath := filepath.Join(cwd, "package.json")
 		var packageJson map[string]any

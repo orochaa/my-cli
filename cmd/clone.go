@@ -246,7 +246,7 @@ func selectRepositoryPrompt(repos []*Repository) *Repository {
 		Filter:   true,
 		Required: true,
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 
 	return repo
 }
@@ -283,7 +283,7 @@ func selectPackageManagerPrompt() ni.Agent {
 		},
 		Required: true,
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 	return agent
 }
 

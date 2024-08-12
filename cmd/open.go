@@ -132,7 +132,7 @@ func projectsPrompt(projects []Project) []Project {
 		Filter:   true,
 		Required: true,
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 	return openProjectList
 }
 

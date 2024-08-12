@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/Mist3rBru/go-clack/prompts"
-	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -42,7 +41,7 @@ var passwordCmd = &cobra.Command{
 					return nil
 				},
 			})
-			utils.VerifyPromptCancel(err)
+			prompts.ExitOnError(err)
 			length, _ = strconv.Atoi(res)
 		}
 

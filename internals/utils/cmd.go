@@ -48,9 +48,3 @@ func ExecOrExit(command ...string) string {
 	}
 	return out
 }
-
-func VerifyPromptCancel(err error) {
-	if err != nil {
-		os.Exit(0)
-	}
-}

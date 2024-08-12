@@ -11,7 +11,6 @@ import (
 
 	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/public"
-	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -80,7 +79,7 @@ var snippetCmd = &cobra.Command{
 				Filter:   true,
 				Required: true,
 			})
-			utils.VerifyPromptCancel(err)
+			prompts.ExitOnError(err)
 		}
 
 		if len(snippets) > 0 {

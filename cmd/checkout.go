@@ -149,7 +149,7 @@ func checkoutPrompt(branches []string) string {
 		InitialValue: initialValue,
 		Required:     true,
 	})
-	utils.VerifyPromptCancel(err)
+	prompts.ExitOnError(err)
 	return branch
 }
 
