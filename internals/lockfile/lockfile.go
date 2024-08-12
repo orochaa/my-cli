@@ -1,10 +1,8 @@
 package lockfile
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/fs"
 	"net/http"
 	"os"
@@ -65,55 +63,28 @@ func (l *Lockfile) GetUserGithubName() string {
 	return l.UserGithubName
 }
 
-type GitHubUser struct {
-	Login string `json:"login"`
-	Name  string `json:"name"`
-}
-
 func (l *Lockfile) RunGithubUserNamePrompt() string {
-	s := prompts.Spinner(prompts.SpinnerOptions{})
+	var err error
+	l.UserGithubName, err = prompts.Text(prompts.TextParams{
+		Message:      "What is your GitHub username?",
+		InitialValue: l.UserGithubName,
+		Required:     true,
+		Validate: func(value string) error {
+			if value != "" {
+				res, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s", value))
+				if err != nil {
+					return err
+				}
+				if res.StatusCode >= 400 {
+					return errors.New("user not found")
+				}
+			}
+			return nil
+		},
+	})
+	utils.VerifyPromptCancel(err)
 
-	lastName := l.UserGithubName
-
-	for {
-		name, err := prompts.Text(prompts.TextParams{
-			Message:      "What is your GitHub username?",
-			InitialValue: lastName,
-			Required:     true,
-		})
-		utils.VerifyPromptCancel(err)
-		lastName = name
-
-		s.Start("Validating user")
-		resp, err := http.Get(fmt.Sprintf("https://api.github.com/users/%s", name))
-		if err != nil {
-			s.Stop("", 1)
-			continue
-		}
-
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			s.Stop("", 1)
-			continue
-		}
-
-		var user GitHubUser
-		err = json.Unmarshal(body, &user)
-		if err != nil {
-			s.Stop("", 1)
-			continue
-		}
-
-		s.Stop(fmt.Sprintf("User: %s | %s", user.Login, user.Name), 0)
-		isUser, err := prompts.Confirm(prompts.ConfirmParams{
-			Message:      "Is that your user?",
-			InitialValue: true,
-		})
-		utils.VerifyPromptCancel(err)
-		if isUser {
-			return user.Login
-		}
-	}
+	return l.UserGithubName
 }
 
 func (l *Lockfile) GetUserProjectsRootList() []string {
