@@ -1,7 +1,9 @@
 {
   "sut": {
     "scope": "typescript",
-    "prefix": ["sut"],
+    "prefix": [
+      "sut"
+    ],
     "body": [
       "interface Sut {",
       "  sut: ${1:Class}",
@@ -19,10 +21,14 @@
       "",
     ],
   },
-
   "makeSut": {
     "scope": "typescript",
-    "prefix": ["ms", "mrs", "makeSut", "makeRawSut"],
+    "prefix": [
+      "ms",
+      "mrs",
+      "makeSut",
+      "makeRawSut"
+    ],
     "body": [
       "const makeSut = (props: $0Props): $0 => {",
       "  return new ${0:Class}(props)",
@@ -30,10 +36,12 @@
       "",
     ],
   },
-
   "test": {
     "scope": "typescript",
-    "prefix": ["test", "describe"],
+    "prefix": [
+      "test",
+      "describe"
+    ],
     "body": [
       "describe('$1', () => {",
       "  it('should $2', async () => {",
@@ -48,16 +56,15 @@
       "})",
     ],
   },
-
   "testMakeValidation": {
     "scope": "typescript",
     "prefix": "testValidation",
     "body": [
-      "import { ParamDictionaryKey } from '#presentation/helpers'",
-      "import { IValidation } from '#validation/protocols'",
-      "import { RequiredFieldValidation, ValidationComposite } from '#validation/validators'",
+      "import { ParamDictionaryKey } from '@/presentation/helpers'",
+      "import { IValidation } from '@/validation/protocols'",
+      "import { RequiredFieldValidation, ValidationComposite } from '@/validation/validators'",
       "",
-      "jest.mock('#validation/validators/validation-composite')",
+      "jest.mock('@/validation/validators/validation-composite')",
       "",
       "describe('$1Validation', () => {",
       "  it('should call ValidationComposite with all validations', async () => {",
@@ -74,7 +81,6 @@
       "",
     ],
   },
-
   "it": {
     "scope": "typescript",
     "prefix": "it",
@@ -90,7 +96,6 @@
       "})",
     ],
   },
-
   "exception": {
     "scope": "typescript",
     "prefix": "exception",
@@ -111,12 +116,14 @@
       "})",
     ],
   },
-
   "mockModel": {
     "scope": "typescript",
-    "prefix": ["mm", "mockModel"],
+    "prefix": [
+      "mm",
+      "mockModel"
+    ],
     "body": [
-      "import { $1 } from '#domain/models'",
+      "import { $1 } from '@/domain/models'",
       "import { faker } from '@faker-js/faker'",
       "",
       "export const mock$1 = (): $1 => ({",
@@ -125,12 +132,14 @@
       "",
     ],
   },
-
   "mockEntity": {
     "scope": "typescript",
-    "prefix": ["me", "mockEntity"],
+    "prefix": [
+      "me",
+      "mockEntity"
+    ],
     "body": [
-      "import { $1 } from '#domain/entities'",
+      "import { $1 } from '@/domain/entities'",
       "import { faker } from '@faker-js/faker'",
       "",
       "export const mock$1 = (props?: Partial<$1.Params>) => {",
@@ -142,10 +151,12 @@
       "",
     ],
   },
-
   "mockReturnValue": {
     "scope": "typescript",
-    "prefix": ["mrv", "mockReturnValue"],
+    "prefix": [
+      "mrv",
+      "mockReturnValue"
+    ],
     "body": [
       "const $3 = $0",
       ";($1 as jest.Mock).mockReturnValue${2:Once}({",
@@ -153,22 +164,38 @@
       "})",
     ],
   },
-
   "mockRequest": {
     "scope": "typescript",
-    "prefix": ["mr", "mockRequest"],
-    "body": ["const mockRequest = (): I$1.Params => ({", "  $0", "})", ""],
+    "prefix": [
+      "mr",
+      "mockRequest"
+    ],
+    "body": [
+      "const mockRequest = (): I$1.Params => ({",
+      "  $0",
+      "})",
+      ""
+    ],
   },
-
   "mockProps": {
     "scope": "typescript",
-    "prefix": ["mp", "mockProps"],
-    "body": ["const mockProps = (): $1Props => ({", "  $0", "})", ""],
+    "prefix": [
+      "mp",
+      "mockProps"
+    ],
+    "body": [
+      "const mockProps = (): $1Props => ({",
+      "  $0",
+      "})",
+      ""
+    ],
   },
-
   "mockSpyClass": {
     "scope": "typescript",
-    "prefix": ["ms", "mockSpyClass"],
+    "prefix": [
+      "ms",
+      "mockSpyClass"
+    ],
     "body": [
       "import { faker } from '@faker-js/faker'",
       "",
@@ -191,10 +218,12 @@
       "",
     ],
   },
-
   "mockPromiseSpyClass": {
     "scope": "typescript",
-    "prefix": ["msp", "mockPromiseSpyClass"],
+    "prefix": [
+      "msp",
+      "mockPromiseSpyClass"
+    ],
     "body": [
       "import { faker } from '@faker-js/faker'",
       "",
@@ -211,10 +240,12 @@
       "",
     ],
   },
-
   "getError": {
     "scope": "typescript",
-    "prefix": ["ger", "getError"],
+    "prefix": [
+      "ger",
+      "getError"
+    ],
     "body": [
       "get error(): this {",
       "  this.$0 = throwError",

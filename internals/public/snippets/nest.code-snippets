@@ -3,7 +3,7 @@
     "scope": "typescript",
     "prefix": "controller",
     "body": [
-      "import { I$1 } from '#domain/usecases'",
+      "import { I$1 } from '@/domain/usecases'",
       "import { Controller, ${2:Get} } from '@nestjs/common';",
       "",
       "@Controller()",
@@ -19,12 +19,11 @@
       "",
     ],
   },
-
   "createServiceClass": {
     "scope": "typescript",
     "prefix": "service",
     "body": [
-      "import { I$1 } from '#domain/usecases'",
+      "import { I$1 } from '@/domain/usecases'",
       "import { Injectable } from '@nestjs/common'",
       "",
       "@Injectable()",
@@ -38,13 +37,15 @@
       "",
     ],
   },
-
   "createRepositoryClass": {
     "scope": "typescript",
-    "prefix": ["repo", "repository"],
+    "prefix": [
+      "repo",
+      "repository"
+    ],
     "body": [
-      "import { $1Mapper } from '#domain/mappers'",
-      "import { $1 } from '#domain/entities'",
+      "import { $1Mapper } from '@/domain/mappers'",
+      "import { $1 } from '@/domain/entities'",
       "import { Injectable } from '@nestjs/common'",
       "import { PrismaService } from './prisma.service'",
       "",
@@ -97,7 +98,6 @@
       "",
     ],
   },
-
   "createInterface": {
     "scope": "typescript",
     "prefix": "interface",
@@ -118,7 +118,6 @@
       "",
     ],
   },
-
   "createEntity": {
     "scope": "typescript",
     "prefix": "entity",
@@ -149,12 +148,11 @@
       "",
     ],
   },
-
   "createMapper": {
     "scope": "typescript",
     "prefix": "mapper",
     "body": [
-      "import { $1 } from '#domain/entities'",
+      "import { $1 } from '@/domain/entities'",
       "import { $1 as Prisma$1 } from '@prisma/client'",
       "",
       "export class $1Mapper {",
@@ -175,10 +173,11 @@
       "",
     ],
   },
-
   "createModule": {
     "scope": "typescript",
-    "prefix": ["module"],
+    "prefix": [
+      "module"
+    ],
     "body": [
       "import { Module } from '@nestjs/common'",
       "",
@@ -196,10 +195,11 @@
       "",
     ],
   },
-
   "createGuard": {
     "scope": "typescript",
-    "prefix": ["guard"],
+    "prefix": [
+      "guard"
+    ],
     "body": [
       "import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common'",
       "import { Observable } from 'rxjs'",
@@ -219,10 +219,11 @@
       "",
     ],
   },
-
   "createDecorator": {
     "scope": "typescript",
-    "prefix": ["decorator"],
+    "prefix": [
+      "decorator"
+    ],
     "body": [
       "import { applyDecorators } from '@nestjs/common'",
       "",
@@ -234,10 +235,11 @@
       "",
     ],
   },
-
   "createParamDecorator": {
     "scope": "typescript",
-    "prefix": ["paramDecorator"],
+    "prefix": [
+      "paramDecorator"
+    ],
     "body": [
       "import {",
       "  ExecutionContext,",

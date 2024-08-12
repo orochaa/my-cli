@@ -11,10 +11,12 @@
       "$0",
     ],
   },
-
   "sut": {
     "scope": "typescriptreact",
-    "prefix": ["sut", "makeSut"],
+    "prefix": [
+      "sut",
+      "makeSut"
+    ],
     "body": [
       "interface Sut {",
       "  sut: RenderResult",
@@ -33,10 +35,13 @@
       "$0",
     ],
   },
-
   "sutWithRouter": {
     "scope": "typescriptreact",
-    "prefix": ["sutr", "sutRouter", "renderWithRouter"],
+    "prefix": [
+      "sutr",
+      "sutRouter",
+      "renderWithRouter"
+    ],
     "body": [
       "import { renderWithRouter, RenderWithRouterResult } from '@/tests/presentation/mocks/mock-render'",
       "",
@@ -57,10 +62,12 @@
       "$0",
     ],
   },
-
   "mockProperties": {
     "scope": "typescriptreact",
-    "prefix": ["mp", "mockProperties"],
+    "prefix": [
+      "mp",
+      "mockProperties"
+    ],
     "body": [
       "const mockProps = (): ${1:Component}Props => ({",
       "  $0",
@@ -68,16 +75,18 @@
       "",
     ],
   },
-
   "mockComponent": {
     "scope": "typescriptreact",
-    "prefix": ["mc", "mockComponent"],
+    "prefix": [
+      "mc",
+      "mockComponent"
+    ],
     "body": [
       "interface TestComponentProps {",
       "  ",
       "}",
       "",
-      "function TestComponent (props: TestComponentProps): JSX.Element {",
+      "function TestComponent (props: TestComponentProps): React.JSX.Element {",
       "  const { $1, $3 } = use${4:Context}(${5:props})",
       "  return (",
       "    <button data-testid=\"$1Button\" onClick={() => $3() }>",
@@ -89,10 +98,12 @@
       "$0",
     ],
   },
-
   "mockHooks": {
     "scope": "typescriptreact",
-    "prefix": ["mh", "mockHooks"],
+    "prefix": [
+      "mh",
+      "mockHooks"
+    ],
     "body": [
       "beforeAll(() => {",
       "  vi.mock('@/presentation/hooks', () => ({",
@@ -104,10 +115,12 @@
       "",
     ],
   },
-
   "mockReact": {
     "scope": "typescriptreact",
-    "prefix": ["mr", "mockReact"],
+    "prefix": [
+      "mr",
+      "mockReact"
+    ],
     "body": [
       "beforeAll(() => {",
       "  vi.mock('react${1:-router-dom}', async () => {",
@@ -121,10 +134,12 @@
       "",
     ],
   },
-
   "mockReturnValue": {
     "scope": "typescriptreact",
-    "prefix": ["mrv", "mockReturnValue"],
+    "prefix": [
+      "mrv",
+      "mockReturnValue"
+    ],
     "body": [
       "const $3 = $0",
       ";($1 as Mock).mockReturnValue${2:Once}({",
@@ -132,10 +147,12 @@
       "})",
     ],
   },
-
   "mockReturnValueWithFunction": {
     "scope": "typescriptreact",
-    "prefix": ["mrvf", "mockReturnValueWithFunction"],
+    "prefix": [
+      "mrvf",
+      "mockReturnValueWithFunction"
+    ],
     "body": [
       "const $3 = vi.fn($0)",
       ";($1 as Mock).mockReturnValue${2:Once}({",
@@ -143,16 +160,23 @@
       "})",
     ],
   },
-
   "mockFunction": {
     "scope": "typescript",
-    "prefix": ["mf", "mockFunction"],
-    "body": ["export const mock$1 = (): $1$0 => ({", "})"],
+    "prefix": [
+      "mf",
+      "mockFunction"
+    ],
+    "body": [
+      "export const mock$1 = (): $1$0 => ({",
+      "})"
+    ],
   },
-
   "test": {
     "scope": "typescriptreact",
-    "prefix": ["test", "describe"],
+    "prefix": [
+      "test",
+      "describe"
+    ],
     "body": [
       "describe('$1', () => {",
       "  it('should be rendered on DOM', async () => {",
@@ -165,7 +189,6 @@
       "",
     ],
   },
-
   "it": {
     "scope": "typescriptreact",
     "prefix": "it",
@@ -180,10 +203,12 @@
       "})",
     ],
   },
-
   "testSubmit": {
     "scope": "typescriptreact",
-    "prefix": ["submit", "testSubmit"],
+    "prefix": [
+      "submit",
+      "testSubmit"
+    ],
     "body": [
       "it('should call request on submit', async () => {",
       "  const requestSpy = vi.fn()",

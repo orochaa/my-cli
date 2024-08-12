@@ -22,8 +22,8 @@
     /* Alias */
     "baseUrl": ".",
     "paths": {
-      "#tests/*": ["__tests__/*"],
-      "#*": ["src/*"]
+      "@/tests/*": ["__tests__/*"],
+      "@/*": ["src/*"]
     }
   }
 }
