@@ -1,4 +1,64 @@
 
+<a name="v0.3.11"></a>
+## [v0.3.11](https://github.com/Mist3rBru/my-cli/compare/v0.3.10...v0.3.11) (2024-08-23)
+
+### 🩹 Fixes
+
+* prompt navigation on filter
+
+
+<a name="v0.3.10"></a>
+## [v0.3.10](https://github.com/Mist3rBru/my-cli/compare/v0.3.9...v0.3.10) (2024-08-12)
+
+### 🚀 Features
+
+* **checkout:** accept arbitrary checkout
+* **copy:** add task queue
+* **copy:** add task queue
+
+### 🛠️ Refactors
+
+* use native go-clack's error handling
+* **lockfile:** simplify user name validation
+* **snippet:** update snippets
+
+
+<a name="v0.3.9"></a>
+## [v0.3.9](https://github.com/Mist3rBru/my-cli/compare/v0.3.8...v0.3.9) (2024-08-06)
+
+### 🚀 Features
+
+* **checkout:** accept arbitrary checkout
+
+
+<a name="v0.3.8"></a>
+## [v0.3.8](https://github.com/Mist3rBru/my-cli/compare/v0.2.21...v0.3.8) (2024-08-01)
+
+
+<a name="v0.2.21"></a>
+## [v0.2.21](https://github.com/Mist3rBru/my-cli/compare/v0.3.7...v0.2.21) (2024-08-01)
+
+### 🚀 Features
+
+* add filter to selection prompts
+
+
+<a name="v0.3.7"></a>
+## [v0.3.7](https://github.com/Mist3rBru/my-cli/compare/v0.3.6...v0.3.7) (2024-07-11)
+
+### 🚀 Features
+
+* **clone:** add named target folder
+
+### 🩹 Fixes
+
+* **clone:** github repo url regex
+
+### 🏡 Chore
+
+* update changelog
+
+
 <a name="v0.3.6"></a>
 ## [v0.3.6](https://github.com/Mist3rBru/my-cli/compare/v0.3.5...v0.3.6) (2024-07-04)
 
