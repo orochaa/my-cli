@@ -9,10 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"slices"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/Mist3rBru/go-clack/prompts"
@@ -20,6 +18,7 @@ import (
 	"github.com/Mist3rBru/go-clack/third_party/picocolors"
 	"github.com/Mist3rBru/go-clack/third_party/sisteransi"
 	"github.com/Mist3rBru/my-cli/internals/lockfile"
+	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -51,18 +50,10 @@ var copyCmd = &cobra.Command{
 		defer slices.Reverse(userProjectsRootList)
 
 		progressCh := make(chan CopyProgress)
-		taskCh := make(chan func())
 		startTime := time.Now()
 
-		for range runtime.NumCPU() * 10 {
-			go func() {
-				for task := range taskCh {
-					task()
-				}
-			}()
-		}
+		taskWg, taskCh := utils.SpinTasks()
 
-		var taskWg sync.WaitGroup
 		taskWg.Add(1)
 		taskCh <- func() {
 			defer taskWg.Done()
@@ -86,7 +77,7 @@ var copyCmd = &cobra.Command{
 					continue
 				}
 
-				MapDir(selectedPath, func(filePath string) {
+				utils.MapDir(selectedPath, func(filePath string) {
 					progressCh <- CopyProgress{Found: 1}
 					taskWg.Add(1)
 					taskCh <- func() {
@@ -125,28 +116,6 @@ var copyCmd = &cobra.Command{
 		os.Stdout.WriteString(sisteransi.EraseDown())
 		os.Stdout.WriteString(fmt.Sprintf("%s %s\n", picocolors.Gray(symbols.BAR_END), picocolors.Dim(fmt.Sprintf("%d files copied in %s", copied, time.Since(startTime).String()))))
 	},
-}
-
-func MapDir(dirPath string, cb func(filePath string)) {
-	entries, err := os.ReadDir(dirPath)
-	if err != nil {
-		prompts.Error(err.Error())
-		return
-	}
-
-	for _, entry := range entries {
-		if entry.Name() == ".git" || entry.Name() == "node_modules" {
-			continue
-		}
-		entryPath := filepath.Join(dirPath, entry.Name())
-
-		if entry.IsDir() {
-			MapDir(entryPath, cb)
-			continue
-		}
-
-		cb(entryPath)
-	}
 }
 
 func RelativeCopyFile(userProjectsRootList []string, filePath string) error {
