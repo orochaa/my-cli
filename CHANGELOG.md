@@ -1,4 +1,20 @@
 
+<a name="v0.2.22"></a>
+## [v0.2.22](https://github.com/Mist3rBru/my-cli/compare/v0.3.11...v0.2.22) (2024-10-04)
+
+### 🚀 Features
+
+* **rename:** add rename command
+
+### 🛠️ Refactors
+
+* exit status code 1 on os.Getwd() error
+
+### 🏡 Chore
+
+* update changelog
+
+
 <a name="v0.3.11"></a>
 ## [v0.3.11](https://github.com/Mist3rBru/my-cli/compare/v0.3.10...v0.3.11) (2024-08-23)
 
@@ -24,19 +40,19 @@
 
 
 <a name="v0.3.9"></a>
-## [v0.3.9](https://github.com/Mist3rBru/my-cli/compare/v0.3.8...v0.3.9) (2024-08-06)
+## [v0.3.9](https://github.com/Mist3rBru/my-cli/compare/v0.2.21...v0.3.9) (2024-08-06)
 
 ### 🚀 Features
 
 * **checkout:** accept arbitrary checkout
 
 
-<a name="v0.3.8"></a>
-## [v0.3.8](https://github.com/Mist3rBru/my-cli/compare/v0.2.21...v0.3.8) (2024-08-01)
-
-
 <a name="v0.2.21"></a>
-## [v0.2.21](https://github.com/Mist3rBru/my-cli/compare/v0.3.7...v0.2.21) (2024-08-01)
+## [v0.2.21](https://github.com/Mist3rBru/my-cli/compare/v0.3.8...v0.2.21) (2024-08-01)
+
+
+<a name="v0.3.8"></a>
+## [v0.3.8](https://github.com/Mist3rBru/my-cli/compare/v0.3.7...v0.3.8) (2024-08-01)
 
 ### 🚀 Features
 
