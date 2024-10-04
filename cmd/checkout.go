@@ -83,7 +83,7 @@ var checkoutCmd = &cobra.Command{
 		cwd, err := os.Getwd()
 		if err != nil {
 			prompts.Error(err.Error())
-			return
+			os.Exit(1)
 		}
 
 		if utils.Exists(filepath.Join(cwd, "package.json")) {

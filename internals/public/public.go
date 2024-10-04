@@ -37,7 +37,6 @@ func VsCodeFolderPath() string {
 	cwd, err := os.Getwd()
 	assert.NoError(err, "")
 	return filepath.Join(cwd, ".vscode")
-
 }
 
 func CreateVsCodeFolder() error {

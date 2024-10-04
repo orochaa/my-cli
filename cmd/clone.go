@@ -255,7 +255,7 @@ func formatProjectPath(cmd *cobra.Command, repo *Repository, folderArg string) s
 	cwd, err := os.Getwd()
 	if err != nil {
 		prompts.Error(err.Error())
-		os.Exit(0)
+		os.Exit(1)
 	}
 
 	if folderArg != "" {

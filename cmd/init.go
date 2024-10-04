@@ -39,7 +39,7 @@ var initCmd = &cobra.Command{
 		cwd, err := os.Getwd()
 		if err != nil {
 			prompts.Error(err.Error())
-			return
+			os.Exit(1)
 		}
 		name := filepath.Base(cwd)
 
@@ -63,7 +63,7 @@ var initCmd = &cobra.Command{
 			cwd, err := os.Getwd()
 			if err != nil {
 				prompts.Error(err.Error())
-				return
+				os.Exit(1)
 			}
 
 			packageJSONPath := filepath.Join(cwd, "package.json")

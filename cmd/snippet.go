@@ -26,7 +26,7 @@ var snippetCmd = &cobra.Command{
 			cwd, err := os.Getwd()
 			if err != nil {
 				prompts.Error(err.Error())
-				return
+				os.Exit(1)
 			}
 
 			public.CreateVsCodeFolder()

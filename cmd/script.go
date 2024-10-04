@@ -21,8 +21,8 @@ var scriptCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cwd, err := os.Getwd()
 		if err != nil {
-			prompts.Cancel(err.Error())
-			return
+			prompts.Error(err.Error())
+			os.Exit(1)
 		}
 
 		scripts, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
