@@ -32,7 +32,8 @@ var renameCmd = &cobra.Command{
 		prompts.ExitOnError(err)
 
 		pattern, err := prompts.Text(prompts.TextParams{
-			Message: "Insert a text pattern to find:",
+			Message:  "Insert a text pattern to find:",
+			Required: true,
 		})
 		prompts.ExitOnError(err)
 
@@ -41,78 +42,94 @@ var renameCmd = &cobra.Command{
 		})
 		prompts.ExitOnError(err)
 
-		fmt.Println(picocolors.Gray(symbols.BAR))
+		var highlightRenamedPath func(path, match string, color func(str string) string, dim bool) string
+		if cwd, err := os.Getwd(); err == nil {
+			highlightRenamedPath = createHighlightRenamedPath(cwd)
+		} else {
+			highlightRenamedPath = createHighlightRenamedPath("")
+		}
 
-		createHighlightPath := func(basePath string) func(path, match string, color func(str string) string) string {
-			return func(path, match string, color func(str string) string) string {
-				filename := filepath.Base(path)
-				folderPath := filepath.Dir(path) + "/"
-				if basePath != "" {
-					folderPath = strings.Replace(folderPath, basePath+"/", "", 1)
+		var renameOptions []*prompts.MultiSelectOption[string]
+
+		for _, folder := range folders {
+			utils.MapDir(folder, func(filePath string) {
+				fileName := filepath.Base(filePath)
+				if !strings.Contains(fileName, pattern) {
+					return
 				}
 
-				return fmt.Sprint(
-					picocolors.Dim(folderPath),
-					strings.Replace(filename, match, color(match), -1),
-				)
-			}
-		}
-
-		var highlightPath func(path, match string, color func(str string) string) string
-		if cwd, err := os.Getwd(); err == nil {
-			highlightPath = createHighlightPath(cwd)
-		} else {
-			highlightPath = createHighlightPath("")
-		}
-
-		taskWg, taskCh := utils.SpinTasks()
-
-		taskWg.Add(1)
-		taskCh <- func() {
-			defer taskWg.Done()
-
-			for _, folder := range folders {
-				utils.MapDir(folder, func(filePath string) {
-					taskWg.Add(1)
-					taskCh <- func() {
-						defer taskWg.Done()
-
-						fileName := filepath.Base(filePath)
-						if !strings.Contains(fileName, pattern) {
-							return
-						}
-
-						folderPath := filepath.Dir(filePath)
-						newFileName := strings.Replace(fileName, pattern, replace, -1)
-						newFilePath := filepath.Join(folderPath, newFileName)
-
-						if err := os.Rename(filePath, newFilePath); err != nil {
-							fmt.Printf("%s %s %s\n%s %s\n",
-								picocolors.Red(symbols.BAR),
-								picocolors.Red("Failed to rename:"),
-								highlightPath(filePath, pattern, picocolors.Red),
-								picocolors.Red(symbols.BAR),
-								err.Error(),
-							)
-							return
-						}
-
-						fmt.Printf("%s %s %s %s\n",
-							picocolors.Gray(symbols.BAR),
-							highlightPath(filePath, pattern, picocolors.Red),
-							picocolors.Dim("=>"),
-							highlightPath(newFilePath, replace, picocolors.Cyan),
-						)
-					}
+				renameOptions = append(renameOptions, &prompts.MultiSelectOption[string]{
+					Label:      highlightRenamedPath(filePath, pattern, picocolors.Red, false),
+					Value:      filePath,
+					IsSelected: true,
 				})
-			}
+			})
 		}
 
-		taskWg.Wait()
-		close(taskCh)
+		if len(renameOptions) == 0 {
+			prompts.Error("No option found")
+			return
+		}
+
+		filePathList, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
+			Message:  "Confirm the following files to be renamed:",
+			Options:  renameOptions,
+			Filter:   true,
+			Required: true,
+		})
+		prompts.ExitOnError(err)
+
+		prompts.Step("Renamed files:")
+
+		for _, filePath := range filePathList {
+			folderPath := filepath.Dir(filePath)
+			fileName := filepath.Base(filePath)
+			newFileName := strings.Replace(fileName, pattern, replace, -1)
+			newFilePath := filepath.Join(folderPath, newFileName)
+
+			if err := os.Rename(filePath, newFilePath); err != nil {
+				fmt.Printf("%s %s %s\n%s %s\n",
+					picocolors.Red(symbols.BAR),
+					picocolors.Red("Failed to rename:"),
+					highlightRenamedPath(filePath, pattern, picocolors.Red, true),
+					picocolors.Red(symbols.BAR),
+					err.Error(),
+				)
+				continue
+			}
+
+			fmt.Printf("%s %s %s %s\n",
+				picocolors.Gray(symbols.BAR),
+				highlightRenamedPath(filePath, pattern, picocolors.Red, true),
+				picocolors.Dim("=>"),
+				highlightRenamedPath(newFilePath, replace, picocolors.Cyan, true),
+			)
+		}
 
 		fmt.Println(picocolors.Gray(symbols.BAR_END))
 	},
+}
+
+func createHighlightRenamedPath(basePath string) func(path, match string, color func(str string) string, dim bool) string {
+	return func(path, match string, color func(str string) string, dim bool) string {
+		filename := filepath.Base(path)
+		folderPath := filepath.Dir(path) + "/"
+		if basePath != "" {
+			folderPath = strings.Replace(folderPath, basePath+"/", "", 1)
+		}
+
+		if !dim {
+			return fmt.Sprint(
+				folderPath,
+				strings.Replace(filename, match, color(match), -1),
+			)
+		}
+
+		return fmt.Sprint(
+			picocolors.Dim(folderPath),
+			strings.Replace(filename, match, color(match), -1),
+		)
+	}
 }
 
 func init() {
