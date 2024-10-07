@@ -78,23 +78,31 @@ var renameCmd = &cobra.Command{
 						defer taskWg.Done()
 
 						fileName := filepath.Base(filePath)
-						if strings.Contains(fileName, pattern) {
-							folderPath := filepath.Dir(filePath)
-							newFileName := strings.Replace(fileName, pattern, replace, -1)
-							newFilePath := filepath.Join(folderPath, newFileName)
-
-							if err := os.Rename(filePath, newFilePath); err != nil {
-								prompts.Error(err.Error())
-								return
-							}
-
-							fmt.Printf("%s %s %s %s\n",
-								picocolors.Gray(symbols.BAR),
-								highlightPath(filePath, pattern, picocolors.Red),
-								picocolors.Dim("=>"),
-								highlightPath(newFilePath, replace, picocolors.Cyan),
-							)
+						if !strings.Contains(fileName, pattern) {
+							return
 						}
+
+						folderPath := filepath.Dir(filePath)
+						newFileName := strings.Replace(fileName, pattern, replace, -1)
+						newFilePath := filepath.Join(folderPath, newFileName)
+
+						if err := os.Rename(filePath, newFilePath); err != nil {
+							fmt.Printf("%s %s %s\n%s %s\n",
+								picocolors.Red(symbols.BAR),
+								picocolors.Red("Failed to rename:"),
+								highlightPath(filePath, pattern, picocolors.Red),
+								picocolors.Red(symbols.BAR),
+								err.Error(),
+							)
+							return
+						}
+
+						fmt.Printf("%s %s %s %s\n",
+							picocolors.Gray(symbols.BAR),
+							highlightPath(filePath, pattern, picocolors.Red),
+							picocolors.Dim("=>"),
+							highlightPath(newFilePath, replace, picocolors.Cyan),
+						)
 					}
 				})
 			}
