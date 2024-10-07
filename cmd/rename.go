@@ -27,6 +27,7 @@ var renameCmd = &cobra.Command{
 			Message:     "Select folders to walk:",
 			Required:    true,
 			OnlyShowDir: true,
+			Filter:      true,
 		})
 		prompts.ExitOnError(err)
 
@@ -48,7 +49,7 @@ var renameCmd = &cobra.Command{
 
 			return fmt.Sprint(
 				picocolors.Dim(folderPath+"/"),
-				strings.Replace(filename, match, color(match), 1),
+				strings.Replace(filename, match, color(match), -1),
 			)
 		}
 
@@ -67,7 +68,7 @@ var renameCmd = &cobra.Command{
 						fileName := filepath.Base(filePath)
 						if strings.Contains(fileName, pattern) {
 							folderPath := filepath.Dir(filePath)
-							newFileName := strings.Replace(fileName, pattern, replace, 1)
+							newFileName := strings.Replace(fileName, pattern, replace, -1)
 							newFilePath := filepath.Join(folderPath, newFileName)
 
 							if err := os.Rename(filePath, newFilePath); err != nil {
