@@ -43,14 +43,26 @@ var renameCmd = &cobra.Command{
 
 		fmt.Println(picocolors.Gray(symbols.BAR))
 
-		highlightPath := func(path, match string, color func(str string) string) string {
-			folderPath := filepath.Dir(path)
-			filename := filepath.Base(path)
+		createHighlightPath := func(basePath string) func(path, match string, color func(str string) string) string {
+			return func(path, match string, color func(str string) string) string {
+				filename := filepath.Base(path)
+				folderPath := filepath.Dir(path) + "/"
+				if basePath != "" {
+					folderPath = strings.Replace(folderPath, basePath+"/", "", 1)
+				}
 
-			return fmt.Sprint(
-				picocolors.Dim(folderPath+"/"),
-				strings.Replace(filename, match, color(match), -1),
-			)
+				return fmt.Sprint(
+					picocolors.Dim(folderPath),
+					strings.Replace(filename, match, color(match), -1),
+				)
+			}
+		}
+
+		var highlightPath func(path, match string, color func(str string) string) string
+		if cwd, err := os.Getwd(); err == nil {
+			highlightPath = createHighlightPath(cwd)
+		} else {
+			highlightPath = createHighlightPath("")
 		}
 
 		taskWg, taskCh := utils.SpinTasks()
