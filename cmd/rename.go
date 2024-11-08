@@ -44,9 +44,9 @@ var renameCmd = &cobra.Command{
 
 		var highlightRenamedPath func(path, match string, color func(str string) string, dim bool) string
 		if cwd, err := os.Getwd(); err == nil {
-			highlightRenamedPath = createHighlightRenamedPath(cwd)
+			highlightRenamedPath = createPathHighlight(cwd)
 		} else {
-			highlightRenamedPath = createHighlightRenamedPath("")
+			highlightRenamedPath = createPathHighlight("")
 		}
 
 		var renameOptions []*prompts.MultiSelectOption[string]
@@ -110,13 +110,18 @@ var renameCmd = &cobra.Command{
 	},
 }
 
-func createHighlightRenamedPath(basePath string) func(path, match string, color func(str string) string, dim bool) string {
+func createPathShorter(basePath string) func(path string) string {
+	return func(path string) string {
+		return strings.Replace(path, basePath+"/", "", 1)
+	}
+}
+
+func createPathHighlight(basePath string) func(path, match string, color func(str string) string, dim bool) string {
+	pathShorter := createPathShorter(basePath)
+
 	return func(path, match string, color func(str string) string, dim bool) string {
 		filename := filepath.Base(path)
-		folderPath := filepath.Dir(path) + "/"
-		if basePath != "" {
-			folderPath = strings.Replace(folderPath, basePath+"/", "", 1)
-		}
+		folderPath := pathShorter(filepath.Dir(path) + "/")
 
 		if !dim {
 			return fmt.Sprint(
