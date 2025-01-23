@@ -52,7 +52,7 @@ var copyCmd = &cobra.Command{
 		progressCh := make(chan CopyProgress)
 		startTime := time.Now()
 
-		taskWg, taskCh := utils.SpinTasks()
+		taskWg, taskCh := utils.SpinIOTasks()
 
 		taskWg.Add(1)
 		taskCh <- func() {

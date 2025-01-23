@@ -5,11 +5,11 @@ import (
 	"sync"
 )
 
-func SpinTasks() (*sync.WaitGroup, chan func()) {
+func SpinTasks(numRoutines int) (*sync.WaitGroup, chan func()) {
 	var taskWg sync.WaitGroup
 	taskCh := make(chan func())
 
-	for range runtime.NumCPU() * 10 {
+	for range numRoutines {
 		go func() {
 			for task := range taskCh {
 				task()
@@ -18,4 +18,8 @@ func SpinTasks() (*sync.WaitGroup, chan func()) {
 	}
 
 	return &taskWg, taskCh
+}
+
+func SpinIOTasks() (*sync.WaitGroup, chan func()) {
+	return SpinTasks(runtime.NumCPU() * 10)
 }

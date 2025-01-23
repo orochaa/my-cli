@@ -38,10 +38,9 @@ var indexCmd = &cobra.Command{
 			pathShorter = createPathShorter("")
 		}
 
-		taskWg, taskCh := utils.SpinTasks()
+		taskWg, taskCh := utils.SpinIOTasks()
 
 		for _, folder := range folders {
-
 			utils.MapDir(folder, func(filePath string) {
 				fileName := filepath.Base(filePath)
 				if fileName != "index.ts" {
@@ -58,7 +57,8 @@ var indexCmd = &cobra.Command{
 						return
 					}
 
-					text := string(data)
+					originalText := string(data)
+					text := originalText
 					lines := strings.Split(text, "\n")
 					groupedLines := make(map[string][]string)
 					exportRegex := regexp.MustCompile("^export\\s+\\w*\\s*\\*\\s+from[\\s'\".\\/]+")
@@ -101,7 +101,17 @@ var indexCmd = &cobra.Command{
 						}
 					}
 
-					err = os.WriteFile(filePath, []byte(result.String()), 0644)
+					newText := result.String()
+					if newText == originalText {
+						fmt.Printf("%s %s %s\n",
+							picocolors.Blue(symbols.INFO),
+							picocolors.Dim(pathShorter(filePath)),
+							picocolors.Dim("(not changed)"),
+						)
+						return
+					}
+
+					err = os.WriteFile(filePath, []byte(newText), 0644)
 					if err != nil {
 						fmt.Printf("Error writing to file: %v\n", err)
 						return
@@ -109,7 +119,7 @@ var indexCmd = &cobra.Command{
 
 					fmt.Printf("%s %s\n",
 						picocolors.Green(symbols.SUCCESS),
-						picocolors.Dim(pathShorter(filePath)),
+						pathShorter(filePath),
 					)
 				}
 			})
