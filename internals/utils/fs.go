@@ -38,10 +38,11 @@ func MapDir(dirPath string, cb func(filePath string)) {
 	}
 
 	for _, entry := range entries {
-		if entry.Name() == ".git" || entry.Name() == "node_modules" {
+		entryName := entry.Name()
+		if entryName[0] == '.' || entryName == "node_modules" {
 			continue
 		}
-		entryPath := filepath.Join(dirPath, entry.Name())
+		entryPath := filepath.Join(dirPath, entryName)
 
 		if entry.IsDir() {
 			MapDir(entryPath, cb)

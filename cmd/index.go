@@ -53,7 +53,7 @@ var indexCmd = &cobra.Command{
 
 					data, err := os.ReadFile(filePath)
 					if err != nil {
-						fmt.Printf("Error reading file: %v\n", err)
+						fmt.Printf("Error reading file: %v.\n", err)
 						return
 					}
 
@@ -69,7 +69,7 @@ var indexCmd = &cobra.Command{
 						}
 
 						if !exportRegex.MatchString(line) {
-							prompts.Error(fmt.Sprintf("%s could be parsed", picocolors.Dim(pathShorter(filePath))))
+							prompts.Error(fmt.Sprintf("%s could not be parsed.", picocolors.Dim(pathShorter(filePath))))
 							return
 						}
 
@@ -106,7 +106,7 @@ var indexCmd = &cobra.Command{
 						fmt.Printf("%s %s %s\n",
 							picocolors.Blue(symbols.INFO),
 							picocolors.Dim(pathShorter(filePath)),
-							picocolors.Dim("(not changed)"),
+							picocolors.Dim("(not changed)."),
 						)
 						return
 					}
@@ -117,7 +117,7 @@ var indexCmd = &cobra.Command{
 						return
 					}
 
-					fmt.Printf("%s %s\n",
+					fmt.Printf("%s %s.\n",
 						picocolors.Green(symbols.SUCCESS),
 						pathShorter(filePath),
 					)
