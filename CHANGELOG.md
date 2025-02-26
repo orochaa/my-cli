@@ -1,4 +1,61 @@
 
+<a name="v0.3.17"></a>
+## [v0.3.17](https://github.com/Mist3rBru/my-cli/compare/v0.3.16...v0.3.17) (2025-02-26)
+
+### 🚀 Features
+
+* **rename:** add rename directory flag
+
+
+<a name="v0.3.16"></a>
+## [v0.3.16](https://github.com/Mist3rBru/my-cli/compare/v0.3.15...v0.3.16) (2025-01-26)
+
+### 🛠️ Refactors
+
+* ignore all dot entries on map
+
+
+<a name="v0.3.15"></a>
+## [v0.3.15](https://github.com/Mist3rBru/my-cli/compare/v0.3.14...v0.3.15) (2025-01-23)
+
+### 🚀 Features
+
+* **index:** handle differ changed files
+
+
+<a name="v0.3.14"></a>
+## [v0.3.14](https://github.com/Mist3rBru/my-cli/compare/v0.3.13...v0.3.14) (2024-11-08)
+
+### 🚀 Features
+
+* add index command
+
+
+<a name="v0.3.13"></a>
+## [v0.3.13](https://github.com/Mist3rBru/my-cli/compare/v0.3.12...v0.3.13) (2024-10-07)
+
+### 🚀 Features
+
+* **rename:** add confirmation step
+* **rename:** remove cwd from printed path
+
+### 🛠️ Refactors
+
+* **rename:** improve error handling
+
+
+<a name="v0.3.12"></a>
+## [v0.3.12](https://github.com/Mist3rBru/my-cli/compare/v0.2.22...v0.3.12) (2024-10-07)
+
+### 🚀 Features
+
+* **rename:** remove replace limit
+
+### 🏡 Chore
+
+* update changelog
+
+
 <a name="v0.2.22"></a>
 ## [v0.2.22](https://github.com/Mist3rBru/my-cli/compare/v0.3.11...v0.2.22) (2024-10-04)
 
@@ -40,19 +97,19 @@
 
 
 <a name="v0.3.9"></a>
-## [v0.3.9](https://github.com/Mist3rBru/my-cli/compare/v0.2.21...v0.3.9) (2024-08-06)
+## [v0.3.9](https://github.com/Mist3rBru/my-cli/compare/v0.3.8...v0.3.9) (2024-08-06)
 
 ### 🚀 Features
 
 * **checkout:** accept arbitrary checkout
 
 
-<a name="v0.2.21"></a>
-## [v0.2.21](https://github.com/Mist3rBru/my-cli/compare/v0.3.8...v0.2.21) (2024-08-01)
-
-
 <a name="v0.3.8"></a>
-## [v0.3.8](https://github.com/Mist3rBru/my-cli/compare/v0.3.7...v0.3.8) (2024-08-01)
+## [v0.3.8](https://github.com/Mist3rBru/my-cli/compare/v0.2.21...v0.3.8) (2024-08-01)
+
+
+<a name="v0.2.21"></a>
+## [v0.2.21](https://github.com/Mist3rBru/my-cli/compare/v0.3.7...v0.2.21) (2024-08-01)
 
 ### 🚀 Features
 
