@@ -6,7 +6,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"regexp"
 	"sort"
 	"strings"
@@ -41,8 +40,12 @@ var indexCmd = &cobra.Command{
 		taskWg, taskCh := utils.SpinIOTasks()
 
 		for _, folder := range folders {
-			utils.MapDir(folder, func(filePath string) {
-				fileName := filepath.Base(filePath)
+			utils.MapDir(folder, func(entry utils.Entry) {
+				if entry.IsDir() {
+					return
+				}
+
+				fileName := entry.Name()
 				if fileName != "index.ts" {
 					return
 				}
@@ -51,7 +54,7 @@ var indexCmd = &cobra.Command{
 				taskCh <- func() {
 					defer taskWg.Done()
 
-					data, err := os.ReadFile(filePath)
+					data, err := os.ReadFile(entry.Path)
 					if err != nil {
 						fmt.Printf("Error reading file: %v.\n", err)
 						return
@@ -69,7 +72,7 @@ var indexCmd = &cobra.Command{
 						}
 
 						if !exportRegex.MatchString(line) {
-							prompts.Error(fmt.Sprintf("%s could not be parsed.", picocolors.Dim(pathShorter(filePath))))
+							prompts.Error(fmt.Sprintf("%s could not be parsed.", picocolors.Dim(pathShorter(entry.Path))))
 							return
 						}
 
@@ -105,13 +108,13 @@ var indexCmd = &cobra.Command{
 					if newText == originalText {
 						fmt.Printf("%s %s %s\n",
 							picocolors.Blue(symbols.INFO),
-							picocolors.Dim(pathShorter(filePath)),
+							picocolors.Dim(pathShorter(entry.Path)),
 							picocolors.Dim("(not changed)."),
 						)
 						return
 					}
 
-					err = os.WriteFile(filePath, []byte(newText), 0644)
+					err = os.WriteFile(entry.Path, []byte(newText), 0644)
 					if err != nil {
 						fmt.Printf("Error writing to file: %v\n", err)
 						return
@@ -119,7 +122,7 @@ var indexCmd = &cobra.Command{
 
 					fmt.Printf("%s %s.\n",
 						picocolors.Green(symbols.SUCCESS),
-						pathShorter(filePath),
+						pathShorter(entry.Path),
 					)
 				}
 			})

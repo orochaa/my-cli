@@ -30,25 +30,33 @@ func Exists(path string) bool {
 	return err == nil
 }
 
-func MapDir(dirPath string, cb func(filePath string)) {
-	entries, err := os.ReadDir(dirPath)
+type Entry struct {
+	os.DirEntry
+	Path string
+}
+
+func MapDir(dirPath string, cb func(entry Entry)) {
+	dirEntries, err := os.ReadDir(dirPath)
 	if err != nil {
 		prompts.Error(err.Error())
 		return
 	}
 
-	for _, entry := range entries {
-		entryName := entry.Name()
+	for _, dirEntry := range dirEntries {
+		entryName := dirEntry.Name()
 		if entryName[0] == '.' || entryName == "node_modules" {
 			continue
 		}
-		entryPath := filepath.Join(dirPath, entryName)
 
-		if entry.IsDir() {
-			MapDir(entryPath, cb)
-			continue
+		entry := Entry{
+			DirEntry: dirEntry,
+			Path:     filepath.Join(dirPath, entryName),
 		}
 
-		cb(entryPath)
+		if entry.IsDir() {
+			MapDir(entry.Path, cb)
+		}
+
+		cb(entry)
 	}
 }

@@ -20,9 +20,12 @@ import (
 var renameCmd = &cobra.Command{
 	Use:     "rename",
 	Aliases: []string{"rn"},
-	Short:   "Rename files recursively from A to B",
-	Long:    "Rename files recursively from A to B",
+	Short:   "Rename files and directories recursively from A to B",
+	Long:    "Rename files and directories recursively from A to B",
 	Run: func(cmd *cobra.Command, args []string) {
+		renameDirs, err := cmd.Flags().GetBool("directory")
+		prompts.ExitOnError(err)
+
 		folders, err := prompts.MultiSelectPath(prompts.MultiSelectPathParams{
 			Message:     "Select folders to walk:",
 			Required:    true,
@@ -52,15 +55,19 @@ var renameCmd = &cobra.Command{
 		var renameOptions []*prompts.MultiSelectOption[string]
 
 		for _, folder := range folders {
-			utils.MapDir(folder, func(filePath string) {
-				fileName := filepath.Base(filePath)
-				if !strings.Contains(fileName, pattern) {
+			utils.MapDir(folder, func(entry utils.Entry) {
+				if !renameDirs && entry.IsDir() {
+					return
+				}
+
+				name := entry.Name()
+				if !strings.Contains(name, pattern) {
 					return
 				}
 
 				renameOptions = append(renameOptions, &prompts.MultiSelectOption[string]{
-					Label:      highlightRenamedPath(filePath, pattern, picocolors.Red, false),
-					Value:      filePath,
+					Label:      highlightRenamedPath(entry.Path, pattern, picocolors.Red, false),
+					Value:      entry.Path,
 					IsSelected: true,
 				})
 			})
@@ -72,14 +79,14 @@ var renameCmd = &cobra.Command{
 		}
 
 		filePathList, err := prompts.MultiSelect(prompts.MultiSelectParams[string]{
-			Message:  "Confirm the following files to be renamed:",
+			Message:  "Confirm the following files/directories to be renamed:",
 			Options:  renameOptions,
 			Filter:   true,
 			Required: true,
 		})
 		prompts.ExitOnError(err)
 
-		prompts.Step("Renamed files:")
+		prompts.Step("Renamed files/directories:")
 
 		for _, filePath := range filePathList {
 			folderPath := filepath.Dir(filePath)
@@ -139,6 +146,7 @@ func createPathHighlight(basePath string) func(path, match string, color func(st
 
 func init() {
 	rootCmd.AddCommand(renameCmd)
+	renameCmd.Flags().BoolP("directory", "d", false, "Include directories in the rename operation")
 
 	// Here you will define your flags and configuration settings.
 

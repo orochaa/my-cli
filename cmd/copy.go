@@ -77,16 +77,23 @@ var copyCmd = &cobra.Command{
 					continue
 				}
 
-				utils.MapDir(selectedPath, func(filePath string) {
+				utils.MapDir(selectedPath, func(entry utils.Entry) {
+					if entry.IsDir() {
+						return
+					}
+
 					progressCh <- CopyProgress{Found: 1}
 					taskWg.Add(1)
 					taskCh <- func() {
 						defer taskWg.Done()
-						if err := RelativeCopyFile(userProjectsRootList, filePath); err != nil {
+						
+						err := RelativeCopyFile(userProjectsRootList, entry.Path)
+						if err != nil {
 							prompts.Error(err.Error())
-						} else {
-							progressCh <- CopyProgress{Copied: 1}
+							return
 						}
+
+						progressCh <- CopyProgress{Copied: 1}
 					}
 				})
 			}
