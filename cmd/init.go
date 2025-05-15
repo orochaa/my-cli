@@ -49,7 +49,7 @@ var initCmd = &cobra.Command{
 			os.WriteFile("main.go", []byte{}, os.ModePerm)
 		case "node":
 			public.CopyConfig(".editorconfig")
-			public.CopyConfig(".eslintrc.json")
+			public.CopyConfig("eslint.config.mjs")
 			public.CopyConfig(".prettierrc")
 			public.CopyConfig(".prettierignore")
 			public.CopyConfig(".gitignore")
