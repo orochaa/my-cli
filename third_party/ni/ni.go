@@ -2,6 +2,7 @@ package ni
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -81,6 +82,10 @@ func Detect(options DetectOptions) (Agent, error) {
 
 	if agent == "" && lockPath != "" {
 		agent = LOCKS[filepath.Base(lockPath)]
+	}
+
+	if agent == "" {
+		return "", errors.New("unknown packageManager")
 	}
 
 	return agent, nil

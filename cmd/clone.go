@@ -274,14 +274,15 @@ func formatProjectPath(cmd *cobra.Command, repo *Repository, folderArg string) s
 }
 
 func selectPackageManagerPrompt() ni.Agent {
-	agent, err := prompts.Select[ni.Agent](prompts.SelectParams[ni.Agent]{
+	agent, err := prompts.Select(prompts.SelectParams[ni.Agent]{
 		Message: "Select your package manager:",
 		Options: []*prompts.SelectOption[ni.Agent]{
-			{Label: "pnpm"},
-			{Label: "yarn"},
-			{Label: "npm"},
+			{Label: "pnpm", Value: "pnpm"},
+			{Label: "yarn", Value: "yarn"},
+			{Label: "npm", Value: "npm"},
 		},
-		Required: true,
+		InitialValue: "pnpm",
+		Required:     true,
 	})
 	prompts.ExitOnError(err)
 	return agent
