@@ -4,8 +4,8 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/lockfile"
+	"github.com/orochaa/go-clack/prompts"
 	"github.com/spf13/cobra"
 )
 

@@ -10,10 +10,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Mist3rBru/go-clack/prompts"
-	"github.com/Mist3rBru/go-clack/prompts/symbols"
-	"github.com/Mist3rBru/go-clack/third_party/picocolors"
 	"github.com/Mist3rBru/my-cli/internals/utils"
+	"github.com/orochaa/go-clack/prompts"
+	"github.com/orochaa/go-clack/prompts/symbols"
+	"github.com/orochaa/go-clack/third_party/picocolors"
 	"github.com/spf13/cobra"
 )
 

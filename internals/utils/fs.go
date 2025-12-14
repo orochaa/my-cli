@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Mist3rBru/go-clack/prompts"
+	"github.com/orochaa/go-clack/prompts"
 )
 
 func ReadJson(path string, v any) error {

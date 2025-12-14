@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/third_party/assert"
+	"github.com/orochaa/go-clack/prompts"
 )
 
 //go:embed config/* snippets/*

@@ -12,10 +12,10 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Mist3rBru/go-clack/prompts"
-	"github.com/Mist3rBru/go-clack/third_party/picocolors"
-	"github.com/Mist3rBru/go-clack/third_party/sisteransi"
 	"github.com/Mist3rBru/my-cli/internals/utils"
+	"github.com/orochaa/go-clack/prompts"
+	"github.com/orochaa/go-clack/third_party/picocolors"
+	"github.com/orochaa/go-clack/third_party/sisteransi"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )

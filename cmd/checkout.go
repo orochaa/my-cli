@@ -11,9 +11,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/utils"
 	"github.com/Mist3rBru/my-cli/third_party/ni"
+	"github.com/orochaa/go-clack/prompts"
 	"github.com/spf13/cobra"
 )
 

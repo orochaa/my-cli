@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Mist3rBru/go-clack/prompts"
 	"github.com/Mist3rBru/my-cli/internals/public"
+	"github.com/orochaa/go-clack/prompts"
 	"github.com/spf13/cobra"
 )
 

@@ -13,12 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Mist3rBru/go-clack/prompts"
-	"github.com/Mist3rBru/go-clack/prompts/symbols"
-	"github.com/Mist3rBru/go-clack/third_party/picocolors"
-	"github.com/Mist3rBru/go-clack/third_party/sisteransi"
 	"github.com/Mist3rBru/my-cli/internals/lockfile"
 	"github.com/Mist3rBru/my-cli/internals/utils"
+	"github.com/orochaa/go-clack/prompts"
+	"github.com/orochaa/go-clack/prompts/symbols"
+	"github.com/orochaa/go-clack/third_party/picocolors"
+	"github.com/orochaa/go-clack/third_party/sisteransi"
 	"github.com/spf13/cobra"
 )
 
@@ -86,7 +86,7 @@ var copyCmd = &cobra.Command{
 					taskWg.Add(1)
 					taskCh <- func() {
 						defer taskWg.Done()
-						
+
 						err := RelativeCopyFile(userProjectsRootList, entry.Path)
 						if err != nil {
 							prompts.Error(err.Error())
